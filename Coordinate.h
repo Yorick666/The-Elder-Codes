@@ -8,12 +8,20 @@
 
 class Coordinate {
 public:
-    Coordinate() {};
-    Coordinate(int x, int y) { this->x=x; this->y=y; };
+    Coordinate() {
+        this->x = 0;
+        this->y = 0;
+    };
+
+    Coordinate(int x, int y) {
+        this->x = x;
+        this->y = y;
+    };
 
     int x, y;
 
     bool operator==(Coordinate b) { return this->x == b.x && this->y == b.y; };
+
     bool operator!=(Coordinate b) { return this->x != b.x || this->y != b.y; };
 
 };

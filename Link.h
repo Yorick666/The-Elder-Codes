@@ -6,17 +6,22 @@
 #define THE_ELDER_CODES_LINK_H
 
 #include "Room.h"
+
 class Room;
+
 class Link {
-    Room * _room1;
-    Room * _room2;
+    Room *_room1;
+    Room *_room2;
     int _keyLevel;
+    bool _traveled;
 public:
     Link(Room *room1, Room *room2, int keyLevel = 0);
 
     Room *travel(Room *origin, int keyLevel);
 
     int getKeyLevel();
+
+    bool isUsed() { return _traveled; };
 };
 
 

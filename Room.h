@@ -14,23 +14,28 @@ class Link;
 
 class Room {
 
-    Coordinate *_coordinate;
+    Coordinate _coordinate;
     std::vector<Link *> _links;
     RoomType _type;
     int _keyLevel;
+    bool _visited;
 
 public:
-    Room(Coordinate *coordinate, Room *parent, RoomType roomType, int keyLevel = 0);
+    Room() { throw 9; };
+
+    Room(Coordinate coordinate, RoomType roomType, int keyLevel = 0);
 
     ~Room();
 
-    Coordinate *getCoordinate() { return _coordinate; };
+    Coordinate *getCoordinate() { return &_coordinate; };
 
-    RoomType getRoomType() {return _type;};
+    RoomType getRoomType() { return _type; };
 
-    int getKeyLevel() {return _keyLevel;};
+    int getKeyLevel() { return _keyLevel; };
 
     void addLink(Link *link) { _links.push_back(link); };
+
+    void visit() { _visited = true; };
 };
 
 

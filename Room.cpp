@@ -4,12 +4,19 @@
 
 #include "Room.h"
 
-Room::Room(Coordinate *coordinate, Room *parent, RoomType roomType, int keyLevel) {
+Room::Room(Coordinate coordinate, RoomType roomType, int keyLevel) {
     _coordinate = coordinate;
     _keyLevel = keyLevel;
     _type = roomType;
+    _visited = false;
+
+    if (coordinate.x == 0 && coordinate.y == 0) {
+        throw 8;
+    }
 }
 
 Room::~Room() {
-    delete _coordinate;
+    for (int i = 0; i < _links.size(); ++i) {
+        delete _links[i];
+    }
 }

@@ -11,13 +11,13 @@ using namespace std;
 Game::Game() {
     _state = GameState::STARTING;
     _menu = MenuFactory::getInstance()->getMenu(_state);
-//    dungeon = Dungeon();
-    currentFloor = dungeon.getCurrentFloor();
-    currentRoom = dungeon.getCurrentRoom();
+    dungeon = new Dungeon();
+    currentFloor = dungeon->getCurrentFloor();
+    currentRoom = dungeon->getCurrentRoom();
 }
 
 Game::~Game() {
-
+    delete dungeon;
 }
 
 void Game::showScreen() {
@@ -32,6 +32,6 @@ void Game::getInput() {
     if (_state != GameState::STARTING) {
         cout << "[Life:" << 0 << "]";
     }
-    cout << "> ";
+    cout << ">";
     cin >> _input;
 }

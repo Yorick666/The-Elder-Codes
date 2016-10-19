@@ -21,7 +21,7 @@ class Floor {
     Room *stairDown;
 
     std::vector<Coordinate *> roomCoordinates;
-    std::map<int, std::map<int, Room *>> rooms;
+    std::map<int, std::map<int, Room* >> rooms;
     std::map<int, std::vector<Coordinate *>> levels;
 
     void addRoom(Room *room);

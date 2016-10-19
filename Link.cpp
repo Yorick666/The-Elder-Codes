@@ -13,10 +13,12 @@ Link::Link(Room *room1, Room *room2, int keyLevel) {
 Room *Link::travel(Room *origin, int keyLevel) {
     if (keyLevel >= _keyLevel) {
         if (_room1 == origin) {
+            _traveled = true;
             return _room2;
         }
 
         if (_room2 == origin) {
+            _traveled = true;
             return _room1;
         }
     }

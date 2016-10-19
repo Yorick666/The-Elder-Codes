@@ -15,7 +15,7 @@ class Dungeon {
     Room* currentRoom;
 
 public:
-    Dungeon(int size = 5, int roomsPerFloor = 200, int roomsPerLock = 50);
+    Dungeon(int size = 5, int roomsPerFloor = 500, int roomsPerLock = 100);
     ~Dungeon() {};
     Floor *getCurrentFloor();
     Room *getCurrentRoom();

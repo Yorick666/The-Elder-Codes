@@ -13,6 +13,9 @@ Floor::Floor(int amountRooms, Room *prev, int roomsPerLock, bool last) {
 
     _amountRooms = amountRooms;
 
+    int test = 1;
+    int test2 = 0;
+
     while (!validFloor) {
 
         try {
@@ -23,11 +26,11 @@ Floor::Floor(int amountRooms, Room *prev, int roomsPerLock, bool last) {
             minX = x;
             maxY = y;
             minY = y;
-            Coordinate *coordinate = new Coordinate(x, y);
-            Room *firstRoom = new Room(coordinate, nullptr, RoomType::UP);
+            Room *firstRoom = new Room(Coordinate(x, y), RoomType::UP);
+//            cout << "UP with " << firstRoom->getCoordinate()->x << "," << firstRoom->getCoordinate()->y << endl;
             addRoom(firstRoom);
-            roomCoordinates.push_back(coordinate);
-            levels[0].push_back(coordinate);
+            roomCoordinates.push_back(firstRoom->getCoordinate());
+            levels[0].push_back(firstRoom->getCoordinate());
             stairUp = firstRoom;
 
 
@@ -35,54 +38,90 @@ Floor::Floor(int amountRooms, Room *prev, int roomsPerLock, bool last) {
 
             // ADDING OTHER ROOMS
             while (roomCount() < amountRooms) {
+
                 bool doLock = false;
+                bool validRoom = true;
 
                 if (levels[keyLevel].size() >= roomsPerLock && roomsPerLock > 0) {
                     ++keyLevel;
                     doLock = true;
                 }
 
-                Room *parent;
-                Coordinate *newRoomCoordinate = nullptr;
-                while (newRoomCoordinate == nullptr) {
+                Room *parent = nullptr;
+                Coordinate newRoomCoordinate;
+                while (newRoomCoordinate.x == 0 && newRoomCoordinate.y == 0) {
                     parent = nullptr;
-                    if (!doLock && Rng::getInstance()->randomIntBetween(0, 10) > 0) {
+                    if (!doLock && Rng::getInstance()->randomIntBetween(0, 10) > 0 && levels[keyLevel].size() > 0) {
                         parent = getRandomRoomWithFreeEdge(levels[keyLevel]);
                     }
                     if (parent == nullptr) {
                         parent = getRandomRoomWithFreeEdge(roomCoordinates);
                         doLock = true;
                     }
-
                     if (parent != nullptr) {
-                        newRoomCoordinate = chooseFreeEdge(parent->getCoordinate());
+                        Coordinate *tempCoordinate = chooseFreeEdge(parent->getCoordinate());
+                        if (tempCoordinate) {
+                            newRoomCoordinate.x = tempCoordinate->x;
+                            newRoomCoordinate.y = tempCoordinate->y;
+                        } else {
+                            parent = nullptr;
+                        }
+                        delete tempCoordinate;
                     }
 
                 }
 
-                Room *newRoom;
-
-                if (roomCount() + 1 == _amountRooms) {
-                    newRoom = new Room(newRoomCoordinate, parent, RoomType::DOWN, keyLevel);
-                    stairDown = newRoom;
-                } else {
-                    newRoom = new Room(newRoomCoordinate, parent, RoomType::NORMAL, keyLevel);
+                for (int i = 0; i < roomCoordinates.size(); ++i) {
+                    if (roomCoordinates[i]->x == newRoomCoordinate.x &&
+                        roomCoordinates[i]->y == newRoomCoordinate.y) {
+//                        cout << "ERROR!" << endl;
+                        test2++;
+                        validRoom = false;
+                        break;
+                    }
                 }
 
-                addRoom(newRoom);
-                roomCoordinates.push_back(newRoomCoordinate);
-                levels[keyLevel].push_back(newRoomCoordinate);
+
+                if (validRoom) {
+                    Room *newRoom = nullptr;
+
+                    if (roomCount() + 1 == _amountRooms) {
+                        if (last) {
+                            newRoom = new Room(newRoomCoordinate, RoomType::EXIT, keyLevel);
+//                            cout << "Exit with " << newRoom->getCoordinate()->x << "," << newRoom->getCoordinate()->y <<
+//                            endl;
+                        } else {
+                            newRoom = new Room(newRoomCoordinate, RoomType::DOWN, keyLevel);
+//                            cout << "Down with " << newRoom->getCoordinate()->x << "," << newRoom->getCoordinate()->y <<
+//                            endl;
+                        }
+                        stairDown = newRoom;
+                    } else {
+                        newRoom = new Room(newRoomCoordinate, RoomType::NORMAL, keyLevel);
+                    }
+                    test++;
+
+                    addRoom(newRoom);
+                    roomCoordinates.push_back(newRoom->getCoordinate());
+                    levels[keyLevel].push_back(newRoom->getCoordinate());
+//                    cout << "Room count: " << roomCount() << endl;
+                    if (roomCount() > 1) {
+                        linkRooms(parent, newRoom, doLock && keyLevel > 0 ? keyLevel : 0);
+                    }
 
 //                parent->addChild(newRoom);
-
-                linkRooms(parent, newRoom, doLock && keyLevel > 0 ? keyLevel : 0);
-
 //                cout << roomCount() << endl;
+                }
             }
             validFloor = true;
         } catch (int e) {
             cout << e << endl;
             cout << "Restarting Generator...\n\n";
+            for (int x = 0; x < rooms.size(); ++x) {
+                for (int y = 0; y < rooms[x].size(); ++y) {
+                    delete rooms[x][y];
+                }
+            }
             rooms.clear();
             roomCoordinates.clear();
             levels.clear();
@@ -91,6 +130,8 @@ Floor::Floor(int amountRooms, Room *prev, int roomsPerLock, bool last) {
         }
 
     }
+//    cout << "Amount of pushed rooms: " << test << endl;
+//    cout << "Amount of Errors: " << test2 << endl;
 }
 
 void Floor::addRoom(Room *room) {
@@ -119,8 +160,9 @@ int Floor::roomCount() {
 
 Room *Floor::getRandomRoomWithFreeEdge(vector<Coordinate *> coordinates) {
     int tries = 0;
-    while (tries < _amountRooms / 10) {
+    while (tries < _amountRooms) {
         Coordinate *coordinate = coordinates.at(Rng::getInstance()->randomIntBetween(0, coordinates.size() - 1));
+
         if (rooms.count(coordinate->x - 1) == 0 || rooms.count(coordinate->x + 1) == 0 ||
             rooms[coordinate->x - 1].count(coordinate->y) == 0 || rooms[coordinate->x + 1].count(coordinate->y) == 0 ||
             rooms[coordinate->x].count(coordinate->y - 1) == 0 || rooms[coordinate->x].count(coordinate->y + 1) == 0) {
@@ -156,7 +198,6 @@ Coordinate *Floor::chooseFreeEdge(Coordinate *coordinate) {
             }
         }
     }
-
     return nullptr;
 }
 
@@ -170,6 +211,9 @@ void Floor::linkRooms(Room *room1, Room *room2, int keyLevel) {
 }
 
 void Floor::drawFloor() {
+    cout << roomCount() << "/" << roomCoordinates.size() << endl;
+
+
     for (int y = minY - 2; y <= maxY + 2; ++y) {
         for (int x = minX - 2; x <= maxX + 2; ++x) {
             if (rooms[x][y] == nullptr) {
@@ -178,9 +222,9 @@ void Floor::drawFloor() {
                 if (rooms[x][y]->getRoomType() == RoomType::NORMAL)
                     cout << rooms[x][y]->getKeyLevel();
                 else if (rooms[x][y]->getRoomType() == RoomType::UP)
-                    cout << "UU";
+                    cout << "U";
                 else if (rooms[x][y]->getRoomType() == RoomType::DOWN)
-                    cout << "DD";
+                    cout << "D";
                 else
                     cout << "X";
             }

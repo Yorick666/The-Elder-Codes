@@ -4,33 +4,38 @@
 
 #include <iostream>
 #include <vector>
+#include <iomanip>
 #include "Dungeon.h"
 
 using namespace std;
 
 Dungeon::Dungeon(int amountFloors, int roomsPerFloor, int roomsPerLock) {
     floors = vector<Floor>();
+
+    double steps = 100.00 / amountFloors;
+
     for (int i = 0; i < amountFloors; ++i) {
+        cout << "Generating dungeon - " << setprecision(3) << i * steps << "%" << endl;
         if (i == 0) {
-            cout << "Generating first floor\n";
+//            cout << "Generating first floor\n";
             Floor newFloor = Floor(roomsPerFloor, nullptr, roomsPerLock);
             floors.push_back(newFloor);
             currentFloor = &floors[0];
             currentRoom = currentFloor->getStairsUp();
         }
         else if (i == amountFloors - 1) {
-            cout << "Generating last floor\n";
+//            cout << "Generating last floor\n";
             Floor newFloor = Floor(roomsPerFloor, floors.at(i - 1).getStairsDown(), roomsPerLock, true);
             floors.push_back(newFloor);
         }
         else {
-            cout << "Generating floor " << i + 1 << "\n";
+//            cout << "Generating floor " << i + 1 << "\n";
             Floor newFloor = Floor(roomsPerFloor, floors.at(i - 1).getStairsDown(), roomsPerLock);
             floors.push_back(newFloor);
         }
-        floors[i].drawFloor();
+//        floors[i].drawFloor();
     }
-    cout << "Finished\n";
+    cout << "Generating dungeon - Finished\n";
 }
 
 Floor *Dungeon::getCurrentFloor() {

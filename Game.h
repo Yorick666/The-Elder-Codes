@@ -17,7 +17,7 @@ class Game {
     GameState _state;
     Menu *_menu;
 
-    Dungeon dungeon;
+    Dungeon *dungeon;
     Floor *currentFloor;
     Room *currentRoom;
 
