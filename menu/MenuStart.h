@@ -14,6 +14,7 @@ class MenuStart : public Menu {
     void loadOptions();
 
     void getViewScreen();
+
 public:
     MenuStart(Game *game);
 

@@ -7,6 +7,8 @@
 
 using namespace std;
 
+DM *DM::_instance = nullptr;
+
 void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, bool minimap) {
     int dMaxX = currentFloor->getMaxX() + 1;
     int dMinX = currentFloor->getMinX() - 1;
@@ -30,7 +32,8 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, bool minima
         topBorder += char(220);
         botBorder += char(223);
     }
-    cout << topBorder << endl;
+
+    DM::say(topBorder,minimap);
 
     for (int y = dMinY; y <= dMaxY; ++y) {
         string top = "";
@@ -121,15 +124,21 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, bool minima
                 }
             }
         }
-        cout << top << char(219) << endl;
-        cout << mid << char(219) << endl;
-        cout << bot << char(219) << endl;
+        top += char(219);
+        mid += char(219);
+        bot += char(219);
+
+        DM::say(top + "\n" + mid + "\n" + bot,minimap);
     }
-    cout << botBorder << endl;
+    DM::say(botBorder,minimap);
 }
 
-void DM::say(std::string saying) {
-    cout << saying << endl;
+void DM::say(std::string saying, bool direct) {
+    if (direct){
+        cout << saying << endl;
+    } else {
+        DM::getInstance()->addLineToQueue(saying);
+    }
 }
 
 string DM::askInput() {
@@ -137,4 +146,21 @@ string DM::askInput() {
     cin >> input;
     cout << endl;
     return input;
+}
+
+DM *DM::getInstance() {
+    if (!_instance)
+        _instance = new DM();
+    return _instance;
+}
+
+void DM::showOutput() {
+    while(_outputQueue.size()>0){
+        cout << _outputQueue.front() << endl;
+        _outputQueue.pop();
+    }
+}
+
+void DM::addLineToQueue(std::string line) {
+    _outputQueue.push(line);
 }

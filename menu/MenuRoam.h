@@ -10,8 +10,8 @@
 class Game;
 
 class MenuRoam : public Menu {
-    void getViewScreen();
     void loadOptions();
+    void getViewScreen();
 
 public:
     MenuRoam(Game *game);

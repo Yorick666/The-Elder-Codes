@@ -17,9 +17,9 @@ protected:
     std::vector<std::string> _options;
     Game *_game;
 
-    virtual void getViewScreen() = 0;
-
     virtual void loadOptions() = 0;
+
+    virtual void getViewScreen() = 0;
 
 public:
     Menu(Game *game);

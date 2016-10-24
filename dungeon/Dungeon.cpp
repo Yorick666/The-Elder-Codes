@@ -15,7 +15,7 @@ Dungeon::Dungeon(bool debug, int amountFloors, int roomsPerFloor, int roomsPerLo
     currentLevel = 0;
 
     for (int i = 0; i < amountFloors; ++i) {
-        DM::say("Generating Floor - " + to_string(i + 1) + "/" + to_string(amountFloors));
+        DM::say("Generating Floor - " + to_string(i + 1) + "/" + to_string(amountFloors), true);
         if (i == 0) {
             Floor newFloor = Floor(debug, roomsPerFloor, nullptr, roomsPerLock);
             floors.push_back(newFloor);
@@ -29,7 +29,7 @@ Dungeon::Dungeon(bool debug, int amountFloors, int roomsPerFloor, int roomsPerLo
             floors.push_back(newFloor);
         }
     }
-    DM::say("Generating _dungeon - Finished");
+    DM::say("Generating dungeon - Finished", true);
 }
 
 Room *Dungeon::descend() {

@@ -48,4 +48,6 @@ void Game::startNewGame(bool debug, int size, int roomsPerFloor, int roomsPerLoc
     _dungeon = new Dungeon(debug, size, roomsPerFloor, roomsPerLock);
 
     _player = new Player(_dungeon->getStartingRoom(), "Player");
+
+    DM::say("Welcome hero, you're about to embark on a journey to defeat the master of this dungeon: The Dungeon Master. \nGood Luck!");
 }

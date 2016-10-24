@@ -4,11 +4,16 @@
 
 #include <iostream>
 #include "Menu.h"
+#include "../DM.h"
 
 using namespace std;
 
 void Menu::getMenuScreen() {
     getViewScreen();
+
+    cout << endl;
+
+    DM::getInstance()->showOutput();
 
     cout << endl;
 
@@ -21,7 +26,6 @@ void Menu::getMenuScreen() {
             mid += char(186);
             bot += char(200);
         }
-
         for (int j = 0; j <= _options[i].size() + 1; ++j) {
             top += char(205);
             bot += char(205);
@@ -33,12 +37,10 @@ void Menu::getMenuScreen() {
             top += char(203);
             bot += char(202);
         }
-
         mid += " " + _options[i] + " ";
         mid += char(186);
     }
     string result = top + "\n" + mid + "\n" + bot;
-
     cout << result << endl;
 }
 

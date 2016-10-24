@@ -33,8 +33,7 @@ void MenuStart::loadOptions() {
 }
 
 void MenuStart::getViewScreen() {
-    cout << "The Elder Codes - Algorithm of Time " << endl << "Remember: Enter <exit> at anytime to exit the game." <<
-    endl;
+    cout << "The Elder Codes - Algorithm of Time " << endl << "Remember: Enter <exit> at anytime to exit the game.";
 }
 
 MenuStart::MenuStart(Game *game) : Menu(game) {
