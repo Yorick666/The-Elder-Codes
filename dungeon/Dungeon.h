@@ -12,17 +12,19 @@
 
 class Dungeon {
     std::vector<Floor> floors;
-    Floor* _currentFloor;
-    Room* _currentRoom;
+
+    int currentLevel;
 
 public:
     Dungeon(bool debug, int size, int roomsPerFloor, int roomsPerLock);
-    ~Dungeon() {}; //TODO
-    Floor *getCurrentFloor();
-    Room *getCurrentRoom();
-    void drawSurroundings(bool debug = false);
-    void drawMap(bool debug = false);
-    void travel(Direction direction, int keyLevel);
+
+    ~Dungeon() { }; //TODO
+
+    Room *getStartingRoom() { return floors[currentLevel].getStartingRoom(); };
+
+    Floor *getCurrentFloor() { return &floors[currentLevel]; };
+
+    Room * descend();
 };
 
 

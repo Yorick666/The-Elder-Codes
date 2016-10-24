@@ -12,6 +12,8 @@ using namespace std;
 Dungeon::Dungeon(bool debug, int amountFloors, int roomsPerFloor, int roomsPerLock) {
     floors = vector<Floor>();
 
+    currentLevel = 0;
+
     for (int i = 0; i < amountFloors; ++i) {
         DM::say("Generating Floor - " + to_string(i + 1) + "/" + to_string(amountFloors));
         if (i == 0) {
@@ -27,42 +29,14 @@ Dungeon::Dungeon(bool debug, int amountFloors, int roomsPerFloor, int roomsPerLo
             floors.push_back(newFloor);
         }
     }
-    _currentFloor = &floors[0];
-    _currentRoom = _currentFloor->getStartingRoom();
-    _currentRoom->visit();
-    DM::say("Generating dungeon - Finished");
+    DM::say("Generating _dungeon - Finished");
 }
 
-Floor *Dungeon::getCurrentFloor() {
-    return _currentFloor;
-}
-
-Room *Dungeon::getCurrentRoom() {
-    return _currentRoom;
-}
-
-void Dungeon::drawSurroundings(bool debug) {
-    DM::showMap(_currentFloor, _currentRoom, debug, true);
-}
-
-void Dungeon::drawMap(bool debug) {
-    DM::showMap(_currentFloor, _currentRoom, debug);
-}
-
-void Dungeon::travel(Direction direction, int keyLevel) {
-    Link *l = _currentRoom->getLink(direction);
-    if (l != nullptr) {
-        Room *target = l->travel(_currentRoom, keyLevel);
-
-        if (target != nullptr) {
-            _currentRoom = target;
-            _currentRoom->visit();
-        } else {
-            DM::say("You have to find a higher level key. \nYou have a lvl " + to_string(keyLevel) +
-                    " key, but you need the level " +
-                    to_string(l->getKeyLevel()) + " key.");
-        }
+Room *Dungeon::descend() {
+    if (floors.size() == currentLevel) {
+        return nullptr; //TODO ending a game
     } else {
-        DM::say("There is no exit in this direction.");
+        currentLevel++;
+        return getStartingRoom();
     }
 }

@@ -14,7 +14,7 @@ Game::Game() {
 }
 
 Game::~Game() {
-    delete dungeon;
+    delete _dungeon;
 }
 
 void Game::showScreen() {
@@ -45,7 +45,7 @@ void Game::changeState(GameState newState) {
 void Game::startNewGame(bool debug, int size, int roomsPerFloor, int roomsPerLock) {
     changeState(GameState::ROAMING);
     debugMode = debug;
-    dungeon = new Dungeon(debug, size, roomsPerFloor, roomsPerLock);
+    _dungeon = new Dungeon(debug, size, roomsPerFloor, roomsPerLock);
 
-    _player = new Player("Player");
+    _player = new Player(_dungeon->getStartingRoom(), "Player");
 }

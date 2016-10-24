@@ -97,9 +97,8 @@ Floor::Floor(bool debug, int amountRooms, Room *prev, int roomsPerLock, bool las
 
                     roomCoordinates.push_back(newRoom->getCoordinate());
                     levels[keyLevel].push_back(newRoom->getCoordinate());
-                    if (roomCount() > 1) {
-                        new Link(parent, newRoom, keyLevel);
-//                        parent->addLink(newRoom,keyLevel);
+                    if (roomCount() > 1 && parent) {
+                        parent->addDoorTo(newRoom);
                     }
                 }
             }
@@ -118,9 +117,8 @@ Floor::Floor(bool debug, int amountRooms, Room *prev, int roomsPerLock, bool las
 
                     Room *origin = rooms[randomX][randomY];
 
-                    map<Direction, Link *> links = origin->getLinks();
-
-                    if (links.size() == 4) {
+                    if (origin->getRoomBehindDoor(Direction::NORTH) && origin->getRoomBehindDoor(Direction::EAST) &&
+                        origin->getRoomBehindDoor(Direction::SOUTH) && origin->getRoomBehindDoor(Direction::WEST)) {
                         continue;
                     }
 
@@ -153,15 +151,9 @@ Floor::Floor(bool debug, int amountRooms, Room *prev, int roomsPerLock, bool las
                             default:
                                 throw 132;
                         }
-                        if (links.find(direction) == links.end() && rooms[randomX + dx][randomY + dy] != nullptr &&
+                        if (!origin->getRoomBehindDoor(direction) && rooms[randomX + dx][randomY + dy] != nullptr &&
                             dx != dy) {
-                            int k = 0;
-                            if (origin->getKeyLevel() >= rooms[randomX + dx][randomY + dy]->getKeyLevel()) {
-                                k = origin->getKeyLevel();
-                            } else {
-                                k = rooms[randomX + dx][randomY + dy]->getKeyLevel();
-                            }
-                            Link(origin, rooms[randomX + dx][randomY + dy], k);
+                            origin->addDoorTo(rooms[randomX + dx][randomY + dy]);
                             linked = true;
                         }
                     }
@@ -290,16 +282,16 @@ Coordinate *Floor::chooseFreeEdge(Coordinate *coordinate) {
 //                    bool south = false;
 //                    bool west = false;
 //
-//                    if (currentRoom->getLink(Direction::NORTH)) {
+//                    if (currentRoom->getRoomBehindDoor(Direction::NORTH)) {
 //                        north = true;
 //                    }
-//                    if (currentRoom->getLink(Direction::EAST)) {
+//                    if (currentRoom->getRoomBehindDoor(Direction::EAST)) {
 //                        east = true;
 //                    }
-//                    if (currentRoom->getLink(Direction::SOUTH)) {
+//                    if (currentRoom->getRoomBehindDoor(Direction::SOUTH)) {
 //                        south = true;
 //                    }
-//                    if (currentRoom->getLink(Direction::WEST)) {
+//                    if (currentRoom->getRoomBehindDoor(Direction::WEST)) {
 //                        west = true;
 //                    }
 //
@@ -397,16 +389,16 @@ Coordinate *Floor::chooseFreeEdge(Coordinate *coordinate) {
 //                    bool west = false;
 //
 //
-//                    if (currentRoom->getLink(Direction::NORTH)) {
+//                    if (currentRoom->getRoomBehindDoor(Direction::NORTH)) {
 //                        north = true;
 //                    }
-//                    if (currentRoom->getLink(Direction::EAST)) {
+//                    if (currentRoom->getRoomBehindDoor(Direction::EAST)) {
 //                        east = true;
 //                    }
-//                    if (currentRoom->getLink(Direction::SOUTH)) {
+//                    if (currentRoom->getRoomBehindDoor(Direction::SOUTH)) {
 //                        south = true;
 //                    }
-//                    if (currentRoom->getLink(Direction::WEST)) {
+//                    if (currentRoom->getRoomBehindDoor(Direction::WEST)) {
 //                        west = true;
 //                    }
 //

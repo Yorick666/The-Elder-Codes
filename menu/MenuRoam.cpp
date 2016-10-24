@@ -5,23 +5,23 @@
 #include <regex>
 #include <iostream>
 #include "MenuRoam.h"
+#include "../DM.h"
 
 using namespace std;
 
 bool MenuRoam::handleInput(std::string input) {
     if (regex_match(input, regex("n|north"))) {
-        _game->getDungeon()->travel(Direction::NORTH,
-                                    _game->getPlayer()->getKeyLevel()); // TODO beter 1 laag aan kennis?
+        _game->getPlayer()->travel(Direction::NORTH);
     } else if (regex_match(input, regex("e|east"))) {
-        _game->getDungeon()->travel(Direction::EAST, _game->getPlayer()->getKeyLevel());
+        _game->getPlayer()->travel(Direction::EAST);
     } else if (regex_match(input, regex("s|south"))) {
-        _game->getDungeon()->travel(Direction::SOUTH, _game->getPlayer()->getKeyLevel());
+        _game->getPlayer()->travel(Direction::SOUTH);
     } else if (regex_match(input, regex("w|west"))) {
-        _game->getDungeon()->travel(Direction::WEST, _game->getPlayer()->getKeyLevel());
+        _game->getPlayer()->travel(Direction::WEST);
     } else if (regex_match(input, regex("d|down"))) {
-        _game->getDungeon()->travel(Direction::DOWN, _game->getPlayer()->getKeyLevel());
+        _game->getPlayer()->travel(Direction::DOWN);
     } else if (regex_match(input, regex("map"))) {
-        _game->getDungeon()->drawMap(_game->isDebug());
+        DM::showMap(_game->getCurrentFloor(), _game->getCurrentRoom(), _game->isDebug());
     } else {
         return false;
     }
@@ -29,7 +29,7 @@ bool MenuRoam::handleInput(std::string input) {
 }
 
 void MenuRoam::getViewScreen() {
-    _game->getDungeon()->drawSurroundings(_game->isDebug());
+    DM::showMap(_game->getCurrentFloor(), _game->getCurrentRoom(), _game->isDebug(), true);
 }
 
 void MenuRoam::loadOptions() {

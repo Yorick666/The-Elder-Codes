@@ -57,16 +57,16 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, bool minima
                     bool south = false;
                     bool west = false;
 
-                    if (currentDrawingRoom->getLink(Direction::NORTH)) {
+                    if (currentDrawingRoom->getRoomBehindDoor(Direction::NORTH)) {
                         north = true;
                     }
-                    if (currentDrawingRoom->getLink(Direction::EAST)) {
+                    if (currentDrawingRoom->getRoomBehindDoor(Direction::EAST)) {
                         east = true;
                     }
-                    if (currentDrawingRoom->getLink(Direction::SOUTH)) {
+                    if (currentDrawingRoom->getRoomBehindDoor(Direction::SOUTH)) {
                         south = true;
                     }
-                    if (currentDrawingRoom->getLink(Direction::WEST)) {
+                    if (currentDrawingRoom->getRoomBehindDoor(Direction::WEST)) {
                         west = true;
                     }
 

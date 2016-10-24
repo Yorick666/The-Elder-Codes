@@ -17,7 +17,7 @@ class Game {
     GameState _state;
     Menu *_menu;
 
-    Dungeon *dungeon;
+    Dungeon *_dungeon;
 
     Player *_player;
 
@@ -38,11 +38,13 @@ public:
 
     void startNewGame(bool debug = false, int size = 3, int roomsPerFloor = 100, int roomsPerLock = 50);
 
-    Dungeon *getDungeon() { return dungeon; };
-
     Player *getPlayer() { return _player; };
 
     bool isDebug() { return debugMode; };
+
+    Room *getCurrentRoom() { return _player->getCurrentRoom(); };
+
+    Floor *getCurrentFloor() {return _dungeon->getCurrentFloor();};
 };
 
 

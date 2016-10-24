@@ -12,69 +12,91 @@ Room::Room(Coordinate coordinate, RoomType roomType, int keyLevel) {
     _type = roomType;
     _visited = false;
 
-    _north = nullptr;
-    _south = nullptr;
-    _east = nullptr;
-    _west = nullptr;
-
     if (coordinate.x == 0 && coordinate.y == 0) {
         throw 8;
     }
+
+
 }
 
 Room::~Room() {
     //TODO
 }
 
-void Room::addLink(Link *newLink) {
-    switch (newLink->getDirection(this)) {
+void Room::addDoorTo(Room *newDoor) {
+
+    Direction direction;
+
+    if (this->getCoordinate()->x == newDoor->getCoordinate()->x &&
+            this->getCoordinate()->y - newDoor->getCoordinate()->y == 1) {
+        direction = Direction::NORTH;
+    } else if (this->getCoordinate()->y == newDoor->getCoordinate()->y &&
+            this->getCoordinate()->x - newDoor->getCoordinate()->x == -1) {
+        direction = Direction::EAST;
+    } else if (this->getCoordinate()->x == newDoor->getCoordinate()->x &&
+            this->getCoordinate()->y - newDoor->getCoordinate()->y == -1) {
+        direction = Direction::SOUTH;
+    } else if (this->getCoordinate()->y == newDoor->getCoordinate()->y &&
+            this->getCoordinate()->x - newDoor->getCoordinate()->x == 1) {
+        direction = Direction::WEST;
+    } else {
+        direction = Direction::DOWN;
+        throw -1; //TODO just a test;
+    }
+
+    if (_doors[direction]) {
+        throw -1212;
+    }
+
+    _doors[direction] = newDoor;
+
+    switch (direction){
         case Direction::NORTH:
-            _north = newLink;
+            direction = Direction::SOUTH;
             break;
         case Direction::EAST:
-            _east = newLink;
+            direction = Direction::WEST;
             break;
         case Direction::SOUTH:
-            _south = newLink;
+            direction = Direction::NORTH;
             break;
         case Direction::WEST:
-            _west = newLink;
+            direction = Direction::EAST;
             break;
-        case Direction::DOWN:
-            throw 999; //TODO
+        case Direction::DOWN:break;
+    }
+
+    if (!newDoor->getRoomBehindDoor(direction)) {
+        newDoor->addDoorTo(this);
+    } else if (newDoor->getRoomBehindDoor(direction) && newDoor->getRoomBehindDoor(direction) != this) {
+        throw -2; //Existing link
     }
 }
 
-Link *Room::getLink(Direction direction) {
-    switch (direction) {
-        case Direction::NORTH:
-            return _north;
-        case Direction::EAST:
-            return _east;
-        case Direction::SOUTH:
-            return _south;
-        case Direction::WEST:
-            return _west;
-        case Direction::DOWN:
-            return nullptr; //TODO
+Room *Room::getRoomBehindDoor(Direction direction, int keyLevel) {
+    Room *target = _doors[direction];
+    if (target && (target->getKeyLevel() <= keyLevel || keyLevel == -1)) {
+        return target;
     }
+    return nullptr;
 }
 
-std::map<Direction, Link *> Room::getLinks() {
-    map<Direction, Link *> result;
 
-    if (_north != nullptr) {
-        result[Direction::NORTH] = _north;
-    }
-    if (_east != nullptr) {
-        result[Direction::EAST] = _east;
-    }
-    if (_south != nullptr) {
-        result[Direction::SOUTH] = _south;
-    }
-    if (_west != nullptr) {
-        result[Direction::WEST] = _west;
-    }
-
-    return result;
-}
+//std::map<Direction, Link *> Room::getLinks() {
+//    map<Direction, Link *> result;
+//
+//    if (_north != nullptr) {
+//        result[Direction::NORTH] = _north;
+//    }
+//    if (_east != nullptr) {
+//        result[Direction::EAST] = _east;
+//    }
+//    if (_south != nullptr) {
+//        result[Direction::SOUTH] = _south;
+//    }
+//    if (_west != nullptr) {
+//        result[Direction::WEST] = _west;
+//    }
+//
+//    return result;
+//}

@@ -8,7 +8,6 @@
 #include <map>
 #include <vector>
 #include "Coordinate.h"
-#include "Link.h"
 #include "../enum/RoomType.h"
 #include "../enum/Direction.h"
 #include "../actors/Monster.h"
@@ -19,10 +18,7 @@ class Room {
 
     Coordinate _coordinate;
 
-    Link *_north;
-    Link *_south;
-    Link *_east;
-    Link *_west;
+    std::map<Direction, Room*> _doors;
 
     RoomType _type;
     int _keyLevel;
@@ -32,8 +28,6 @@ class Room {
     std::vector<Actor *> _combatQueue;
 
 public:
-    Room() { throw 9; }
-
     Room(Coordinate coordinate, RoomType roomType, int keyLevel = 0);
 
     ~Room();
@@ -44,11 +38,11 @@ public:
 
     int getKeyLevel() { return _keyLevel; }
 
-    Link *getLink(Direction direction);
+    Room *getRoomBehindDoor(Direction direction, int keylevel = -1);
 
-    std::map<Direction, Link *> getLinks();
+//    std::map<Direction, Link *> getLinks();
 
-    void addLink(Link *newLink);
+    void addDoorTo(Room *newdoor);
 
     void visit() { _visited = true; }
 
