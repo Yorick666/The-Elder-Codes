@@ -6,7 +6,9 @@
 #define THE_ELDER_CODES_WEAPON_H
 
 
-class Weapon {
+#include "Equipment.h"
+
+class Weapon : public Equipment {
 
 };
 

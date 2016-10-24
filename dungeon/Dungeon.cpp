@@ -15,21 +15,17 @@ Dungeon::Dungeon(bool debug, int amountFloors, int roomsPerFloor, int roomsPerLo
     for (int i = 0; i < amountFloors; ++i) {
         DM::say("Generating Floor - " + to_string(i + 1) + "/" + to_string(amountFloors));
         if (i == 0) {
-//            cout << "Generating first floor\n";
             Floor newFloor = Floor(debug, roomsPerFloor, nullptr, roomsPerLock);
             floors.push_back(newFloor);
         }
         else if (i == amountFloors - 1) {
-//            cout << "Generating last floor\n";
             Floor newFloor = Floor(debug, roomsPerFloor, floors.at(i - 1).getStairsDown(), roomsPerLock, true);
             floors.push_back(newFloor);
         }
         else {
-//            cout << "Generating floor " << i + 1 << "\n";
             Floor newFloor = Floor(debug, roomsPerFloor, floors.at(i - 1).getStairsDown(), roomsPerLock);
             floors.push_back(newFloor);
         }
-//        floors[i].drawFloor();
     }
     _currentFloor = &floors[0];
     _currentRoom = _currentFloor->getStartingRoom();

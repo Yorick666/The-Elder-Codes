@@ -22,6 +22,9 @@ protected:
 
 public:
     Actor(std::string, int hp, int attack, int defense);
+
+    virtual void attack(Actor target);
+    virtual void defend(int hit, int attack);
 };
 
 
