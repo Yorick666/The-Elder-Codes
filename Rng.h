@@ -6,6 +6,7 @@
 #define THE_ELDER_CODES_RNG_H
 
 #include <random>
+#include "enum/Dice.h"
 
 // Random Number God
 class Rng {
@@ -18,9 +19,10 @@ class Rng {
 public:
     static Rng *getInstance();
 
-    int roleDice(int amount, int size);
+    signed int roleDice(int size, signed int amount = 1);
+    signed int roleDice(Dice dice, signed int amount = 1);
 
-    int randomIntBetween(int min, int max);
+    signed int randomIntBetween(signed int min,signed int max);
 };
 
 

@@ -2,18 +2,15 @@
 // Created by Yorick on 18/10/2016.
 //
 
-#include <iostream>
+#include <regex>
 #include "Game.h"
-#include "MenuFactory.h"
+#include "menu/MenuFactory.h"
+#include "DM.h"
 
 using namespace std;
 
 Game::Game() {
-    _state = GameState::STARTING;
-    _menu = MenuFactory::getInstance()->getMenu(_state);
-    dungeon = new Dungeon();
-    currentFloor = dungeon->getCurrentFloor();
-    currentRoom = dungeon->getCurrentRoom();
+    changeState(GameState::STARTING);
 }
 
 Game::~Game() {
@@ -21,7 +18,7 @@ Game::~Game() {
 }
 
 void Game::showScreen() {
-    cout << _menu->getMenuScreen() << endl;
+    _menu->getMenuScreen();
 }
 
 GameState Game::getGameState() {
@@ -29,9 +26,26 @@ GameState Game::getGameState() {
 }
 
 void Game::getInput() {
-    if (_state != GameState::STARTING) {
-        cout << "[Life:" << 0 << "]";
+    _menu->prepareForInput();
+    _input = DM::askInput();
+    if (_input != "exit") {
+        _menu->handleInput(_input);
+    } else {
+        _state = GameState::EXITING;
     }
-    cout << ">";
-    cin >> _input;
+}
+
+void Game::changeState(GameState newState) {
+    if (_state != newState) {
+        _state = newState;
+        _menu = MenuFactory::getMenu(this, newState);
+    }
+}
+
+void Game::startNewGame(bool debug, int size, int roomsPerFloor, int roomsPerLock) {
+    changeState(GameState::ROAMING);
+    debugMode = debug;
+    dungeon = new Dungeon(debug, size, roomsPerFloor, roomsPerLock);
+
+    _player = new Player("Player");
 }

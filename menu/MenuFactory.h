@@ -8,16 +8,15 @@
 
 #include "Menu.h"
 #include "MenuStart.h"
-#include "enum/GameState.h"
+#include "../enum/GameState.h"
+#include "../Game.h"
 
 class MenuFactory {
-    MenuFactory() { };
-    static MenuFactory *_instance;
 
 public:
+    MenuFactory() { };
     ~MenuFactory() {};
-    static MenuFactory * getInstance();
-    Menu* getMenu(GameState state);
+    static Menu* getMenu(Game * game, GameState state);
 };
 
 

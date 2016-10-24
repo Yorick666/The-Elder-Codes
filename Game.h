@@ -7,10 +7,10 @@
 
 #include <string>
 #include "enum/GameState.h"
-#include "Menu.h"
-#include "Dungeon.h"
-#include "Floor.h"
-#include "Room.h"
+#include "dungeon/Dungeon.h"
+#include "actors/Player.h"
+
+class Menu;
 
 class Game {
     std::string _input;
@@ -18,8 +18,10 @@ class Game {
     Menu *_menu;
 
     Dungeon *dungeon;
-    Floor *currentFloor;
-    Room *currentRoom;
+
+    Player *_player;
+
+    bool debugMode;
 
 public:
     Game();
@@ -31,6 +33,16 @@ public:
     GameState getGameState();
 
     void getInput();
+
+    void changeState(GameState newState);
+
+    void startNewGame(bool debug = false, int size = 3, int roomsPerFloor = 100, int roomsPerLock = 50);
+
+    Dungeon *getDungeon() { return dungeon; };
+
+    Player *getPlayer() { return _player; };
+
+    bool isDebug() { return debugMode; };
 };
 
 

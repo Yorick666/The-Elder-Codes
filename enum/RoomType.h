@@ -8,7 +8,6 @@
 enum class RoomType {
     NORMAL,
     EXIT,
-    UP,
     DOWN
 };
 

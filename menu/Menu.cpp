@@ -2,12 +2,16 @@
 // Created by Yorick on 18/10/2016.
 //
 
-#include <c++/iostream>
+#include <iostream>
 #include "Menu.h"
 
 using namespace std;
 
-string Menu::getMenuScreen() {
+void Menu::getMenuScreen() {
+    getViewScreen();
+
+    cout << endl;
+
     string top = "";
     string mid = "";
     string bot = "";
@@ -22,7 +26,7 @@ string Menu::getMenuScreen() {
             top += char(205);
             bot += char(205);
         }
-        if (i == _options.size()-1) {
+        if (i == _options.size() - 1) {
             top += char(187);
             bot += char(188);
         } else {
@@ -35,5 +39,13 @@ string Menu::getMenuScreen() {
     }
     string result = top + "\n" + mid + "\n" + bot;
 
-    return result;
+    cout << result << endl;
+}
+
+void Menu::prepareForInput() {
+    cout << ">";
+}
+
+Menu::Menu(Game *game) {
+    _game = game;
 }

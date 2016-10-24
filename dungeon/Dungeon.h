@@ -8,17 +8,21 @@
 #include <vector>
 #include "Floor.h"
 #include "Room.h"
+#include "../enum/Direction.h"
 
 class Dungeon {
     std::vector<Floor> floors;
-    Floor* currentFloor;
-    Room* currentRoom;
+    Floor* _currentFloor;
+    Room* _currentRoom;
 
 public:
-    Dungeon(int size = 5, int roomsPerFloor = 500, int roomsPerLock = 100);
-    ~Dungeon() {};
+    Dungeon(bool debug, int size, int roomsPerFloor, int roomsPerLock);
+    ~Dungeon() {}; //TODO
     Floor *getCurrentFloor();
     Room *getCurrentRoom();
+    void drawSurroundings(bool debug = false);
+    void drawMap(bool debug = false);
+    void travel(Direction direction, int keyLevel);
 };
 
 

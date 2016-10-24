@@ -1,0 +1,8 @@
+//
+// Created by Yorick on 21/10/2016.
+//
+
+#ifndef THE_ELDER_CODES_WEAPONTYPE_H
+#define THE_ELDER_CODES_WEAPONTYPE_H
+
+#endif //THE_ELDER_CODES_WEAPONTYPE_H

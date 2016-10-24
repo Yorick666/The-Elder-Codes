@@ -7,12 +7,19 @@
 
 #include "Menu.h"
 
+class Game;
+
 class MenuStart : public Menu {
 
+    void loadOptions();
+
+    void getViewScreen();
 public:
-    MenuStart();
+    MenuStart(Game *game);
 
     ~MenuStart() { };
+
+    bool handleInput(std::string input);
 };
 
 

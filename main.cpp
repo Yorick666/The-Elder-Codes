@@ -6,24 +6,23 @@
 using namespace std;
 
 int main() {
-    cout << "The Elder Codes - Algorithm of Time " << endl;
-    cout << "Remeber: Enter <exit> at anytime to exit the game." << endl;
+
+    Game *game;
 
     try {
-        Game game = Game();
+        game = new Game();
 
         do {
-            game.showScreen();
-            game.getInput();
+            cout << endl;
+            game->showScreen();
+            game->getInput();
 
-        } while (game.getGameState() == GameState::EXITING);
+        } while (game->getGameState() != GameState::EXITING);
     } catch (exception &e) {
-        cout << "Standard exception: " << e.what() << endl;
+        cout << "Exception encountered: " << e.what() << endl;
     }
 
 //    delete DM::getInstance(); ??
-
-    cin.ignore();
 
     return 0;
 }

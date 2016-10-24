@@ -1,20 +1,23 @@
 //
-// Created by Yorick on 18/10/2016.
+// Created by Yorick on 24/10/2016.
 //
 
 #ifndef THE_ELDER_CODES_DM_H
 #define THE_ELDER_CODES_DM_H
 
 
-class DM {
-    DM();
+#include "dungeon/Floor.h"
+#include <string>
 
-    static DM *_instance;
+class DM {
 
 public:
-    static DM *getInstance();
+    static void showMap(Floor *currentFloor, Room *currentRoom, bool debug, bool minimap = false);
 
-    ~DM();
+    static void say(std::string saying);
+
+    static std::string askInput();
 };
+
 
 #endif //THE_ELDER_CODES_DM_H

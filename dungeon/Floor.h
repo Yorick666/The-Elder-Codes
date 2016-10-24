@@ -17,11 +17,11 @@ class Floor {
 
     int _amountRooms;
 
-    Room *stairUp;
+    Room *startingRoom;
     Room *stairDown;
 
     std::vector<Coordinate *> roomCoordinates;
-    std::map<int, std::map<int, Room* >> rooms;
+    std::map<int, std::map<int, Room * >> rooms;
     std::map<int, std::vector<Coordinate *>> levels;
 
     void addRoom(Room *room);
@@ -32,16 +32,24 @@ class Floor {
 
     Coordinate *chooseFreeEdge(Coordinate *coordinate);
 
-    void linkRooms(Room *room1, Room *room2, int keyLevel);
-
 public:
-    Floor(int amountRooms, Room *prev, int roomsPerLock, bool last = false);
+    Floor(bool debug, int amountRooms, Room *prev, int roomsPerLock, bool last = false);
 
-    Room *getStairsUp() { return stairUp; };
+    ~Floor() { }; //TODO
+
+    Room *getStartingRoom() { return startingRoom; };
 
     Room *getStairsDown() { return stairDown; };
 
-    void drawFloor();
+    int getMinX() { return minX; };
+
+    int getMaxX() { return maxX; };
+
+    int getMinY() { return minY; };
+
+    int getMaxY() { return maxY; };
+
+    Room *getRoom(int x, int y);
 };
 
 
