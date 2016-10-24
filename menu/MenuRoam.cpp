@@ -21,7 +21,8 @@ bool MenuRoam::handleInput(std::string input) {
     } else if (regex_match(input, regex("d|down"))) {
         _game->getPlayer()->travel(Direction::DOWN);
     } else if (regex_match(input, regex("map"))) {
-        DM::showMap(_game->getCurrentFloor(), _game->getCurrentRoom(), _game->isDebug());
+        DM::showMap(_game->getCurrentFloor(), _game->getCurrentRoom(), _game->isDebug(),
+                    _game->getPlayer()->getKeyLevel());
     } else {
         return false;
     }
@@ -29,7 +30,56 @@ bool MenuRoam::handleInput(std::string input) {
 }
 
 void MenuRoam::getViewScreen() {
-    DM::showMap(_game->getCurrentFloor(), _game->getCurrentRoom(), _game->isDebug(), true);
+    DM::showMap(_game->getCurrentFloor(), _game->getCurrentRoom(), _game->isDebug(), _game->getPlayer()->getKeyLevel(),
+                true);
+
+    DM::say("\nYou see the following exits:");
+
+    Room *currentRoom = _game->getCurrentRoom();
+    Room *targetRoom = currentRoom->getRoomBehindDoor(Direction::NORTH);
+    if (targetRoom) {
+        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::NORTH, _game->getPlayer()->getKeyLevel());
+        if (validRoom) {
+            DM::say("\t An open door to the <north>.");
+        } else {
+            DM::say("\t A locked door to the north.");
+        }
+    }
+    targetRoom = currentRoom->getRoomBehindDoor(Direction::EAST);
+    if (targetRoom) {
+        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::EAST, _game->getPlayer()->getKeyLevel());
+        if (validRoom) {
+            DM::say("\t An open door to the <east>.");
+        } else {
+            DM::say("\t A locked door to the east.");
+        }
+    }
+    targetRoom = currentRoom->getRoomBehindDoor(Direction::SOUTH);
+    if (targetRoom) {
+        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::SOUTH, _game->getPlayer()->getKeyLevel());
+        if (validRoom) {
+            DM::say("\t An open door to the <south>.");
+        } else {
+            DM::say("\t A locked door to the south.");
+        }
+    }
+    targetRoom = currentRoom->getRoomBehindDoor(Direction::WEST);
+    if (targetRoom) {
+        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::WEST, _game->getPlayer()->getKeyLevel());
+        if (validRoom) {
+            DM::say("\t An open door to the <west>.");
+        } else {
+            DM::say("\t A locked door to the west.");
+        }
+    }
+    if (currentRoom->getRoomType() == RoomType::DOWN) {
+        //TODO BOSS BATTLE
+        if (false) {
+            DM::say("\t An open hatch to the next floor <down> below.");
+        } else {
+            DM::say("\t A locked hatch on the floor.");
+        }
+    }
 }
 
 void MenuRoam::loadOptions() {

@@ -9,7 +9,7 @@ using namespace std;
 
 DM *DM::_instance = nullptr;
 
-void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, bool minimap) {
+void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, int securityLevel, bool minimap) {
     int dMaxX = currentFloor->getMaxX() + 1;
     int dMinX = currentFloor->getMinX() - 1;
     int dMaxY = currentFloor->getMaxY() + 1;
@@ -33,7 +33,7 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, bool minima
         botBorder += char(223);
     }
 
-    DM::say(topBorder,minimap);
+    DM::say(topBorder, minimap);
 
     for (int y = dMinY; y <= dMaxY; ++y) {
         string top = "";
@@ -50,7 +50,49 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, bool minima
                 mid += "     ";
                 bot += "     ";
             } else {
-                if (!currentDrawingRoom->visited() && !debug) {
+                if (!currentDrawingRoom->visited() && !debug &&
+                    (currentDrawingRoom->getRoomBehindDoor(Direction::NORTH) &&
+                     currentDrawingRoom->getRoomBehindDoor(Direction::NORTH)->visited() ||
+                     currentDrawingRoom->getRoomBehindDoor(Direction::EAST) &&
+                     currentDrawingRoom->getRoomBehindDoor(Direction::EAST)->visited() ||
+                     currentDrawingRoom->getRoomBehindDoor(Direction::SOUTH) &&
+                     currentDrawingRoom->getRoomBehindDoor(Direction::SOUTH)->visited() ||
+                     currentDrawingRoom->getRoomBehindDoor(Direction::WEST) &&
+                     currentDrawingRoom->getRoomBehindDoor(Direction::WEST)->visited())) {
+                    top += "  ";
+                    if (currentDrawingRoom->getRoomBehindDoor(Direction::NORTH) &&
+                        currentDrawingRoom->getRoomBehindDoor(Direction::NORTH)->visited()) {
+                        top += char(179);
+                    } else {
+                        top += " ";
+                    }
+                    top += "  ";
+
+                    if (currentDrawingRoom->getRoomBehindDoor(Direction::WEST) &&
+                        currentDrawingRoom->getRoomBehindDoor(Direction::WEST)->visited()) {
+                        mid += char(196);
+                        mid += char(196);
+                    } else {
+                        mid += "  ";
+                    }
+                    mid += to_string(currentDrawingRoom->getKeyLevel());
+                    if (currentDrawingRoom->getRoomBehindDoor(Direction::EAST) &&
+                        currentDrawingRoom->getRoomBehindDoor(Direction::EAST)->visited()) {
+                        mid += char(196);
+                        mid += char(196);
+                    } else {
+                        mid += "  ";
+                    }
+
+                    bot += "  ";
+                    if (currentDrawingRoom->getRoomBehindDoor(Direction::SOUTH) &&
+                        currentDrawingRoom->getRoomBehindDoor(Direction::SOUTH)->visited()) {
+                        bot += char(179);
+                    } else {
+                        bot += " ";
+                    }
+                    bot += "  ";
+                } else if (!currentDrawingRoom->visited() && !debug) {
                     top += "     ";
                     mid += "     ";
                     bot += "     ";
@@ -76,7 +118,12 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, bool minima
                     if (north) {
                         top += char(218);
                         top += char(196);
-                        top += char(193);
+                        if (currentDrawingRoom->getRoomBehindDoor(Direction::NORTH)->visited() ||
+                            currentDrawingRoom->getRoomBehindDoor(Direction::NORTH, securityLevel)) {
+                            top += char(193);
+                        } else { //TODO ?
+                            top += char(193);
+                        }
                         top += char(196);
                         top += char(191);
                     } else {
@@ -128,13 +175,13 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, bool minima
         mid += char(219);
         bot += char(219);
 
-        DM::say(top + "\n" + mid + "\n" + bot,minimap);
+        DM::say(top + "\n" + mid + "\n" + bot, minimap);
     }
-    DM::say(botBorder,minimap);
+    DM::say(botBorder, minimap);
 }
 
 void DM::say(std::string saying, bool direct) {
-    if (direct){
+    if (direct) {
         cout << saying << endl;
     } else {
         DM::getInstance()->addLineToQueue(saying);
@@ -155,7 +202,7 @@ DM *DM::getInstance() {
 }
 
 void DM::showOutput() {
-    while(_outputQueue.size()>0){
+    while (_outputQueue.size() > 0) {
         cout << _outputQueue.front() << endl;
         _outputQueue.pop();
     }

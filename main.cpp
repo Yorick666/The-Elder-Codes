@@ -13,7 +13,6 @@ int main() {
         game = new Game();
 
         do {
-            cout << endl;
             game->showScreen();
             game->getInput();
 

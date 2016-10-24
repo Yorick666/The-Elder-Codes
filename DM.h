@@ -19,7 +19,7 @@ class DM {
 public:
     static DM *getInstance();
 
-    static void showMap(Floor *currentFloor, Room *currentRoom, bool debug, bool minimap = false);
+    static void showMap(Floor *currentFloor, Room *currentRoom, bool debug, int securityLevel, bool minimap = false);
 
     static void say(std::string saying, bool direct = false);
 
