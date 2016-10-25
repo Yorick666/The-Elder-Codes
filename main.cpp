@@ -7,21 +7,21 @@ using namespace std;
 
 int main() {
 
-    Game *game;
-
     try {
-        game = new Game();
+        Game *game = new Game();
+
+        game->changeState(GameState::STARTING);
 
         do {
             game->showScreen();
             game->getInput();
 
         } while (game->getGameState() != GameState::EXITING);
+
+        delete game;
     } catch (exception &e) {
         cout << "Exception encountered: " << e.what() << endl;
     }
-
-//    delete DM::getInstance(); ??
 
     return 0;
 }

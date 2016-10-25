@@ -44,7 +44,7 @@ public:
 
     Room *getCurrentRoom() { return _player->getCurrentRoom(); };
 
-    Floor *getCurrentFloor() {return _dungeon->getCurrentFloor();};
+    Floor *getCurrentFloor() { return _dungeon->getCurrentFloor(); };
 };
 
 

@@ -10,24 +10,23 @@
 using namespace std;
 
 Dungeon::Dungeon(bool debug, int amountFloors, int roomsPerFloor, int roomsPerLock) {
-    floors = vector<Floor>();
+    floors = vector<Floor*>();
 
     currentLevel = 0;
 
     for (int i = 0; i < amountFloors; ++i) {
         DM::say("Generating Floor - " + to_string(i + 1) + "/" + to_string(amountFloors), true);
+        Floor * newFloor = nullptr;
         if (i == 0) {
-            Floor newFloor = Floor(debug, roomsPerFloor, nullptr, roomsPerLock);
-            floors.push_back(newFloor);
+            newFloor = new Floor(debug, roomsPerFloor, roomsPerLock);
         }
         else if (i == amountFloors - 1) {
-            Floor newFloor = Floor(debug, roomsPerFloor, floors.at(i - 1).getStairsDown(), roomsPerLock, true);
-            floors.push_back(newFloor);
+            newFloor = new Floor(debug, roomsPerFloor, roomsPerLock, true);
         }
         else {
-            Floor newFloor = Floor(debug, roomsPerFloor, floors.at(i - 1).getStairsDown(), roomsPerLock);
-            floors.push_back(newFloor);
+            newFloor = new Floor(debug, roomsPerFloor, roomsPerLock);
         }
+        floors.push_back(newFloor);
     }
     DM::say("Generating dungeon - Finished", true);
 }
@@ -38,5 +37,13 @@ Room *Dungeon::descend() {
     } else {
         currentLevel++;
         return getStartingRoom();
+    }
+}
+
+Dungeon::~Dungeon() {
+    for (int i = 0; i < floors.size(); ++i) {
+        if (floors[i]){
+            delete floors[i];
+        }
     }
 }

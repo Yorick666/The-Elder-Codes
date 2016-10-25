@@ -8,10 +8,10 @@
 
 using namespace std;
 
-Floor::Floor(bool debug, int amountRooms, Room *prev, int roomsPerLock, bool last) {
+Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
+    vector<Coordinate *> roomCoordinates;
+    map<int, vector<Coordinate *>> levels;
     bool validFloor = false;
-
-    _amountRooms = amountRooms;
 
     while (!validFloor) {
 
@@ -29,10 +29,8 @@ Floor::Floor(bool debug, int amountRooms, Room *prev, int roomsPerLock, bool las
             levels[0].push_back(firstRoom->getCoordinate());
             startingRoom = firstRoom;
 
+            int keyLevel = 0;
 
-            int keyLevel = 0; //Number of keys required to get to new room
-
-            // ADDING OTHER ROOMS
             while (roomCount() < amountRooms) {
 
                 bool doLock = false;
@@ -48,10 +46,10 @@ Floor::Floor(bool debug, int amountRooms, Room *prev, int roomsPerLock, bool las
                 while (newRoomCoordinate.x == 0 && newRoomCoordinate.y == 0) {
                     parent = nullptr;
                     if (!doLock && Rng::getInstance()->randomIntBetween(0, 10) > 0 && levels[keyLevel].size() > 0) {
-                        parent = getRandomRoomWithFreeEdge(levels[keyLevel]);
+                        parent = getRandomRoomWithFreeEdge(levels[keyLevel], amountRooms);
                     }
                     if (parent == nullptr) {
-                        parent = getRandomRoomWithFreeEdge(roomCoordinates);
+                        parent = getRandomRoomWithFreeEdge(roomCoordinates, amountRooms);
                         doLock = true;
                     }
                     if (parent != nullptr) {
@@ -79,13 +77,12 @@ Floor::Floor(bool debug, int amountRooms, Room *prev, int roomsPerLock, bool las
                 if (validRoom) {
                     Room *newRoom = nullptr;
 
-                    if (roomCount() + 1 == _amountRooms) {
+                    if (roomCount() + 1 == amountRooms) {
                         if (last) {
                             newRoom = new Room(newRoomCoordinate, RoomType::EXIT, keyLevel);
                         } else {
                             newRoom = new Room(newRoomCoordinate, RoomType::DOWN, keyLevel);
                         }
-                        stairDown = newRoom;
                     } else {
                         newRoom = new Room(newRoomCoordinate, RoomType::NORMAL, keyLevel);
                     }
@@ -173,13 +170,16 @@ Floor::Floor(bool debug, int amountRooms, Room *prev, int roomsPerLock, bool las
             roomCoordinates.clear();
             levels.clear();
             startingRoom = nullptr;
-            stairDown = nullptr;
         }
 
     }
 }
 
 void Floor::addRoom(Room *room) {
+    if (rooms[room->getCoordinate()->x][room->getCoordinate()->y]) {
+        delete rooms[room->getCoordinate()->x][room->getCoordinate()->y];
+        //TODO ever?
+    }
     rooms[room->getCoordinate()->x][room->getCoordinate()->y] = room;
     if (room->getCoordinate()->x < minX)
         minX = room->getCoordinate()->x;
@@ -203,9 +203,8 @@ int Floor::roomCount() {
     return roomCount;
 }
 
-Room *Floor::getRandomRoomWithFreeEdge(vector<Coordinate *> coordinates) {
-    int tries = 0;
-    while (tries < _amountRooms) {
+Room *Floor::getRandomRoomWithFreeEdge(vector<Coordinate *> coordinates, int tries) {
+    while (tries > 0) {
         signed int rand = Rng::getInstance()->randomIntBetween(0, coordinates.size() - 1);
         Coordinate *coordinate = coordinates.at(rand);
 
@@ -214,7 +213,7 @@ Room *Floor::getRandomRoomWithFreeEdge(vector<Coordinate *> coordinates) {
             rooms[coordinate->x].count(coordinate->y - 1) == 0 || rooms[coordinate->x].count(coordinate->y + 1) == 0) {
             return rooms[coordinate->x][coordinate->y];
         }
-        ++tries;
+        --tries;
     }
 
     return nullptr;
@@ -247,219 +246,19 @@ Coordinate *Floor::chooseFreeEdge(Coordinate *coordinate) {
     return nullptr;
 }
 
-//void Floor::drawSurroundings(Coordinate *currentCoordinate, bool debug) {
-//    string topBorder = "";
-//    string botBorder = "";
-//    for (int i = 0; i < 27; ++i) {
-//        topBorder += char(220);
-//        botBorder += char(223);
-//    }
-//    cout << topBorder << endl;
-//
-//    for (int y = currentCoordinate->y - 2; y <= currentCoordinate->y + 2; ++y) {
-//        string top = "";
-//        string mid = "";
-//        string bot = "";
-//
-//        top += char(219);
-//        mid += char(219);
-//        bot += char(219);
-//
-//        for (int x = currentCoordinate->x - 2; x <= currentCoordinate->x + 2; ++x) {
-//            Room *currentRoom = rooms[x][y];
-//            if (x < 0 || y < 0 || currentRoom == nullptr) {
-//                top += "     ";
-//                mid += "     ";
-//                bot += "     ";
-//            } else {
-//                if (!currentRoom->visited() && !debug) {
-//                    top += "     ";
-//                    mid += "     ";
-//                    bot += "     ";
-//                } else {
-//                    bool north = false;
-//                    bool east = false;
-//                    bool south = false;
-//                    bool west = false;
-//
-//                    if (currentRoom->getRoomBehindDoor(Direction::NORTH)) {
-//                        north = true;
-//                    }
-//                    if (currentRoom->getRoomBehindDoor(Direction::EAST)) {
-//                        east = true;
-//                    }
-//                    if (currentRoom->getRoomBehindDoor(Direction::SOUTH)) {
-//                        south = true;
-//                    }
-//                    if (currentRoom->getRoomBehindDoor(Direction::WEST)) {
-//                        west = true;
-//                    }
-//
-//                    if (north) {
-//                        top += char(218);
-//                        top += char(196);
-//                        top += char(193);
-//                        top += char(196);
-//                        top += char(191);
-//                    } else {
-//                        top += char(218);
-//                        top += char(196);
-//                        top += char(196);
-//                        top += char(196);
-//                        top += char(191);
-//                    }
-//
-//                    if (west) {
-//                        mid += char(180);
-//                    } else {
-//                        mid += char(179);
-//                    }
-//
-//                    if (south) {
-//                        bot += char(192);
-//                        bot += char(196);
-//                        bot += char(194);
-//                        bot += char(196);
-//                        bot += char(217);
-//                    } else {
-//                        bot += char(192);
-//                        bot += char(196);
-//                        bot += char(196);
-//                        bot += char(196);
-//                        bot += char(217);
-//                    }
-//
-//                    if (currentRoom->getCoordinate()->x == currentCoordinate->x &&
-//                        currentRoom->getCoordinate()->y == currentCoordinate->y) {
-//                        mid += " @ ";
-//                    } else if (currentRoom->getRoomType() == RoomType::NORMAL) {
-//                        mid += " " + to_string(currentRoom->getKeyLevel()) + " ";
-//                    } else if (currentRoom->getRoomType() == RoomType::DOWN) {
-//                        mid += "\\-/";
-//                    }
-//
-//                    if (east) {
-//                        mid += char(195);
-//                    } else {
-//                        mid += char(179);
-//                    }
-//                }
-//            }
-//        }
-//        cout << top << char(219) << endl;
-//        cout << mid << char(219) << endl;
-//        cout << bot << char(219) << endl;
-//    }
-//    cout << botBorder << endl;
-//}
-//
-//void Floor::drawMap(Coordinate *currentCoordinate, bool debug) {
-//    string topBorder = "";
-//    string botBorder = "";
-//    for (int i = 0; i < ((maxX - minX + 3) * 5) + 2; ++i) {
-//        topBorder += char(220);
-//        botBorder += char(223);
-//    }
-//    cout << topBorder << endl;
-//
-//    for (int y = minY - 1; y <= maxY + 1; ++y) {
-//        string top = "";
-//        string mid = "";
-//        string bot = "";
-//
-//        top += char(219);
-//        mid += char(219);
-//        bot += char(219);
-//
-//        for (int x = minX - 1; x <= maxX + 1; ++x) {
-//            Room *currentRoom = rooms[x][y];
-//            if (x < 0 || y < 0 || currentRoom == nullptr) {
-//                top += "     ";
-//                mid += "     ";
-//                bot += "     ";
-//            } else {
-//                if (!currentRoom->visited() && !debug) {
-//                    top += "     ";
-//                    mid += "     ";
-//                    bot += "     ";
-//                } else {
-//                    bool north = false;
-//                    bool east = false;//TODO overbodig
-//                    bool south = false;
-//                    bool west = false;
-//
-//
-//                    if (currentRoom->getRoomBehindDoor(Direction::NORTH)) {
-//                        north = true;
-//                    }
-//                    if (currentRoom->getRoomBehindDoor(Direction::EAST)) {
-//                        east = true;
-//                    }
-//                    if (currentRoom->getRoomBehindDoor(Direction::SOUTH)) {
-//                        south = true;
-//                    }
-//                    if (currentRoom->getRoomBehindDoor(Direction::WEST)) {
-//                        west = true;
-//                    }
-//
-//                    if (north) {
-//                        top += char(218);
-//                        top += char(196);
-//                        top += char(193);
-//                        top += char(196);
-//                        top += char(191);
-//                    } else {
-//                        top += char(218);
-//                        top += char(196);
-//                        top += char(196);
-//                        top += char(196);
-//                        top += char(191);
-//                    }
-//
-//                    if (west) {
-//                        mid += char(180);
-//                    } else {
-//                        mid += char(179);
-//                    }
-//
-//                    if (south) {
-//                        bot += char(192);
-//                        bot += char(196);
-//                        bot += char(194);
-//                        bot += char(196);
-//                        bot += char(217);
-//                    } else {
-//                        bot += char(192);
-//                        bot += char(196);
-//                        bot += char(196);
-//                        bot += char(196);
-//                        bot += char(217);
-//                    }
-//
-//                    if (currentRoom->getCoordinate()->x == currentCoordinate->x &&
-//                        currentRoom->getCoordinate()->y == currentCoordinate->y) {
-//                        mid += " @ ";
-//                    } else if (currentRoom->getRoomType() == RoomType::NORMAL) {
-//                        mid += " " + to_string(currentRoom->getKeyLevel()) + " ";
-//                    } else if (currentRoom->getRoomType() == RoomType::DOWN) {
-//                        mid += "\\-/";
-//                    }
-//
-//                    if (east) {
-//                        mid += char(195);
-//                    } else {
-//                        mid += char(179);
-//                    }
-//                }
-//            }
-//        }
-//        cout << top << char(219) << endl;
-//        cout << mid << char(219) << endl;
-//        cout << bot << char(219) << endl;
-//    }
-//    cout << botBorder << endl;
-//}
-
 Room *Floor::getRoom(int x, int y) {
     return rooms[x][y];
+}
+
+Floor::~Floor() {
+    for (int x = 0; x < rooms.size(); ++x) {
+        for (int y = 0; y < rooms[x].size(); ++y) {
+            if (rooms[x][y]) {
+                delete rooms[x][y];
+            }
+        }
+    }
+    if (startingRoom) {
+        delete startingRoom;
+    }
 }

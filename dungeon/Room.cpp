@@ -25,7 +25,7 @@ Room::~Room() {
 
 void Room::addDoorTo(Room *newDoor) {
 
-    Direction direction;
+    Direction direction = Direction::DOWN;
 
     if (this->getCoordinate()->x == newDoor->getCoordinate()->x &&
             this->getCoordinate()->y - newDoor->getCoordinate()->y == 1) {
@@ -39,13 +39,11 @@ void Room::addDoorTo(Room *newDoor) {
     } else if (this->getCoordinate()->y == newDoor->getCoordinate()->y &&
             this->getCoordinate()->x - newDoor->getCoordinate()->x == 1) {
         direction = Direction::WEST;
-    } else {
-        direction = Direction::DOWN;
-        throw -1; //TODO just a test;
     }
 
     if (_doors[direction]) {
-        throw -1212;
+        delete _doors[direction];
+//        throw -1212;
     }
 
     _doors[direction] = newDoor;
@@ -63,13 +61,10 @@ void Room::addDoorTo(Room *newDoor) {
         case Direction::WEST:
             direction = Direction::EAST;
             break;
-        case Direction::DOWN:break;
     }
 
     if (!newDoor->getRoomBehindDoor(direction)) {
         newDoor->addDoorTo(this);
-    } else if (newDoor->getRoomBehindDoor(direction) && newDoor->getRoomBehindDoor(direction) != this) {
-        throw -2; //Existing link
     }
 }
 
@@ -80,23 +75,3 @@ Room *Room::getRoomBehindDoor(Direction direction, int keyLevel) {
     }
     return nullptr;
 }
-
-
-//std::map<Direction, Link *> Room::getLinks() {
-//    map<Direction, Link *> result;
-//
-//    if (_north != nullptr) {
-//        result[Direction::NORTH] = _north;
-//    }
-//    if (_east != nullptr) {
-//        result[Direction::EAST] = _east;
-//    }
-//    if (_south != nullptr) {
-//        result[Direction::SOUTH] = _south;
-//    }
-//    if (_west != nullptr) {
-//        result[Direction::WEST] = _west;
-//    }
-//
-//    return result;
-//}

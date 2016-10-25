@@ -40,8 +40,6 @@ public:
 
     Room *getRoomBehindDoor(Direction direction, int keylevel = -1);
 
-//    std::map<Direction, Link *> getLinks();
-
     void addDoorTo(Room *newdoor);
 
     void visit() { _visited = true; }

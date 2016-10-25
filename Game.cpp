@@ -10,11 +10,13 @@
 using namespace std;
 
 Game::Game() {
-    changeState(GameState::STARTING);
+    _menu = nullptr;
+    _dungeon = nullptr;
+    _player = nullptr;
 }
 
 Game::~Game() {
-    delete _dungeon;
+    delete _menu, _dungeon, _player;
 }
 
 void Game::showScreen() {
@@ -36,18 +38,30 @@ void Game::getInput() {
 }
 
 void Game::changeState(GameState newState) {
-    if (_state != newState) {
-        _state = newState;
-        _menu = MenuFactory::getMenu(this, newState);
+    _state = newState;
+    Menu *temp = MenuFactory::getMenu(this, newState);
+    if (temp) {
+        if (_menu) {
+            delete _menu;
+        }
+        _menu = temp;
     }
 }
 
 void Game::startNewGame(bool debug, int size, int roomsPerFloor, int roomsPerLock) {
     changeState(GameState::ROAMING);
     debugMode = debug;
+
+    if (_dungeon) {
+        delete _dungeon;
+    }
     _dungeon = new Dungeon(debug, size, roomsPerFloor, roomsPerLock);
+
+    if (_player){
+        delete _player;
+    }
 
     _player = new Player(_dungeon->getStartingRoom(), "Player");
 
-    DM::say("Welcome hero, you're about to embark on a journey to defeat the master of this dungeon: The Dungeon Master. \nGood Luck!");
+    DM::say("Welcome hero, you're about to embark on a journey to defeat the master of this dungeon: The Dungeon Master. \n ");
 }

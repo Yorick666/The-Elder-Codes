@@ -15,31 +15,24 @@ class Floor {
     int maxY;
     int minY;
 
-    int _amountRooms;
-
     Room *startingRoom;
-    Room *stairDown;
 
-    std::vector<Coordinate *> roomCoordinates;
     std::map<int, std::map<int, Room * >> rooms;
-    std::map<int, std::vector<Coordinate *>> levels;
 
     void addRoom(Room *room);
 
     int roomCount();
 
-    Room *getRandomRoomWithFreeEdge(std::vector<Coordinate *> coordinates);
+    Room *getRandomRoomWithFreeEdge(std::vector<Coordinate *> coordinates, int tries);
 
     Coordinate *chooseFreeEdge(Coordinate *coordinate);
 
 public:
-    Floor(bool debug, int amountRooms, Room *prev, int roomsPerLock, bool last = false);
+    Floor(bool debug, int amountRooms, int roomsPerLock, bool last = false);
 
-    ~Floor() { }; //TODO
+    ~Floor();
 
     Room *getStartingRoom() { return startingRoom; };
-
-    Room *getStairsDown() { return stairDown; };
 
     int getMinX() { return minX; };
 

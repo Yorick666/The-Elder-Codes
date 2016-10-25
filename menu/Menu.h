@@ -24,7 +24,7 @@ protected:
 public:
     Menu(Game *game);
 
-    virtual ~Menu() { };
+    ~Menu() {};
 
     virtual bool handleInput(std::string input) = 0;
 

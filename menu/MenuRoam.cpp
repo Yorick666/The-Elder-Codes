@@ -40,7 +40,7 @@ void MenuRoam::getViewScreen() {
     if (targetRoom) {
         Room *validRoom = currentRoom->getRoomBehindDoor(Direction::NORTH, _game->getPlayer()->getKeyLevel());
         if (validRoom) {
-            DM::say("\t An open door to the <north>.");
+            DM::say("\t An open door to the <n/north>.");
         } else {
             DM::say("\t A locked door to the north.");
         }
@@ -49,7 +49,7 @@ void MenuRoam::getViewScreen() {
     if (targetRoom) {
         Room *validRoom = currentRoom->getRoomBehindDoor(Direction::EAST, _game->getPlayer()->getKeyLevel());
         if (validRoom) {
-            DM::say("\t An open door to the <east>.");
+            DM::say("\t An open door to the <e/east>.");
         } else {
             DM::say("\t A locked door to the east.");
         }
@@ -58,7 +58,7 @@ void MenuRoam::getViewScreen() {
     if (targetRoom) {
         Room *validRoom = currentRoom->getRoomBehindDoor(Direction::SOUTH, _game->getPlayer()->getKeyLevel());
         if (validRoom) {
-            DM::say("\t An open door to the <south>.");
+            DM::say("\t An open door to the <s/south>.");
         } else {
             DM::say("\t A locked door to the south.");
         }
@@ -67,7 +67,7 @@ void MenuRoam::getViewScreen() {
     if (targetRoom) {
         Room *validRoom = currentRoom->getRoomBehindDoor(Direction::WEST, _game->getPlayer()->getKeyLevel());
         if (validRoom) {
-            DM::say("\t An open door to the <west>.");
+            DM::say("\t An open door to the <w/west>.");
         } else {
             DM::say("\t A locked door to the west.");
         }
@@ -75,7 +75,7 @@ void MenuRoam::getViewScreen() {
     if (currentRoom->getRoomType() == RoomType::DOWN) {
         //TODO BOSS BATTLE
         if (false) {
-            DM::say("\t An open hatch to the next floor <down> below.");
+            DM::say("\t An open hatch to the next floor <d/down> below.");
         } else {
             DM::say("\t A locked hatch on the floor.");
         }
