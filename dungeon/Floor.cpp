@@ -258,7 +258,7 @@ Floor::~Floor() {
             }
         }
     }
-    if (startingRoom) {
-        delete startingRoom;
-    }
+//    if (startingRoom) {
+//        delete startingRoom;
+//    }
 }

@@ -16,7 +16,9 @@ Game::Game() {
 }
 
 Game::~Game() {
-    delete _menu, _dungeon, _player;
+    delete _menu;
+    delete _dungeon;
+    delete _player;
 }
 
 void Game::showScreen() {

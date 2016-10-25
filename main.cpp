@@ -11,6 +11,7 @@ int main() {
         Game *game = new Game();
 
         game->changeState(GameState::STARTING);
+//        game->startNewGame();
 
         do {
             game->showScreen();

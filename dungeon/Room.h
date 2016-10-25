@@ -25,7 +25,6 @@ class Room {
     bool _visited;
 
     std::vector<Monster *> _monsters;
-    std::vector<Actor *> _combatQueue;
 
 public:
     Room(Coordinate coordinate, RoomType roomType, int keyLevel = 0);
