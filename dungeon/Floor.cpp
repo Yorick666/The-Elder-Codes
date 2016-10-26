@@ -29,15 +29,15 @@ Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
             levels[0].push_back(firstRoom->getCoordinate());
             startingRoom = firstRoom;
 
-            int keyLevel = 0;
+            int currentSecurityLevel = 0;
 
             while (roomCount() < amountRooms) {
 
                 bool doLock = false;
                 bool validRoom = true;
 
-                if (levels[keyLevel].size() >= roomsPerLock && roomsPerLock > 0) {
-                    ++keyLevel;
+                if (levels[currentSecurityLevel].size() >= roomsPerLock && roomsPerLock > 0) {
+                    ++currentSecurityLevel;
                     doLock = true;
                 }
 
@@ -45,8 +45,8 @@ Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
                 Coordinate newRoomCoordinate;
                 while (newRoomCoordinate.x == 0 && newRoomCoordinate.y == 0) {
                     parent = nullptr;
-                    if (!doLock && Rng::getInstance()->randomIntBetween(0, 10) > 0 && levels[keyLevel].size() > 0) {
-                        parent = getRandomRoomWithFreeEdge(levels[keyLevel], amountRooms);
+                    if (!doLock && Rng::getInstance()->randomIntBetween(0, 10) > 0 && levels[currentSecurityLevel].size() > 0) {
+                        parent = getRandomRoomWithFreeEdge(levels[currentSecurityLevel], amountRooms);
                     }
                     if (parent == nullptr) {
                         parent = getRandomRoomWithFreeEdge(roomCoordinates, amountRooms);
@@ -79,12 +79,12 @@ Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
 
                     if (roomCount() + 1 == amountRooms) {
                         if (last) {
-                            newRoom = new Room(newRoomCoordinate, RoomType::EXIT, keyLevel);
+                            newRoom = new Room(newRoomCoordinate, RoomType::EXIT, currentSecurityLevel);
                         } else {
-                            newRoom = new Room(newRoomCoordinate, RoomType::DOWN, keyLevel);
+                            newRoom = new Room(newRoomCoordinate, RoomType::DOWN, currentSecurityLevel);
                         }
                     } else {
-                        newRoom = new Room(newRoomCoordinate, RoomType::NORMAL, keyLevel);
+                        newRoom = new Room(newRoomCoordinate, RoomType::NORMAL, currentSecurityLevel);
                     }
 
                     addRoom(newRoom);
@@ -93,7 +93,7 @@ Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
                     }
 
                     roomCoordinates.push_back(newRoom->getCoordinate());
-                    levels[keyLevel].push_back(newRoom->getCoordinate());
+                    levels[currentSecurityLevel].push_back(newRoom->getCoordinate());
                     if (roomCount() > 1 && parent) {
                         parent->addDoorTo(newRoom);
                     }

@@ -21,13 +21,13 @@ class Room {
     std::map<Direction, Room*> _doors;
 
     RoomType _type;
-    int _keyLevel;
+    int _securityLevel;
     bool _visited;
 
     std::vector<Monster *> _monsters;
 
 public:
-    Room(Coordinate coordinate, RoomType roomType, int keyLevel = 0);
+    Room(Coordinate coordinate, RoomType roomType, int securityLevel = 0);
 
     ~Room();
 
@@ -35,9 +35,9 @@ public:
 
     RoomType getRoomType() { return _type; }
 
-    int getKeyLevel() { return _keyLevel; }
+    int getSecurityLevel() { return _securityLevel; }
 
-    Room *getRoomBehindDoor(Direction direction, int keylevel = -1);
+    Room *getRoomBehindDoor(Direction direction, int securityLevel = -1);
 
     void addDoorTo(Room *newdoor);
 

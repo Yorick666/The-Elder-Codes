@@ -75,7 +75,7 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, int securit
                     } else {
                         mid += "  ";
                     }
-                    mid += to_string(currentDrawingRoom->getKeyLevel());
+                    mid += to_string(currentDrawingRoom->getSecurityLevel());
                     if (currentDrawingRoom->getRoomBehindDoor(Direction::EAST) &&
                         currentDrawingRoom->getRoomBehindDoor(Direction::EAST)->visited()) {
                         mid += char(196);
@@ -158,7 +158,7 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, int securit
                         currentDrawingRoom->getCoordinate()->y == currentCoordinate->y) {
                         mid += " @ ";
                     } else if (currentDrawingRoom->getRoomType() == RoomType::NORMAL) {
-                        mid += " " + to_string(currentDrawingRoom->getKeyLevel()) + " ";
+                        mid += " " + to_string(currentDrawingRoom->getSecurityLevel()) + " ";
                     } else if (currentDrawingRoom->getRoomType() == RoomType::DOWN) {
                         mid += "\\-/";
                     }

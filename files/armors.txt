@@ -1,0 +1,12 @@
+Padded 5 light 11 1 0
+Leather 10 light 11 0 0
+Studded_Leather 45 light 12 0 0
+Hide 10 medium 12 0 0
+Chain_Shirt 50 medium 14 0 0
+Scale_Mail 50 medium 14 1 0
+Breastplate 400 medium 14 0 0
+Half_Plate 750 medium 15 1 0
+Ring_Mail 30 heavy 14 1 0
+Chain_Mail 75 heavy 16 1 1
+Splint 200 heavy 17 1 2
+Plate 1500 heavy 18 1 2

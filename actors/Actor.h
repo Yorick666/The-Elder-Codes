@@ -14,8 +14,10 @@ protected:
     std::string _name;
     int _hp;
     int _maxHp;
-    int _baseAttack;
-    int _baseDefense;
+    int _strength;
+    int _dexterity;
+    int _constitution;
+    int _proficiencyBonus;
     Weapon *_mainWeapon;
     Weapon *_offHandWeapon;
     Armor *_armor;

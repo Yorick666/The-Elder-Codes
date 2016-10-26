@@ -6,9 +6,9 @@
 
 using namespace std;
 
-Room::Room(Coordinate coordinate, RoomType roomType, int keyLevel) {
+Room::Room(Coordinate coordinate, RoomType roomType, int securityLevel) {
     _coordinate = coordinate;
-    _keyLevel = keyLevel;
+    _securityLevel = securityLevel;
     _type = roomType;
     _visited = false;
 
@@ -68,9 +68,9 @@ void Room::addDoorTo(Room *newDoor) {
     }
 }
 
-Room *Room::getRoomBehindDoor(Direction direction, int keyLevel) {
+Room *Room::getRoomBehindDoor(Direction direction, int securityLevel) {
     Room *target = _doors[direction];
-    if (target && (target->getKeyLevel() <= keyLevel || keyLevel == -1)) {
+    if (target && (target->getSecurityLevel() <= securityLevel || securityLevel == -1)) {
         return target;
     }
     return nullptr;

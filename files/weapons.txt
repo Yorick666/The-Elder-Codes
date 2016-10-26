@@ -1,0 +1,15 @@
+Hammer 1 simple 1 4
+Handaxe 5 simple 1 6
+Mace 5 simple 1 6
+Spear 1 simple 1 6
+Dagger 2 finesse 1 4
+Rapier 25 finesse 1 6
+Scimitar 25 finesse 1 6
+Short_Sword 10 finesse 1 6
+Battleaxe 10 martial 1 8
+Longsword 15 martial 1 8
+Warhammer 15 martial 1 8
+Greataxe 30 heavy 1 12
+Greatsword 50 heavy 1 12
+Maul 10 heavy 1 12
+Shield 10 shield 1 6

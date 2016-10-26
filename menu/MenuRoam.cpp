@@ -9,28 +9,19 @@
 
 using namespace std;
 
-bool MenuRoam::handleInput(std::string input) {
-    if (regex_match(input, regex("n|north"))) {
-        _game->getPlayer()->travel(Direction::NORTH);
-    } else if (regex_match(input, regex("e|east"))) {
-        _game->getPlayer()->travel(Direction::EAST);
-    } else if (regex_match(input, regex("s|south"))) {
-        _game->getPlayer()->travel(Direction::SOUTH);
-    } else if (regex_match(input, regex("w|west"))) {
-        _game->getPlayer()->travel(Direction::WEST);
-    } else if (regex_match(input, regex("d|down"))) {
-        _game->getPlayer()->travel(Direction::DOWN);
-    } else if (regex_match(input, regex("map"))) {
-        DM::showMap(_game->getCurrentFloor(), _game->getCurrentRoom(), _game->isDebug(),
-                    _game->getPlayer()->getKeyLevel());
-    } else {
-        return false;
-    }
-    return true;
+void MenuRoam::loadOptions() {
+    _options.clear();
+//    _options.push_back("fight");
+//    _options.push_back("run");
+//    _options.push_back("search");
+    _options.push_back("rest");
+    _options.push_back("items");
+    _options.push_back("map");
 }
 
 void MenuRoam::getViewScreen() {
-    DM::showMap(_game->getCurrentFloor(), _game->getCurrentRoom(), _game->isDebug(), _game->getPlayer()->getKeyLevel(),
+    DM::showMap(_game->getCurrentFloor(), _game->getCurrentRoom(), _game->isDebug(),
+                _game->getPlayer()->getSecurityLevel(),
                 true);
 
     DM::say("\nYou see the following exits:");
@@ -38,7 +29,7 @@ void MenuRoam::getViewScreen() {
     Room *currentRoom = _game->getCurrentRoom();
     Room *targetRoom = currentRoom->getRoomBehindDoor(Direction::NORTH);
     if (targetRoom) {
-        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::NORTH, _game->getPlayer()->getKeyLevel());
+        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::NORTH, _game->getPlayer()->getSecurityLevel());
         if (validRoom) {
             DM::say("\t An open door to the <n/north>.");
         } else {
@@ -47,7 +38,7 @@ void MenuRoam::getViewScreen() {
     }
     targetRoom = currentRoom->getRoomBehindDoor(Direction::EAST);
     if (targetRoom) {
-        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::EAST, _game->getPlayer()->getKeyLevel());
+        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::EAST, _game->getPlayer()->getSecurityLevel());
         if (validRoom) {
             DM::say("\t An open door to the <e/east>.");
         } else {
@@ -56,7 +47,7 @@ void MenuRoam::getViewScreen() {
     }
     targetRoom = currentRoom->getRoomBehindDoor(Direction::SOUTH);
     if (targetRoom) {
-        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::SOUTH, _game->getPlayer()->getKeyLevel());
+        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::SOUTH, _game->getPlayer()->getSecurityLevel());
         if (validRoom) {
             DM::say("\t An open door to the <s/south>.");
         } else {
@@ -65,7 +56,7 @@ void MenuRoam::getViewScreen() {
     }
     targetRoom = currentRoom->getRoomBehindDoor(Direction::WEST);
     if (targetRoom) {
-        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::WEST, _game->getPlayer()->getKeyLevel());
+        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::WEST, _game->getPlayer()->getSecurityLevel());
         if (validRoom) {
             DM::say("\t An open door to the <w/west>.");
         } else {
@@ -82,13 +73,24 @@ void MenuRoam::getViewScreen() {
     }
 }
 
-void MenuRoam::loadOptions() {
-//    _options.push_back("fight");
-//    _options.push_back("run");
-//    _options.push_back("search");
-    _options.push_back("rest");
-    _options.push_back("items");
-    _options.push_back("map");
+bool MenuRoam::handleInput(std::string input) {
+    if (regex_match(input, regex("n|north"))) {
+        _game->getPlayer()->travel(Direction::NORTH);
+    } else if (regex_match(input, regex("e|east"))) {
+        _game->getPlayer()->travel(Direction::EAST);
+    } else if (regex_match(input, regex("s|south"))) {
+        _game->getPlayer()->travel(Direction::SOUTH);
+    } else if (regex_match(input, regex("w|west"))) {
+        _game->getPlayer()->travel(Direction::WEST);
+    } else if (regex_match(input, regex("d|down"))) {
+        _game->getPlayer()->travel(Direction::DOWN);
+    } else if (regex_match(input, regex("map"))) {
+        DM::showMap(_game->getCurrentFloor(), _game->getCurrentRoom(), _game->isDebug(),
+                    _game->getPlayer()->getSecurityLevel());
+    } else {
+        return false;
+    }
+    return true;
 }
 
 MenuRoam::MenuRoam(Game *game) : Menu(game) {

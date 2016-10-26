@@ -12,17 +12,17 @@
 
 class Player : public Actor {
     int _experience;
-    int _keyLevel;
+    int _securityLevel;
     Room *_currentRoom;
 
 public:
-    Player(Room *currentRoom, std::string name, int hp = 10, int attack = 2, int defense = 2, int currentKeyLevel = 0);
+    Player(Room *currentRoom, std::string name, int hp = 10, int attack = 2, int defense = 2, int currentSecurityLevel = 0);
 
     int getCurrentHp() { return _hp; };
 
     int getMaxHp() { return _maxHp; };
 
-    int getKeyLevel() { return _keyLevel; };
+    int getSecurityLevel() { return _securityLevel; };
 
     void travel(Direction direction);
 
