@@ -2,20 +2,23 @@
 // Created by Yorick on 18/10/2016.
 //
 
-#include <iostream>
+#include <c++/iostream>
 #include "Menu.h"
 #include "../DM.h"
 
 using namespace std;
 
 void Menu::getMenuScreen() {
+    _options.clear();
+    loadOptions();
+
     getViewScreen();
 
-    cout << endl;
+    DM::say("");
 
     DM::getInstance()->showOutput();
 
-    cout << endl;
+    DM::say("");
 
     string top = "";
     string mid = "";
@@ -41,7 +44,7 @@ void Menu::getMenuScreen() {
         mid += char(186);
     }
     string result = top + "\n" + mid + "\n" + bot;
-    cout << result << endl;
+    DM::say(result, true);
 }
 
 void Menu::prepareForInput() {

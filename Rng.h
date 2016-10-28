@@ -7,6 +7,7 @@
 
 #include <random>
 #include "enum/Dice.h"
+#include "enum/Direction.h"
 
 // Random Number God
 class Rng {
@@ -16,13 +17,17 @@ class Rng {
 
     std::mt19937 _gen;
 
-public:
     static Rng *getInstance();
 
-    signed int roleDice(int size, signed int amount = 1);
-    signed int roleDice(Dice dice, signed int amount = 1);
+public:
 
-    signed int randomIntBetween(signed int min,signed int max);
+    static signed int roleDice(int size, signed int amount = 1);
+
+    static signed int roleDice(Dice dice, signed int amount = 1);
+
+    static signed int getRandomIntBetween(signed int min, signed int max);
+
+    static Direction getRandomDirection();
 };
 
 

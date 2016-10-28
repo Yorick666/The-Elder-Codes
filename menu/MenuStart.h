@@ -20,7 +20,7 @@ public:
 
     ~MenuStart() { };
 
-    bool handleInput(std::string input);
+    void handleInput(std::string input);
 };
 
 

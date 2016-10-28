@@ -18,7 +18,7 @@ class Room {
 
     Coordinate _coordinate;
 
-    std::map<Direction, Room*> _doors;
+    std::map<Direction, Room *> _doors;
 
     RoomType _type;
     int _securityLevel;
@@ -39,11 +39,21 @@ public:
 
     Room *getRoomBehindDoor(Direction direction, int securityLevel = -1);
 
-    void addDoorTo(Room *newdoor);
+    void addDoorTo(Room *newDoor);
 
     void visit() { _visited = true; }
 
     bool visited() { return _visited; }
+
+    void addMonster(Monster * monster);
+
+    void clearRoom();
+
+    std::vector<Monster *> *getMonsters() { return &_monsters; } //TODO BAD!!!!?
+
+    bool hasMonsters();
+
+    bool hasLivingMonsters();
 };
 
 

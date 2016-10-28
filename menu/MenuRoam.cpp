@@ -6,16 +6,26 @@
 #include <iostream>
 #include "MenuRoam.h"
 #include "../DM.h"
+#include "../items/Consumable.h"
+#include "../Rng.h"
 
 using namespace std;
 
 void MenuRoam::loadOptions() {
     _options.clear();
-//    _options.push_back("fight");
-//    _options.push_back("run");
-//    _options.push_back("search");
-    _options.push_back("rest");
-    _options.push_back("items");
+    if (_game->getCurrentRoom()->hasMonsters()) {
+        if (_game->getCurrentRoom()->hasLivingMonsters()) {
+            _options.push_back("attack [id]");
+            _options.push_back("run");
+        } else {
+            _options.push_back("search");
+            _options.push_back("rest");
+        }
+    } else {
+        _options.push_back("rest");
+    }
+    _options.push_back("inventory");
+    _options.push_back("stats");
     _options.push_back("map");
 }
 
@@ -71,10 +81,21 @@ void MenuRoam::getViewScreen() {
             DM::say("\t A locked hatch on the floor.");
         }
     }
+
+    if (currentRoom->hasMonsters()) {
+        DM::say("\nYou see the following monsters:");
+        const vector<Monster *> *monsters = currentRoom->getMonsters();
+        for (int i = 0; i < monsters->size(); ++i) {
+            DM::say("\t<" + to_string(i + 1) + ">: " + monsters->at(i)->getName() + " [" +
+                    to_string(monsters->at(i)->getCurrentHp()) + "/" +
+                    to_string(monsters->at(i)->getMaxHp()) + "]");
+        }
+    }
 }
 
-bool MenuRoam::handleInput(std::string input) {
+void MenuRoam::handleInput(std::string input) {
     if (regex_match(input, regex("n|north"))) {
+        _game->readyRoom(Direction::NORTH);
         _game->getPlayer()->travel(Direction::NORTH);
     } else if (regex_match(input, regex("e|east"))) {
         _game->getPlayer()->travel(Direction::EAST);
@@ -87,16 +108,52 @@ bool MenuRoam::handleInput(std::string input) {
     } else if (regex_match(input, regex("map"))) {
         DM::showMap(_game->getCurrentFloor(), _game->getCurrentRoom(), _game->isDebug(),
                     _game->getPlayer()->getSecurityLevel());
+    } else if (regex_match(input, regex("a|attack|f|fight|kill"))) {
+        if (_game->getCurrentRoom()->hasLivingMonsters()) {
+            _game->changeState(GameState::FIGHTING);
+        } else {
+            DM::say("uhm, fight what exactly?");
+        }
+    } else if (regex_match(input, regex("r|run|flee"))) {
+        _game->flee();
+    } else if (regex_match(input, regex("i|inventory|equip|use|drop"))) {
+        _game->changeState(GameState::INVENTORY);
+    } else if (regex_match(input, regex("r|rest"))) {
+        if (!_game->getCurrentRoom()->hasLivingMonsters()) {
+            map<Item *, int> *inventory = _game->getPlayer()->getInventory();
+            bool rested = false;
+            for (map<Item *, int>::iterator item = inventory->begin(); item != inventory->end(); item++) {
+                if (item->first->getItemType() == ItemType::CONSUMABLE) {
+                    Consumable *consumable = (Consumable *) item->first;
+                    if (consumable->getConsumableType() == ConsumableType::FOOD) {
+                        consumable->use(_game->getPlayer());
+                        item->second -= 1;
+                        if (item->second == 0) {
+                            inventory->erase(item->first);
+                        }
+                        rested = true;
+                        if (Rng::roleDice(10) > 7) {
+                            _game->generateMonsters(_game->getCurrentRoom());
+                        }
+                        break;
+                    }
+                }
+            }
+            if (!rested) {
+                DM::say("You don't have any food, so resting won't help you a lot.");
+            }
+        } else {
+            DM::say("Why try to rest here? Being brave is almost the same as being stupid.");
+        }
     } else {
-        return false;
+        DM::say("Come again for big fudge?");
     }
-    return true;
 }
 
 MenuRoam::MenuRoam(Game *game) : Menu(game) {
-    loadOptions();
+//    loadOptions();
 }
 
 void MenuRoam::prepareForInput() {
-    cout << "[Life:" << _game->getPlayer()->getCurrentHp() << "/" << _game->getPlayer()->getMaxHp() << "] >";
+    cout << "[Life:" << _game->getPlayer()->getCurrentHp() << "/" << _game->getPlayer()->getMaxHp() << "]>";
 }

@@ -3,26 +3,23 @@
 //
 
 #include <regex>
-#include <iostream>
 #include "MenuStart.h"
+#include "../DM.h"
 
 using namespace std;
 
-bool MenuStart::handleInput(std::string input) {
+void MenuStart::handleInput(std::string input) {
     if (regex_match(input, regex("debug"))) {
-        cout << "Starting new game with debug mode on." << endl;
+        DM::say("Starting new game with debug mode on.", true);
         _game->startNewGame(true);
     } else if (regex_match(input, regex("new"))) {
-        cout << "Starting new game." << endl;
+        DM::say("Starting new game.", true);
         _game->startNewGame();
     } else if (regex_match(input, regex("load"))) {
-        cout << "Load function not implemented yet." << endl;
+        DM::say("Load function not implemented yet.\n");
     } else if (regex_match(input, regex("credits"))) {
-        cout << "Credits function not implemented yet. (Just made by me, Yorick, atm :P )" << endl;
-    } else {
-        return false;
+        DM::say("Credits function not implemented yet. (Just made by me, Yorick, atm :P )\n"); //TODO
     }
-    return true;
 }
 
 void MenuStart::loadOptions() {
@@ -33,9 +30,8 @@ void MenuStart::loadOptions() {
 }
 
 void MenuStart::getViewScreen() {
-    cout << "The Elder Codes - Algorithm of Time " << endl << "Remember: Enter <exit> at anytime to exit the game.";
+    DM::say("The Elder Codes - Algorithm of Time\nRemember: Enter <exit> at anytime to exit the game.");
 }
 
 MenuStart::MenuStart(Game *game) : Menu(game) {
-    loadOptions();
 }

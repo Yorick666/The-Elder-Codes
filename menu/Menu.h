@@ -26,7 +26,7 @@ public:
 
     ~Menu() {};
 
-    virtual bool handleInput(std::string input) = 0;
+    virtual void handleInput(std::string input) = 0;
 
     void getMenuScreen();
 

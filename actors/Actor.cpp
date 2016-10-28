@@ -5,48 +5,112 @@
 #include "Actor.h"
 #include "../enum/Dice.h"
 #include "../Rng.h"
+#include "../DM.h"
 
-Actor::Actor(std::string name, int hp, int attack, int defense) {
+using namespace std;
+
+Actor::Actor(std::string name, int hp, int strength, int dexterity, int constitution, int proficiencyBonus,
+             int naturalArmor) {
     _name = name;
     _hp = hp;
     _maxHp = hp;
-    _strength = attack;
-    _dexterity = defense;
+    _strength = strength;
+    _dexterity = dexterity;
+    _constitution = constitution;
+    _proficiencyBonus = proficiencyBonus;
+    _naturalArmor = naturalArmor;
     _mainWeapon = nullptr;
     _offHandWeapon = nullptr;
     _armor = nullptr;
 }
 
-void Actor::attack(Actor target) {
-//    int hit = Rng::getInstance()->roleDice(Dice::d20) + _strength;
-//    int dmg = 0;
-//
-//    if (_mainWeapon) {
-//        dmg += _mainWeapon->use(this) + _strength;
-//    }
-//
-//    if (_offHandWeapon){
-//        dmg += _offHandWeapon->use(this) + _strength;
-//    }
-//
-//    target.defend(hit, dmg);
+void Actor::attack(Actor *target) {
+    if (_hp > 0) {
+        DM::say("----------" + _name + "----------");
+        int dmg = 1 + _strength;
+        int hit = Rng::roleDice(Dice::d20);
+
+        if (_mainWeapon) {
+            dmg = _mainWeapon->use(this);
+
+            if (_mainWeapon->getWeaponType() == WeaponType::FINESSE && _dexterity > _strength) {
+                hit += _dexterity;
+            } else {
+                hit += _strength;
+            }
+        } else {
+            DM::say(_name + " attacks with his/her/its bare fists/claws/hoofs!!!!");
+            hit += _strength;
+        }
+
+        target->defend(hit, dmg);
+
+        if (_offHandWeapon) {
+            dmg = _offHandWeapon->use(this);
+            hit = Rng::roleDice(Dice::d20);
+
+            if (_offHandWeapon->getWeaponType() == WeaponType::FINESSE && _dexterity > _strength) {
+                hit += _dexterity;
+            } else {
+                hit += _strength;
+            }
+
+            target->defend(hit, dmg);
+        }
+    } else {
+        DM::say(_name + " can't attack " + target->getName() + ", because it's dead....");
+    }
 }
 
 void Actor::defend(int hit, int attack) { //TODO defense and stuff
-//    int AC = _dexterity;
-//
-//    if (_armor) {
-//        AC += _armor->use(this);
-//    }
-//
-//    if (hit >= AC) {
-//        int remainingHp = _hp - attack;
-//        if (remainingHp <0) {
-//            _hp = 0;
-//        } else {
-//            _hp = remainingHp;
-//        }
-//    } else {
-//        //Mis
-//    }
+    if (_hp > 0) {
+        int AC = 0;
+
+        if (_armor) {
+            AC += _armor->use(this);
+        } else {
+            AC += _naturalArmor + _dexterity;
+        }
+
+        if (hit >= AC) {
+            DM::say(_name + " is hit! (" + to_string(hit) + " hit roll against " + to_string(AC) +
+                    " AC)");
+            takeDamage(attack);
+        } else {
+            DM::say(_name + " evades/blocks/dodges! (" + to_string(hit) + " hit roll against " + to_string(AC) +
+                    " AC)"); //TODO random?
+        }
+    } else {
+        DM::say(_name + " is already dead...");
+    }
+}
+
+void Actor::heal(const int amount) {
+    DM::say(getName() + " healed for " + std::to_string(amount) + " hp.");
+    if (_hp + amount > _maxHp) {
+        _hp = _maxHp;
+    } else {
+        _hp = _hp + amount;
+    }
+}
+
+void Actor::takeDamage(int damage) {
+    DM::say(_name + " takes " + std::to_string(damage) + " damage!");
+    int remainingHp = _hp - damage;
+    if (remainingHp < 0) {
+        _hp = 0; //TODO dieien
+        DM::say(_name + " dies!");
+    } else {
+        _hp = remainingHp;
+    }
+    int x = 3;
+    x = 4;
+}
+
+void Actor::addItemToInventory(Item *item) {
+    if (_inventory.find(item) == _inventory.end()) {
+        _inventory[item] = 1;
+    } else {
+        _inventory[item] += 1;
+    }
 }

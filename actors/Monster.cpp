@@ -4,6 +4,8 @@
 
 #include "Monster.h"
 
-Monster::Monster(std::string name, int hp, int attack, int defense, int exp) : Actor(name, hp, attack, defense) {
-    _experience = exp;
+Monster::Monster(std::string name, int experienceOnKill, int hp, int strength, int dexterity, int constitution,
+            int proficiencyBonus, int naturalArmor) : Actor(name, hp, strength, dexterity,constitution,proficiencyBonus) {
+    _experienceOnKill = experienceOnKill;
+    _naturalArmor = naturalArmor;
 }

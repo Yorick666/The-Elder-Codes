@@ -5,14 +5,27 @@
 #ifndef THE_ELDER_CODES_ITEM_H
 #define THE_ELDER_CODES_ITEM_H
 
+#include <string>
+#include "../enum/ItemType.h"
+
+class Actor;
 
 class Item {
+protected:
+    std::string _name;
+    int _rarity;
+    ItemType _itemType;
+
 public:
-    virtual bool use() = 0;
+    Item(std::string name, int rarity);
 
-    virtual bool usable() = 0;
+    int getRarity() const { return _rarity; };
 
-    virtual bool drop() = 0;
+    const std::string &getName() const { return _name; }
+
+    virtual int use(Actor *actor) const = 0;
+
+    const ItemType &getItemType() const { return _itemType; };
 };
 
 

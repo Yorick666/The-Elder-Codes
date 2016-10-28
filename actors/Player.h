@@ -16,17 +16,22 @@ class Player : public Actor {
     Room *_currentRoom;
 
 public:
-    Player(Room *currentRoom, std::string name, int hp = 10, int attack = 2, int defense = 2, int currentSecurityLevel = 0);
-
-    int getCurrentHp() { return _hp; };
-
-    int getMaxHp() { return _maxHp; };
-
-    int getSecurityLevel() { return _securityLevel; };
+    Player(Room *currentRoom, std::string name, int hp = 10, int strength = 2, int dexterity = 2, int constitution = 2, int proficiencyBonus = 2,
+           int currentSecurityLevel = 0);
 
     void travel(Direction direction);
 
-    Room *getCurrentRoom() { return _currentRoom; };
+    Room *getCurrentRoom() const { return _currentRoom; };
+
+    int getSecurityLevel() const { return _securityLevel;};
+
+    void rest();
+
+    void generateStartingGear(std::vector<Item *> *possibleGear);
+
+    void flee();
+
+    void equip(Item *item);
 };
 
 

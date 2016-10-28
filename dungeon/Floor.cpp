@@ -45,7 +45,7 @@ Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
                 Coordinate newRoomCoordinate;
                 while (newRoomCoordinate.x == 0 && newRoomCoordinate.y == 0) {
                     parent = nullptr;
-                    if (!doLock && Rng::getInstance()->randomIntBetween(0, 10) > 0 && levels[currentSecurityLevel].size() > 0) {
+                    if (!doLock && Rng::getRandomIntBetween(0, 10) > 0 && levels[currentSecurityLevel].size() > 0) {
                         parent = getRandomRoomWithFreeEdge(levels[currentSecurityLevel], amountRooms);
                     }
                     if (parent == nullptr) {
@@ -105,8 +105,8 @@ Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
             for (int l = 0; l < extraLinks; ++l) {
                 bool linked = false;
                 while (!linked) {
-                    int randomX = Rng::getInstance()->randomIntBetween(0, rooms.size() - 1);
-                    int randomY = Rng::getInstance()->randomIntBetween(0, rooms[randomX].size() - 1);
+                    int randomX = Rng::getRandomIntBetween(0, rooms.size() - 1);
+                    int randomY = Rng::getRandomIntBetween(0, rooms[randomX].size() - 1);
 
                     if (randomX < 0 || randomY < 0 || rooms[randomX][randomY] == nullptr) {
                         continue;
@@ -124,7 +124,7 @@ Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
 
                     for (int i = 0; i < 10; ++i) {
                         Direction direction;
-                        switch (Rng::getInstance()->roleDice(Dice::d4)) {
+                        switch (Rng::roleDice(Dice::d4)) {
                             case 1:
                                 direction = Direction::NORTH;
                                 dx = 0;
@@ -205,7 +205,7 @@ int Floor::roomCount() {
 
 Room *Floor::getRandomRoomWithFreeEdge(vector<Coordinate *> coordinates, int tries) {
     while (tries > 0) {
-        signed int rand = Rng::getInstance()->randomIntBetween(0, coordinates.size() - 1);
+        signed int rand = Rng::getRandomIntBetween(0, coordinates.size() - 1);
         Coordinate *coordinate = coordinates.at(rand);
 
         if (rooms.count(coordinate->x - 1) == 0 || rooms.count(coordinate->x + 1) == 0 ||
@@ -221,7 +221,7 @@ Room *Floor::getRandomRoomWithFreeEdge(vector<Coordinate *> coordinates, int tri
 
 Coordinate *Floor::chooseFreeEdge(Coordinate *coordinate) {
     for (int tries = 0; tries < 20; ++tries) {
-        int randomDirection = Rng::getInstance()->randomIntBetween(1, 4);
+        int randomDirection = Rng::getRandomIntBetween(1, 4);
         if (randomDirection == 1) {
             if (rooms.count(coordinate->x - 1) == 0 || rooms[coordinate->x - 1].count(coordinate->y) == 0) {
                 return new Coordinate(coordinate->x - 1, coordinate->y);

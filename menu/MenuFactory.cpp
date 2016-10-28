@@ -4,6 +4,8 @@
 
 #include "MenuFactory.h"
 #include "MenuRoam.h"
+#include "MenuFight.h"
+#include "MenuInventory.h"
 
 Menu *MenuFactory::getMenu(Game * game, GameState state) {
     switch (state){
@@ -11,7 +13,10 @@ Menu *MenuFactory::getMenu(Game * game, GameState state) {
             return new MenuStart(game);
         case GameState::ROAMING:
             return new MenuRoam(game);
-        case GameState::FIGHTING:break;
+        case GameState::FIGHTING:
+            return new MenuFight(game);
+        case GameState::INVENTORY:
+            return new MenuInventory(game);
         case GameState::EXITING:break;
     }
     return nullptr;

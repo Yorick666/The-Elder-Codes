@@ -11,6 +11,7 @@ class Game;
 
 class MenuRoam : public Menu {
     void loadOptions();
+
     void getViewScreen();
 
 public:
@@ -18,7 +19,7 @@ public:
 
     ~MenuRoam() { };
 
-    bool handleInput(std::string input);
+    void handleInput(std::string input);
 
     void prepareForInput();
 };

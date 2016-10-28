@@ -11,9 +11,10 @@
 class Monster : public Actor {
 
 protected:
-    int _experience;
+    int _experienceOnKill;
 public:
-    Monster(std::string name, int hp, int attack, int defense, int exp);
+    Monster(std::string name, int experienceOnKill, int hp, int strength, int dexterity, int constitution,
+                int proficiencyBonus, int naturalArmor = 10);
 
 };
 

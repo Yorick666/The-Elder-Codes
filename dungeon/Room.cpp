@@ -21,6 +21,11 @@ Room::Room(Coordinate coordinate, RoomType roomType, int securityLevel) {
 
 Room::~Room() {
     //TODO
+    for (int i = 0; i < _monsters.size(); ++i) {
+        if (_monsters[i]) {
+            delete _monsters[i];
+        }
+    }
 }
 
 void Room::addDoorTo(Room *newDoor) {
@@ -28,16 +33,16 @@ void Room::addDoorTo(Room *newDoor) {
     Direction direction = Direction::DOWN;
 
     if (this->getCoordinate()->x == newDoor->getCoordinate()->x &&
-            this->getCoordinate()->y - newDoor->getCoordinate()->y == 1) {
+        this->getCoordinate()->y - newDoor->getCoordinate()->y == 1) {
         direction = Direction::NORTH;
     } else if (this->getCoordinate()->y == newDoor->getCoordinate()->y &&
-            this->getCoordinate()->x - newDoor->getCoordinate()->x == -1) {
+               this->getCoordinate()->x - newDoor->getCoordinate()->x == -1) {
         direction = Direction::EAST;
     } else if (this->getCoordinate()->x == newDoor->getCoordinate()->x &&
-            this->getCoordinate()->y - newDoor->getCoordinate()->y == -1) {
+               this->getCoordinate()->y - newDoor->getCoordinate()->y == -1) {
         direction = Direction::SOUTH;
     } else if (this->getCoordinate()->y == newDoor->getCoordinate()->y &&
-            this->getCoordinate()->x - newDoor->getCoordinate()->x == 1) {
+               this->getCoordinate()->x - newDoor->getCoordinate()->x == 1) {
         direction = Direction::WEST;
     }
 
@@ -48,7 +53,7 @@ void Room::addDoorTo(Room *newDoor) {
 
     _doors[direction] = newDoor;
 
-    switch (direction){
+    switch (direction) {
         case Direction::NORTH:
             direction = Direction::SOUTH;
             break;
@@ -74,4 +79,31 @@ Room *Room::getRoomBehindDoor(Direction direction, int securityLevel) {
         return target;
     }
     return nullptr;
+}
+
+void Room::addMonster(Monster * monster) {
+    _monsters.push_back(monster);
+}
+
+void Room::clearRoom() {
+    for (int i = 0; i < _monsters.size(); ++i) {
+        if (_monsters[i]) {
+            delete _monsters[i];
+        }
+    }
+    _monsters.clear();
+}
+
+bool Room::hasMonsters() {
+    return !_monsters.empty();
+}
+
+bool Room::hasLivingMonsters() {
+    int count = 0;
+    for (int i = 0; i < _monsters.size(); ++i) {
+        if (_monsters[i] ->getCurrentHp() > 0) {
+            count++;
+        }
+    }
+    return count > 0;
 }
