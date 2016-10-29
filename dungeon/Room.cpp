@@ -28,21 +28,23 @@ Room::~Room() {
     }
 }
 
-void Room::addDoorTo(Room *newDoor) {
+void Room::addDoor(Corridor *newCorridor) {
+
+    Room *newRoom = newCorridor->otherSide(this);
 
     Direction direction = Direction::DOWN;
 
-    if (this->getCoordinate()->x == newDoor->getCoordinate()->x &&
-        this->getCoordinate()->y - newDoor->getCoordinate()->y == 1) {
+    if (this->getCoordinate()->x == newRoom->getCoordinate()->x &&
+        this->getCoordinate()->y - newRoom->getCoordinate()->y == 1) {
         direction = Direction::NORTH;
-    } else if (this->getCoordinate()->y == newDoor->getCoordinate()->y &&
-               this->getCoordinate()->x - newDoor->getCoordinate()->x == -1) {
+    } else if (this->getCoordinate()->y == newRoom->getCoordinate()->y &&
+               this->getCoordinate()->x - newRoom->getCoordinate()->x == -1) {
         direction = Direction::EAST;
-    } else if (this->getCoordinate()->x == newDoor->getCoordinate()->x &&
-               this->getCoordinate()->y - newDoor->getCoordinate()->y == -1) {
+    } else if (this->getCoordinate()->x == newRoom->getCoordinate()->x &&
+               this->getCoordinate()->y - newRoom->getCoordinate()->y == -1) {
         direction = Direction::SOUTH;
-    } else if (this->getCoordinate()->y == newDoor->getCoordinate()->y &&
-               this->getCoordinate()->x - newDoor->getCoordinate()->x == 1) {
+    } else if (this->getCoordinate()->y == newRoom->getCoordinate()->y &&
+               this->getCoordinate()->x - newRoom->getCoordinate()->x == 1) {
         direction = Direction::WEST;
     }
 
@@ -51,37 +53,22 @@ void Room::addDoorTo(Room *newDoor) {
 //        throw -1212;
     }
 
-    _doors[direction] = newDoor;
-
-    switch (direction) {
-        case Direction::NORTH:
-            direction = Direction::SOUTH;
-            break;
-        case Direction::EAST:
-            direction = Direction::WEST;
-            break;
-        case Direction::SOUTH:
-            direction = Direction::NORTH;
-            break;
-        case Direction::WEST:
-            direction = Direction::EAST;
-            break;
-    }
-
-    if (!newDoor->getRoomBehindDoor(direction)) {
-        newDoor->addDoorTo(this);
-    }
+    _doors[direction] = newCorridor;
 }
 
 Room *Room::getRoomBehindDoor(Direction direction, int securityLevel) {
-    Room *target = _doors[direction];
-    if (target && (target->getSecurityLevel() <= securityLevel || securityLevel == -1)) {
-        return target;
+    Corridor *targetCorridor = _doors[direction];
+    if (targetCorridor) {
+        Room *target = targetCorridor->otherSide(this);
+        if (target && (target->getSecurityLevel() <= securityLevel || securityLevel == -1)) {
+            return target;
+        }
     }
+
     return nullptr;
 }
 
-void Room::addMonster(Monster * monster) {
+void Room::addMonster(Monster *monster) {
     _monsters.push_back(monster);
 }
 
@@ -101,9 +88,21 @@ bool Room::hasMonsters() {
 bool Room::hasLivingMonsters() {
     int count = 0;
     for (int i = 0; i < _monsters.size(); ++i) {
-        if (_monsters[i] ->getCurrentHp() > 0) {
+        if (_monsters[i]->getCurrentHp() > 0) {
             count++;
         }
     }
     return count > 0;
+}
+
+Corridor *Room::getCorridorBehindDoor(Direction direction, int securityLevel) {
+    Corridor *targetCorridor = _doors[direction];
+    if (targetCorridor) {
+        Room *target = targetCorridor->otherSide(this);
+        if (target && (target->getSecurityLevel() <= securityLevel || securityLevel == -1)) {
+            return targetCorridor;
+        }
+    }
+
+    return nullptr;
 }

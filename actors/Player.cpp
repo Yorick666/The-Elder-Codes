@@ -24,14 +24,23 @@ void Player::travel(Direction direction) {
     if (_currentRoom->hasLivingMonsters()) {
         DM::say("You can't exit the room without <kill>ing all the monsters or you have to try your luck <run>ning away.");
     } else {
-        Room *r = _currentRoom->getRoomBehindDoor(direction, _securityLevel);
-        if (r != nullptr) {
-            _currentRoom->clearRoom();
-            _currentRoom = r;
-            _currentRoom->visit();
+        Corridor *c = _currentRoom->getCorridorBehindDoor(direction, _securityLevel);
+        if (c) {
+            if (!c->isCollapsed()) {
+                Room *r = _currentRoom->getRoomBehindDoor(direction, _securityLevel);
+                if (r != nullptr) {
+                    _currentRoom->clearRoom();
+                    _currentRoom = r;
+                    _currentRoom->visit();
+                }
+            } else {
+                DM::say("The corridor to the other room is caved in, so you can't travel in that direction.");
+            }
         } else {
             DM::say("You can't travel in this direction.");
         }
+
+
     }
 }
 
@@ -76,7 +85,8 @@ void Player::flee() {
         bool found = false;
         while (!found) {
             Direction dir = Rng::getRandomDirection();
-            if (_currentRoom->getRoomBehindDoor(dir)) {
+            Corridor *c = _currentRoom->getCorridorBehindDoor(dir, _securityLevel);
+            if (c && !c->isCollapsed()) {
                 Room *r = _currentRoom->getRoomBehindDoor(dir, _securityLevel);
                 if (r != nullptr) {
                     _currentRoom->clearRoom();

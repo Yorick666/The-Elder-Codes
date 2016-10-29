@@ -62,7 +62,11 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, int securit
                     top += "  ";
                     if (currentDrawingRoom->getRoomBehindDoor(Direction::NORTH) &&
                         currentDrawingRoom->getRoomBehindDoor(Direction::NORTH)->visited()) {
-                        top += char(179);
+                        if (currentDrawingRoom->getCorridorBehindDoor(Direction::NORTH)->isCollapsed()) {
+                            top += char(177);
+                        } else {
+                            top += char(179);
+                        }
                     } else {
                         top += " ";
                     }
@@ -70,16 +74,26 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, int securit
 
                     if (currentDrawingRoom->getRoomBehindDoor(Direction::WEST) &&
                         currentDrawingRoom->getRoomBehindDoor(Direction::WEST)->visited()) {
-                        mid += char(196);
-                        mid += char(196);
+                        if (currentDrawingRoom->getCorridorBehindDoor(Direction::WEST)->isCollapsed()) {
+                            mid += char(177);
+                            mid += char(177);
+                        } else {
+                            mid += char(196);
+                            mid += char(196);
+                        }
                     } else {
                         mid += "  ";
                     }
                     mid += to_string(currentDrawingRoom->getSecurityLevel());
                     if (currentDrawingRoom->getRoomBehindDoor(Direction::EAST) &&
                         currentDrawingRoom->getRoomBehindDoor(Direction::EAST)->visited()) {
-                        mid += char(196);
-                        mid += char(196);
+                        if (currentDrawingRoom->getCorridorBehindDoor(Direction::EAST)->isCollapsed()) {
+                            mid += char(177);
+                            mid += char(177);
+                        } else {
+                            mid += char(196);
+                            mid += char(196);
+                        }
                     } else {
                         mid += "  ";
                     }
@@ -87,7 +101,11 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, int securit
                     bot += "  ";
                     if (currentDrawingRoom->getRoomBehindDoor(Direction::SOUTH) &&
                         currentDrawingRoom->getRoomBehindDoor(Direction::SOUTH)->visited()) {
-                        bot += char(179);
+                        if (currentDrawingRoom->getCorridorBehindDoor(Direction::SOUTH)->isCollapsed()) {
+                            bot += char(177);
+                        } else {
+                            bot += char(179);
+                        }
                     } else {
                         bot += " ";
                     }
@@ -97,31 +115,13 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, int securit
                     mid += "     ";
                     bot += "     ";
                 } else {
-                    bool north = false;
-                    bool east = false;
-                    bool south = false;
-                    bool west = false;
 
                     if (currentDrawingRoom->getRoomBehindDoor(Direction::NORTH)) {
-                        north = true;
-                    }
-                    if (currentDrawingRoom->getRoomBehindDoor(Direction::EAST)) {
-                        east = true;
-                    }
-                    if (currentDrawingRoom->getRoomBehindDoor(Direction::SOUTH)) {
-                        south = true;
-                    }
-                    if (currentDrawingRoom->getRoomBehindDoor(Direction::WEST)) {
-                        west = true;
-                    }
-
-                    if (north) {
                         top += char(218);
                         top += char(196);
-                        if (currentDrawingRoom->getRoomBehindDoor(Direction::NORTH)->visited() ||
-                            currentDrawingRoom->getRoomBehindDoor(Direction::NORTH, securityLevel)) {
-                            top += char(193);
-                        } else { //TODO ?
+                        if (currentDrawingRoom->getCorridorBehindDoor(Direction::NORTH)->isCollapsed()) {
+                            top += char(177);
+                        } else {
                             top += char(193);
                         }
                         top += char(196);
@@ -134,16 +134,24 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, int securit
                         top += char(191);
                     }
 
-                    if (west) {
-                        mid += char(180);
+                    if (currentDrawingRoom->getRoomBehindDoor(Direction::WEST)) {
+                        if (currentDrawingRoom->getCorridorBehindDoor(Direction::WEST)->isCollapsed()) {
+                            mid += char(177);
+                        } else {
+                            mid += char(180);
+                        }
                     } else {
                         mid += char(179);
                     }
 
-                    if (south) {
+                    if (currentDrawingRoom->getRoomBehindDoor(Direction::SOUTH)) {
                         bot += char(192);
                         bot += char(196);
-                        bot += char(194);
+                        if (currentDrawingRoom->getCorridorBehindDoor(Direction::SOUTH)->isCollapsed()) {
+                            bot += char(177);
+                        } else {
+                            bot += char(194);
+                        }
                         bot += char(196);
                         bot += char(217);
                     } else {
@@ -163,8 +171,12 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, int securit
                         mid += "\\-/";
                     }
 
-                    if (east) {
-                        mid += char(195);
+                    if (currentDrawingRoom->getRoomBehindDoor(Direction::EAST)) {
+                        if (currentDrawingRoom->getCorridorBehindDoor(Direction::EAST)->isCollapsed()) {
+                            mid += char(177);
+                        } else {
+                            mid += char(195);
+                        }
                     } else {
                         mid += char(179);
                     }

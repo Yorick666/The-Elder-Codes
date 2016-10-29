@@ -37,7 +37,7 @@ public:
 
     void changeState(GameState newState);
 
-    void startNewGame(bool debug = false, int size = 1, int roomsPerFloor = 200, int roomsPerLock = 0);
+    void startNewGame(bool debug = false, int size = 1, int roomsPerFloor = 100, int roomsPerLock = 0);
 
     Player *getPlayer() { return _player; };
 

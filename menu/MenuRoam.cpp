@@ -37,43 +37,63 @@ void MenuRoam::getViewScreen() {
     DM::say("\nYou see the following exits:");
 
     Room *currentRoom = _game->getCurrentRoom();
+    Corridor *targetCorridor = currentRoom->getCorridorBehindDoor(Direction::NORTH);
     Room *targetRoom = currentRoom->getRoomBehindDoor(Direction::NORTH);
     if (targetRoom) {
-        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::NORTH, _game->getPlayer()->getSecurityLevel());
-        if (validRoom) {
-            DM::say("\t An open door to the <n/north>.");
+        if (targetCorridor && !targetCorridor->isCollapsed()) {
+            Room *validRoom = currentRoom->getRoomBehindDoor(Direction::NORTH, _game->getPlayer()->getSecurityLevel());
+            if (validRoom) {
+                DM::say("\t An open door to the <n/north>.");
+            } else {
+                DM::say("\t A locked door to the north.");
+            }
         } else {
-            DM::say("\t A locked door to the north.");
+            DM::say("\tA caved-in corridor to the north.");
         }
     }
+    targetCorridor = currentRoom->getCorridorBehindDoor(Direction::EAST);
     targetRoom = currentRoom->getRoomBehindDoor(Direction::EAST);
     if (targetRoom) {
-        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::EAST, _game->getPlayer()->getSecurityLevel());
-        if (validRoom) {
-            DM::say("\t An open door to the <e/east>.");
+        if (targetCorridor && !targetCorridor->isCollapsed()) {
+            Room *validRoom = currentRoom->getRoomBehindDoor(Direction::EAST, _game->getPlayer()->getSecurityLevel());
+            if (validRoom) {
+                DM::say("\t An open door to the <e/east>.");
+            } else {
+                DM::say("\t A locked door to the east.");
+            }
         } else {
-            DM::say("\t A locked door to the east.");
+            DM::say("\tA caved-in corridor to the east.");
         }
     }
+    targetCorridor = currentRoom->getCorridorBehindDoor(Direction::SOUTH);
     targetRoom = currentRoom->getRoomBehindDoor(Direction::SOUTH);
     if (targetRoom) {
-        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::SOUTH, _game->getPlayer()->getSecurityLevel());
-        if (validRoom) {
-            DM::say("\t An open door to the <s/south>.");
+        if (targetCorridor && !targetCorridor->isCollapsed()) {
+            Room *validRoom = currentRoom->getRoomBehindDoor(Direction::SOUTH, _game->getPlayer()->getSecurityLevel());
+            if (validRoom) {
+                DM::say("\t An open door to the <s/south>.");
+            } else {
+                DM::say("\t A locked door to the south.");
+            }
         } else {
-            DM::say("\t A locked door to the south.");
+            DM::say("\tA caved-in corridor to the south.");
         }
     }
+    targetCorridor = currentRoom->getCorridorBehindDoor(Direction::WEST);
     targetRoom = currentRoom->getRoomBehindDoor(Direction::WEST);
     if (targetRoom) {
-        Room *validRoom = currentRoom->getRoomBehindDoor(Direction::WEST, _game->getPlayer()->getSecurityLevel());
-        if (validRoom) {
-            DM::say("\t An open door to the <w/west>.");
+        if (targetCorridor && !targetCorridor->isCollapsed()) {
+            Room *validRoom = currentRoom->getRoomBehindDoor(Direction::WEST, _game->getPlayer()->getSecurityLevel());
+            if (validRoom) {
+                DM::say("\t An open door to the <w/west>.");
+            } else {
+                DM::say("\t A locked door to the west.");
+            }
         } else {
-            DM::say("\t A locked door to the west.");
+            DM::say("\tA caved-in corridor to the west.");
         }
     }
-    if (currentRoom->getRoomType() == RoomType::DOWN) {
+    if (currentRoom->getRoomType() != RoomType::NORMAL) {
         //TODO BOSS BATTLE
         if (false) {
             DM::say("\t An open hatch to the next floor <d/down> below.");
@@ -116,7 +136,7 @@ void MenuRoam::handleInput(std::string input) {
         }
     } else if (regex_match(input, regex("r|run|flee"))) {
         _game->flee();
-    } else if (regex_match(input, regex("i|inventory|equip|use|drop"))) {
+    } else if (regex_match(input, regex("i|inventory"))) {
         _game->changeState(GameState::INVENTORY);
     } else if (regex_match(input, regex("r|rest"))) {
         if (!_game->getCurrentRoom()->hasLivingMonsters()) {

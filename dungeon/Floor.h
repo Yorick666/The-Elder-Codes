@@ -15,9 +15,11 @@ class Floor {
     int maxY;
     int minY;
 
-    Room *startingRoom;
+    Room *_startingRoom;
 
-    std::map<int, std::map<int, Room * >> rooms;
+    std::map<int, std::map<int, Room * >> _rooms;
+
+    std::vector<Corridor *> _corridors;
 
     void addRoom(Room *room);
 
@@ -32,7 +34,7 @@ public:
 
     ~Floor();
 
-    Room *getStartingRoom() { return startingRoom; };
+    Room *getStartingRoom() { return _startingRoom; };
 
     int getMinX() { return minX; };
 
@@ -43,6 +45,10 @@ public:
     int getMaxY() { return maxY; };
 
     Room *getRoom(int x, int y);
+
+    const std::vector<Corridor *> &getCorridors() const { return _corridors; }
+
+    const std::map<int, std::map<int, Room *>> *getRooms() const { return &_rooms; }
 };
 
 

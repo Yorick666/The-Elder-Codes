@@ -156,21 +156,25 @@ void MenuInventory::getViewScreen() {
                         break;
                     case ConsumableType::BOMB:
                         type = "Bomb";
-                        effect = "probalbe cave-in(s)";
+                        if (consumable->getDiceAmount() == 0) {
+                            effect = "cave-in(s)";
+                        } else {
+                            effect = "probable cave-in(s)";
+                        }
                         break;
                     case ConsumableType::TALISMAN:
-                        type = "Spell";
-                        effect = "dmg";
+                        type = "Talisman";
+                        effect = "maximum distance to exit";
                         break;
                 }
 
-                if (consumable->get_diceAmount() == 0) {
+                if (consumable->getDiceAmount() == 0) {
                     DM::say("\t<" + to_string(i) + ">: " + consumable->getName() + " - " + type + " - " +
                             to_string(consumable->getBaseValue()) + " " + effect + " (" +
                             to_string(item->second) + "x)");
                 } else {
                     DM::say("\t<" + to_string(i) + ">: " + consumable->getName() + " - " + type + " - " +
-                            to_string(consumable->get_diceAmount()) + "d" + to_string(consumable->get_diceSize()) +
+                            to_string(consumable->getDiceAmount()) + "d" + to_string(consumable->getDiceSize()) +
                             "+" +
                             to_string(consumable->getBaseValue()) + " " + effect + " (" +
                             to_string(item->second) + "x)");
@@ -220,10 +224,31 @@ void MenuInventory::handleInput(std::string input) {
                             break;
                         case InventoryState::USE:
                             if (item->first->getItemType() == ItemType::CONSUMABLE) {
-                                item->first->use(_game->getPlayer());
-                                item->second -= 1;
-                                if (item->second == 0) {
-                                    _inventory->erase(item->first);
+                                Consumable *consumable = (Consumable *) item->first;
+                                if (consumable->getConsumableType() == ConsumableType::BOMB) {
+                                    if (_game->getCurrentRoom()->hasLivingMonsters()) {
+                                        if (consumable->explode(_game->getCurrentFloor(),
+                                                                _game->getPlayer()->getCurrentRoom())) {
+                                            DM::say(_game->getPlayer()->getName() + " used a(n) " +
+                                                    consumable->getName() +
+                                                    ".");
+                                            item->second -= 1;
+                                            if (item->second == 0) {
+                                                _inventory->erase(item->first);
+                                            }
+                                        } else {
+                                            DM::say("This " + consumable->getName() +
+                                                    " may be a bit too much to handle with the current unstable state of the dungeon....");
+                                        }
+                                    } else {
+                                        DM::say("EY!! Don't go ruining my beautifull dungeon with a bomb without even a single monster to kill with it.");
+                                    }
+                                } else {
+                                    consumable->use(_game->getPlayer());
+                                    item->second -= 1;
+                                    if (item->second == 0) {
+                                        _inventory->erase(item->first);
+                                    }
                                 }
                             } else {
                                 DM::say("You want to put WHAT WHERE?!?!");

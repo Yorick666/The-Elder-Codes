@@ -11,6 +11,7 @@
 #include "../enum/RoomType.h"
 #include "../enum/Direction.h"
 #include "../actors/Monster.h"
+#include "Corridor.h"
 
 class Link;
 
@@ -18,7 +19,7 @@ class Room {
 
     Coordinate _coordinate;
 
-    std::map<Direction, Room *> _doors;
+    std::map<Direction, Corridor *> _doors;
 
     RoomType _type;
     int _securityLevel;
@@ -39,7 +40,9 @@ public:
 
     Room *getRoomBehindDoor(Direction direction, int securityLevel = -1);
 
-    void addDoorTo(Room *newDoor);
+    Corridor * getCorridorBehindDoor(Direction direction, int securityLevel = -1);
+
+    void addDoor(Corridor *newCorridor);
 
     void visit() { _visited = true; }
 

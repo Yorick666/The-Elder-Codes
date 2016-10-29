@@ -27,7 +27,7 @@ Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
             addRoom(firstRoom);
             roomCoordinates.push_back(firstRoom->getCoordinate());
             levels[0].push_back(firstRoom->getCoordinate());
-            startingRoom = firstRoom;
+            _startingRoom = firstRoom;
 
             int currentSecurityLevel = 0;
 
@@ -95,7 +95,7 @@ Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
                     roomCoordinates.push_back(newRoom->getCoordinate());
                     levels[currentSecurityLevel].push_back(newRoom->getCoordinate());
                     if (roomCount() > 1 && parent) {
-                        parent->addDoorTo(newRoom);
+                        _corridors.push_back(new Corridor(parent, newRoom));
                     }
                 }
             }
@@ -105,14 +105,14 @@ Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
             for (int l = 0; l < extraLinks; ++l) {
                 bool linked = false;
                 while (!linked) {
-                    int randomX = Rng::getRandomIntBetween(0, rooms.size() - 1);
-                    int randomY = Rng::getRandomIntBetween(0, rooms[randomX].size() - 1);
+                    int randomX = Rng::getRandomIntBetween(0, _rooms.size() - 1);
+                    int randomY = Rng::getRandomIntBetween(0, _rooms[randomX].size() - 1);
 
-                    if (randomX < 0 || randomY < 0 || rooms[randomX][randomY] == nullptr) {
+                    if (randomX < 0 || randomY < 0 || _rooms[randomX][randomY] == nullptr) {
                         continue;
                     }
 
-                    Room *origin = rooms[randomX][randomY];
+                    Room *origin = _rooms[randomX][randomY];
 
                     if (origin->getRoomBehindDoor(Direction::NORTH) && origin->getRoomBehindDoor(Direction::EAST) &&
                         origin->getRoomBehindDoor(Direction::SOUTH) && origin->getRoomBehindDoor(Direction::WEST)) {
@@ -148,9 +148,9 @@ Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
                             default:
                                 throw 132;
                         }
-                        if (!origin->getRoomBehindDoor(direction) && rooms[randomX + dx][randomY + dy] != nullptr &&
+                        if (!origin->getRoomBehindDoor(direction) && _rooms[randomX + dx][randomY + dy] != nullptr &&
                             dx != dy) {
-                            origin->addDoorTo(rooms[randomX + dx][randomY + dy]);
+                            _corridors.push_back(new Corridor(origin, _rooms[randomX + dx][randomY + dy]));
                             linked = true;
                         }
                     }
@@ -161,26 +161,26 @@ Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
         } catch (int e) {
             DM::say("Error: " + to_string(e) + " !!!");
             DM::say("Restarting Generator...");
-            for (int x = 0; x < rooms.size(); ++x) {
-                for (int y = 0; y < rooms[x].size(); ++y) {
-                    delete rooms[x][y];
+            for (int x = 0; x < _rooms.size(); ++x) {
+                for (int y = 0; y < _rooms[x].size(); ++y) {
+                    delete _rooms[x][y];
                 }
             }
-            rooms.clear();
+            _rooms.clear();
             roomCoordinates.clear();
             levels.clear();
-            startingRoom = nullptr;
+            _startingRoom = nullptr;
         }
 
     }
 }
 
 void Floor::addRoom(Room *room) {
-    if (rooms[room->getCoordinate()->x][room->getCoordinate()->y]) {
-        delete rooms[room->getCoordinate()->x][room->getCoordinate()->y];
+    if (_rooms[room->getCoordinate()->x][room->getCoordinate()->y]) {
+        delete _rooms[room->getCoordinate()->x][room->getCoordinate()->y];
         //TODO ever?
     }
-    rooms[room->getCoordinate()->x][room->getCoordinate()->y] = room;
+    _rooms[room->getCoordinate()->x][room->getCoordinate()->y] = room;
     if (room->getCoordinate()->x < minX)
         minX = room->getCoordinate()->x;
     if (room->getCoordinate()->x > maxX)
@@ -194,7 +194,7 @@ void Floor::addRoom(Room *room) {
 int Floor::roomCount() {
     int roomCount = 0;
 
-    for (auto x : rooms) {
+    for (auto x : _rooms) {
         for (auto y : x.second) {
             ++roomCount;
         }
@@ -208,10 +208,12 @@ Room *Floor::getRandomRoomWithFreeEdge(vector<Coordinate *> coordinates, int tri
         signed int rand = Rng::getRandomIntBetween(0, coordinates.size() - 1);
         Coordinate *coordinate = coordinates.at(rand);
 
-        if (rooms.count(coordinate->x - 1) == 0 || rooms.count(coordinate->x + 1) == 0 ||
-            rooms[coordinate->x - 1].count(coordinate->y) == 0 || rooms[coordinate->x + 1].count(coordinate->y) == 0 ||
-            rooms[coordinate->x].count(coordinate->y - 1) == 0 || rooms[coordinate->x].count(coordinate->y + 1) == 0) {
-            return rooms[coordinate->x][coordinate->y];
+        if (_rooms.count(coordinate->x - 1) == 0 || _rooms.count(coordinate->x + 1) == 0 ||
+            _rooms[coordinate->x - 1].count(coordinate->y) == 0 ||
+            _rooms[coordinate->x + 1].count(coordinate->y) == 0 ||
+            _rooms[coordinate->x].count(coordinate->y - 1) == 0 ||
+            _rooms[coordinate->x].count(coordinate->y + 1) == 0) {
+            return _rooms[coordinate->x][coordinate->y];
         }
         --tries;
     }
@@ -223,22 +225,22 @@ Coordinate *Floor::chooseFreeEdge(Coordinate *coordinate) {
     for (int tries = 0; tries < 20; ++tries) {
         int randomDirection = Rng::getRandomIntBetween(1, 4);
         if (randomDirection == 1) {
-            if (rooms.count(coordinate->x - 1) == 0 || rooms[coordinate->x - 1].count(coordinate->y) == 0) {
+            if (_rooms.count(coordinate->x - 1) == 0 || _rooms[coordinate->x - 1].count(coordinate->y) == 0) {
                 return new Coordinate(coordinate->x - 1, coordinate->y);
             }
         }
         if (randomDirection == 2) {
-            if (rooms.count(coordinate->x + 1) == 0 || rooms[coordinate->x + 1].count(coordinate->y) == 0) {
+            if (_rooms.count(coordinate->x + 1) == 0 || _rooms[coordinate->x + 1].count(coordinate->y) == 0) {
                 return new Coordinate(coordinate->x + 1, coordinate->y);
             }
         }
         if (randomDirection == 3) {
-            if (rooms[coordinate->x].count(coordinate->y - 1) == 0) {
+            if (_rooms[coordinate->x].count(coordinate->y - 1) == 0) {
                 return new Coordinate(coordinate->x, coordinate->y - 1);
             }
         }
         if (randomDirection == 4) {
-            if (rooms[coordinate->x - 1].count(coordinate->y + 1) == 0) {
+            if (_rooms[coordinate->x - 1].count(coordinate->y + 1) == 0) {
                 return new Coordinate(coordinate->x, coordinate->y + 1);
             }
         }
@@ -247,18 +249,18 @@ Coordinate *Floor::chooseFreeEdge(Coordinate *coordinate) {
 }
 
 Room *Floor::getRoom(int x, int y) {
-    return rooms[x][y];
+    return _rooms[x][y];
 }
 
 Floor::~Floor() {
-    for (int x = 0; x < rooms.size(); ++x) {
-        for (int y = 0; y < rooms[x].size(); ++y) {
-            if (rooms[x][y]) {
-                delete rooms[x][y];
+    for (int x = 0; x < _rooms.size(); ++x) {
+        for (int y = 0; y < _rooms[x].size(); ++y) {
+            if (_rooms[x][y]) {
+                delete _rooms[x][y];
             }
         }
     }
-//    if (startingRoom) {
-//        delete startingRoom;
+//    if (_startingRoom) {
+//        delete _startingRoom;
 //    }
 }
