@@ -9,6 +9,7 @@ enum class ConsumableType {
     HEALING,
     ILLUMINATION,
     BOMB,
-    SPELL
+    TALISMAN,
+    COMPASS
 };
 #endif //THE_ELDER_CODES_CONSUMABLETYPE_H

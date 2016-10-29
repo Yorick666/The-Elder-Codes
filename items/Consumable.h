@@ -8,12 +8,15 @@
 
 #include "Item.h"
 #include "../enum/ConsumableType.h"
+#include "../dungeon/Room.h"
 
 class Consumable : public Item {
     ConsumableType _type;
     int _diceAmount;
     int _diceSize;
     int _base;
+
+    void BFS(Room * startingRoom) const;
 
 public:
     Consumable(std::string name, int rarity, ConsumableType type, int base, int diceAmount, int diceSize);

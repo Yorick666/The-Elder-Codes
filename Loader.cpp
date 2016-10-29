@@ -15,12 +15,12 @@
 
 using namespace std;
 
-std::vector<Item *> Loader::loadArmor() {
+std::vector<Item *> Loader::loadItems() {
     vector<Item *> items;
 
     string line;
 
-    ifstream weaponFile("D:\\GitHub\\The Elder Codes\\files\\weapons.txt");
+    ifstream weaponFile("weapons.txt");
     if (!weaponFile.is_open()) {
         weaponFile.open("D:\\GitHub\\The Elder Codes\\files\\weapons.txt");
     }
@@ -79,7 +79,7 @@ std::vector<Item *> Loader::loadArmor() {
     }
     weaponFile.close();
 
-    ifstream armorFile("D:\\GitHub\\The Elder Codes\\files\\armors.txt");
+    ifstream armorFile("armors.txt");
     if (!armorFile.is_open()) {
         armorFile.open("D:\\GitHub\\The Elder Codes\\files\\armors.txt");
     }
@@ -117,9 +117,9 @@ std::vector<Item *> Loader::loadArmor() {
     }
     armorFile.close();
 
-    ifstream consumableFile("D:\\GitHub\\The Elder Codes\\files\\consumables.txt");
+    ifstream consumableFile("consumables.txt");
     if (!consumableFile.is_open()) {
-        consumableFile.open("D:\\GitHub\\The Elder Codes\\files\\armors.txt");
+        consumableFile.open("D:\\GitHub\\The Elder Codes\\files\\consumables.txt");
     }
 
     while (!consumableFile.eof()) {
@@ -149,8 +149,10 @@ std::vector<Item *> Loader::loadArmor() {
             consumableType = ConsumableType::ILLUMINATION;
         } else if (type == "bomb") {
             consumableType = ConsumableType::BOMB;
-        } else if (type == "spell") {
-            consumableType = ConsumableType::SPELL;
+        } else if (type == "talisman") {
+            consumableType = ConsumableType::TALISMAN;
+        } else if (type == "compass") {
+            consumableType = ConsumableType::COMPASS;
         } else if (type == "food") {
             consumableType = ConsumableType::FOOD;
         } else {
@@ -158,7 +160,7 @@ std::vector<Item *> Loader::loadArmor() {
         }
         items.push_back(new Consumable(name, rarity, consumableType, base, amountDice, sizeDice));
     }
-    armorFile.close();
+    consumableFile.close();
 
     return items;
 }

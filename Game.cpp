@@ -13,7 +13,7 @@
 using namespace std;
 
 Game::Game() {
-    _items = Loader::loadArmor();
+    _items = Loader::loadItems();
     _menu = nullptr;
     _dungeon = nullptr;
     _player = nullptr;

@@ -10,7 +10,7 @@
 
 class Loader {
 public:
-    static std::vector<Item *> loadArmor();
+    static std::vector<Item *> loadItems();
 };
 
 

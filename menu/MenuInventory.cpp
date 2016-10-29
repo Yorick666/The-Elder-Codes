@@ -158,7 +158,7 @@ void MenuInventory::getViewScreen() {
                         type = "Bomb";
                         effect = "probalbe cave-in(s)";
                         break;
-                    case ConsumableType::SPELL:
+                    case ConsumableType::TALISMAN:
                         type = "Spell";
                         effect = "dmg";
                         break;
