@@ -83,7 +83,9 @@ void Player::equip(const Item *item) {
         switch (item->getItemType()) {
             case ItemType::ARMOR: {
                 Armor *armor = (Armor *) item;
-                addItemToInventory(_armor);
+                if (_armor) {
+                    addItemToInventory(_armor);
+                }
                 _armor = armor;
                 DM::say(_name + " equiped a(n) " + item->getName());
                 break;
@@ -102,14 +104,18 @@ void Player::equip(const Item *item) {
                             DM::say("Do you want to equip this weapon on your <main> or your <off> hand?", true);
                             string input = DM::askInput();
                             if (input == "main" || input == "m") {
-                                addItemToInventory(_mainWeapon);
+                                if (_mainWeapon) {
+                                    addItemToInventory(_mainWeapon);
+                                }
                                 _mainWeapon = weapon;
                                 DM::say(_name + " equiped a(n) " + item->getName() + " on his main hand.");
                             } else if (input == "off" || input == "o") {
                                 if (_mainWeapon->getWeaponType() == WeaponType::HEAVY) {
                                     DM::say("You can't wield anything in your off hand when using a heavy weapon.");
                                 } else {
-                                    addItemToInventory(_offHandWeapon);
+                                    if (_offHandWeapon) {
+                                        addItemToInventory(_offHandWeapon);
+                                    }
                                     _offHandWeapon = weapon;
                                     DM::say(_name + " equiped a(n) " + item->getName() + " on his off hand.");
                                 }

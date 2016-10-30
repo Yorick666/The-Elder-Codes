@@ -299,7 +299,7 @@ void Game::resetPlayer() {
 }
 
 void Game::showHelpScreen() {
-    DM::say("Remember:\n\t- Enter <exit> at anytime to exit the game.\n\t- <These> tell you what you can do.\n\t- Feel free to ask for <help> at any time.");
+    DM::say("Remember:\n\t- Enter <exit> at anytime to exit the game.\n\t- <Theses> tell you what you can do.\n\t- Feel free to ask for <help> at any time.");
 }
 
 void Game::generateStartingGear() {
