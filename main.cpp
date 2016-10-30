@@ -2,6 +2,7 @@
 #include <random>
 #include "enum/GameState.h"
 #include "Game.h"
+#include "DM.h"
 
 using namespace std;
 
@@ -17,8 +18,11 @@ int main() {
             game->showScreen();
             game->getInput();
 
-        } while (game->getGameState() != GameState::EXITING);
+        } while (game->getGameState() != GameState::EXITING && game->getGameState() != GameState::VICTORY);
 
+        if (game->getGameState() == GameState::VICTORY) {
+            DM::say("Gratz!!!!!",true);
+        }
         delete game;
     } catch (exception &e) {
         cout << "Exception encountered: " << e.what() << endl;

@@ -10,29 +10,33 @@
 using namespace std;
 
 Dungeon::Dungeon(bool debug, int amountFloors, int roomsPerFloor, int roomsPerLock) {
-    floors = vector<Floor*>();
+    _floors = vector<Floor *>();
 
     currentLevel = 0;
 
     for (int i = 0; i < amountFloors; ++i) {
         DM::say("Generating Floor - " + to_string(i + 1) + "/" + to_string(amountFloors), true);
-        Floor * newFloor = nullptr;
+        Floor *newFloor = nullptr;
         if (i == 0) {
-            newFloor = new Floor(debug, roomsPerFloor, roomsPerLock);
+            newFloor = new Floor(debug, nullptr, roomsPerFloor, roomsPerLock);
         }
         else if (i == amountFloors - 1) {
-            newFloor = new Floor(debug, roomsPerFloor, roomsPerLock, true);
+            Room *previous = _floors[i - 1]->getExitRoom();
+            newFloor = new Floor(debug, previous, roomsPerFloor, roomsPerLock, true);
+            _stairs.push_back(new Corridor(previous, newFloor->getStartingRoom()));
         }
         else {
-            newFloor = new Floor(debug, roomsPerFloor, roomsPerLock);
+            Room *previous = _floors[i - 1]->getExitRoom();
+            newFloor = new Floor(debug, previous, roomsPerFloor, roomsPerLock);
+            _stairs.push_back(new Corridor(previous, newFloor->getStartingRoom()));
         }
-        floors.push_back(newFloor);
+        _floors.push_back(newFloor);
     }
     DM::say("Generating dungeon - Finished", true);
 }
 
 Room *Dungeon::descend() {
-    if (floors.size() == currentLevel) {
+    if (_floors.size() == currentLevel) {
         return nullptr; //TODO ending a game
     } else {
         currentLevel++;
@@ -40,10 +44,25 @@ Room *Dungeon::descend() {
     }
 }
 
+Room *Dungeon::ascend() {
+    if (currentLevel > 0) {
+        currentLevel--;
+        return getExitRoom();
+    } else {
+        return nullptr;
+    }
+}
+
 Dungeon::~Dungeon() {
-    for (int i = 0; i < floors.size(); ++i) {
-        if (floors[i]){
-            delete floors[i];
+    for (Floor *floor : _floors) {
+        if (floor) {
+            delete floor;
+        }
+    }
+
+    for (Corridor *corridor: _stairs) {
+        if (corridor) {
+            delete corridor;
         }
     }
 }

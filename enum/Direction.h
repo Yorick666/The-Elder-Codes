@@ -10,7 +10,8 @@ enum class Direction {
     EAST,
     SOUTH,
     WEST,
-    DOWN
+    DOWN,
+    UP
 };
 
 #endif //THE_ELDER_CODES_DIRECTION_H

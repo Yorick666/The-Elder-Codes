@@ -9,4 +9,4 @@ Half_Plate_Armor 750 medium 15 0 0
 Ring_Mail_Armor 30 heavy 14 0 0
 Chain_Mail_Armor 75 heavy 16 0 1
 Splint_Armor 200 heavy 17 0 2
-Plate_Armor 1500 heavy 18 0 2
+Plate_Armor 1000 heavy 18 0 2

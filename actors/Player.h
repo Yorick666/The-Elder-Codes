@@ -12,26 +12,32 @@
 
 class Player : public Actor {
     int _experience;
+    int _level;
     int _securityLevel;
     Room *_currentRoom;
 
 public:
-    Player(Room *currentRoom, std::string name, int hp = 10, int strength = 2, int dexterity = 2, int constitution = 2, int proficiencyBonus = 2,
-           int currentSecurityLevel = 0);
+    Player(Room *currentRoom, std::string name, int hp = 10, int strength = 2, int dexterity = 2, int constitution = 2,
+           int proficiencyBonus = 2,
+           int currentSecurityLevel = 0, int level = 1);
 
     void travel(Direction direction);
 
     Room *getCurrentRoom() const { return _currentRoom; };
 
-    int getSecurityLevel() const { return _securityLevel;};
-
-    void rest();
+    int getSecurityLevel() const { return _securityLevel; };
 
     void generateStartingGear(std::vector<Item *> *possibleGear);
 
     void flee();
 
     void equip(Item *item);
+
+    int getLevel() const { return _level; }
+
+    void gainExperience(int exp);
+
+    void checkForLevelUp();
 };
 
 

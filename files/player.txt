@@ -1,0 +1,10 @@
+Name Player
+Level 1
+Exp 0
+Strength 2
+Dexterity 2
+Constitution 2
+Proficiency 2
+Main_Weapon Dagger 2 simple 1 4 finesse
+Off_Weapon Dagger 2 simple 1 4 finesse
+Armor Chain_Shirt_Armor 50 medium 14 1 0

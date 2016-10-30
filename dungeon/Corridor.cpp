@@ -5,13 +5,18 @@
 #include "Corridor.h"
 #include "Room.h"
 
-Corridor::Corridor(Room *first, Room *second) {
+Corridor::Corridor(Room *first, Room *second, bool extraFlooral) {
     collapsed = false;
     _first = first;
     _second = second;
 
-    _first->addDoor(this);
-    _second->addDoor(this);
+    if (extraFlooral){
+        _first->addDoor(this,Direction::DOWN);
+        _second->addDoor(this,Direction::UP);
+    } else {
+        _first->addDoor(this);
+        _second->addDoor(this);
+    }
 }
 
 Room *Corridor::otherSide(Room *room) const {

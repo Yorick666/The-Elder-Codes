@@ -12,10 +12,20 @@ class Monster : public Actor {
 
 protected:
     int _experienceOnKill;
+
+    Weapon * main;
+    Weapon * off;
 public:
     Monster(std::string name, int experienceOnKill, int hp, int strength, int dexterity, int constitution,
                 int proficiencyBonus, int naturalArmor = 10);
 
+    ~Monster();
+
+    void addMainAttack(Weapon * weapon);
+
+    void addSecondAttack(Weapon * weapon);
+
+    int getExperienceOnKill() const {return _experienceOnKill;}
 };
 
 

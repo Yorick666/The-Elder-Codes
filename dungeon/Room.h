@@ -25,7 +25,7 @@ class Room {
     int _securityLevel;
     bool _visited;
 
-    std::vector<Monster *> _monsters;
+    std::vector<Monster> _monsters;
 
 public:
     Room(Coordinate coordinate, RoomType roomType, int securityLevel = 0);
@@ -40,19 +40,19 @@ public:
 
     Room *getRoomBehindDoor(Direction direction, int securityLevel = -1);
 
-    Corridor * getCorridorBehindDoor(Direction direction, int securityLevel = -1);
+    Corridor *getCorridorBehindDoor(Direction direction, int securityLevel = -1);
 
-    void addDoor(Corridor *newCorridor);
+    void addDoor(Corridor *newCorridor, Direction direction = Direction::NORTH);
 
     void visit() { _visited = true; }
 
     bool visited() { return _visited; }
 
-    void addMonster(Monster * monster);
+    void addMonster(Monster monster);
 
     void clearRoom();
 
-    std::vector<Monster *> *getMonsters() { return &_monsters; } //TODO BAD!!!!?
+    std::vector<Monster> *getMonsters() { return &_monsters; } //TODO BAD!!!!?
 
     bool hasMonsters();
 

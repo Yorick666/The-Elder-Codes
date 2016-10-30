@@ -8,7 +8,7 @@
 
 using namespace std;
 
-Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
+Floor::Floor(bool debug, Room *previous, int amountRooms, int roomsPerLock, bool last) {
     vector<Coordinate *> roomCoordinates;
     map<int, vector<Coordinate *>> levels;
     bool validFloor = false;
@@ -23,8 +23,17 @@ Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
             minX = x;
             maxY = y;
             minY = y;
-            Room *firstRoom = new Room(Coordinate(x, y), RoomType::NORMAL);
+
+            Room *firstRoom;
+
+            if (previous) {
+                firstRoom = new Room(Coordinate(x, y), RoomType::UP);
+            } else {
+                firstRoom = new Room(Coordinate(x, y), RoomType::NORMAL);
+            }
+
             addRoom(firstRoom);
+
             roomCoordinates.push_back(firstRoom->getCoordinate());
             levels[0].push_back(firstRoom->getCoordinate());
             _startingRoom = firstRoom;
@@ -96,6 +105,10 @@ Floor::Floor(bool debug, int amountRooms, int roomsPerLock, bool last) {
                     levels[currentSecurityLevel].push_back(newRoom->getCoordinate());
                     if (roomCount() > 1 && parent) {
                         _corridors.push_back(new Corridor(parent, newRoom));
+                    }
+
+                    if (roomCount() == amountRooms - 1) {
+                        _exitRoom = newRoom;
                     }
                 }
             }
@@ -258,6 +271,12 @@ Floor::~Floor() {
             if (_rooms[x][y]) {
                 delete _rooms[x][y];
             }
+        }
+    }
+
+    for (Corridor *corridor : _corridors) {
+        if (corridor) {
+            delete corridor;
         }
     }
 //    if (_startingRoom) {

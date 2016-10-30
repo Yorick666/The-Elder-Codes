@@ -21,31 +21,31 @@ Room::Room(Coordinate coordinate, RoomType roomType, int securityLevel) {
 
 Room::~Room() {
     //TODO
-    for (int i = 0; i < _monsters.size(); ++i) {
-        if (_monsters[i]) {
-            delete _monsters[i];
-        }
-    }
+//    for (int i = 0; i < _monsters.size(); ++i) {
+//        if (_monsters[i]) {
+//            delete _monsters[i];
+//        }
+//    }
 }
 
-void Room::addDoor(Corridor *newCorridor) {
+void Room::addDoor(Corridor *newCorridor, Direction direction) {
 
     Room *newRoom = newCorridor->otherSide(this);
 
-    Direction direction = Direction::DOWN;
-
-    if (this->getCoordinate()->x == newRoom->getCoordinate()->x &&
-        this->getCoordinate()->y - newRoom->getCoordinate()->y == 1) {
-        direction = Direction::NORTH;
-    } else if (this->getCoordinate()->y == newRoom->getCoordinate()->y &&
-               this->getCoordinate()->x - newRoom->getCoordinate()->x == -1) {
-        direction = Direction::EAST;
-    } else if (this->getCoordinate()->x == newRoom->getCoordinate()->x &&
-               this->getCoordinate()->y - newRoom->getCoordinate()->y == -1) {
-        direction = Direction::SOUTH;
-    } else if (this->getCoordinate()->y == newRoom->getCoordinate()->y &&
-               this->getCoordinate()->x - newRoom->getCoordinate()->x == 1) {
-        direction = Direction::WEST;
+    if (direction == Direction::NORTH) {
+        if (this->getCoordinate()->x == newRoom->getCoordinate()->x &&
+            this->getCoordinate()->y - newRoom->getCoordinate()->y == 1) {
+            direction = Direction::NORTH;
+        } else if (this->getCoordinate()->y == newRoom->getCoordinate()->y &&
+                   this->getCoordinate()->x - newRoom->getCoordinate()->x == -1) {
+            direction = Direction::EAST;
+        } else if (this->getCoordinate()->x == newRoom->getCoordinate()->x &&
+                   this->getCoordinate()->y - newRoom->getCoordinate()->y == -1) {
+            direction = Direction::SOUTH;
+        } else if (this->getCoordinate()->y == newRoom->getCoordinate()->y &&
+                   this->getCoordinate()->x - newRoom->getCoordinate()->x == 1) {
+            direction = Direction::WEST;
+        }
     }
 
     if (_doors[direction]) {
@@ -68,16 +68,11 @@ Room *Room::getRoomBehindDoor(Direction direction, int securityLevel) {
     return nullptr;
 }
 
-void Room::addMonster(Monster *monster) {
+void Room::addMonster(Monster monster) {
     _monsters.push_back(monster);
 }
 
 void Room::clearRoom() {
-    for (int i = 0; i < _monsters.size(); ++i) {
-        if (_monsters[i]) {
-            delete _monsters[i];
-        }
-    }
     _monsters.clear();
 }
 
@@ -88,7 +83,7 @@ bool Room::hasMonsters() {
 bool Room::hasLivingMonsters() {
     int count = 0;
     for (int i = 0; i < _monsters.size(); ++i) {
-        if (_monsters[i]->getCurrentHp() > 0) {
+        if (_monsters[i].getCurrentHp() > 0) {
             count++;
         }
     }

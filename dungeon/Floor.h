@@ -16,6 +16,7 @@ class Floor {
     int minY;
 
     Room *_startingRoom;
+    Room *_exitRoom;
 
     std::map<int, std::map<int, Room * >> _rooms;
 
@@ -30,11 +31,13 @@ class Floor {
     Coordinate *chooseFreeEdge(Coordinate *coordinate);
 
 public:
-    Floor(bool debug, int amountRooms, int roomsPerLock, bool last = false);
+    Floor(bool debug,Room * previous, int amountRooms, int roomsPerLock, bool last = false);
 
     ~Floor();
 
     Room *getStartingRoom() { return _startingRoom; };
+
+    Room *getExitRoom() const { return _exitRoom; }
 
     int getMinX() { return minX; };
 

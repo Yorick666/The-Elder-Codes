@@ -11,7 +11,9 @@
 #include "../enum/Direction.h"
 
 class Dungeon {
-    std::vector<Floor *> floors;
+    std::vector<Floor *> _floors;
+
+    std::vector<Corridor *> _stairs;
 
     int currentLevel;
 
@@ -20,11 +22,15 @@ public:
 
     ~Dungeon();
 
-    Room *getStartingRoom() { return floors[currentLevel]->getStartingRoom(); };
+    Room *getStartingRoom() { return _floors[currentLevel]->getStartingRoom(); };
 
-    Floor *getCurrentFloor() { return floors[currentLevel]; };
+    Room *getExitRoom() { return _floors[currentLevel]->getExitRoom(); };
 
-    Room * descend();
+    Floor *getCurrentFloor() { return _floors[currentLevel]; };
+
+    Room *descend();
+
+    Room *ascend();
 };
 
 

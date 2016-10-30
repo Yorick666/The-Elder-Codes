@@ -25,10 +25,10 @@ Actor::Actor(std::string name, int hp, int strength, int dexterity, int constitu
 }
 
 void Actor::attack(Actor *target) {
+    DM::say("----------" + _name + "----------");
     if (_hp > 0) {
-        DM::say("----------" + _name + "----------");
         int dmg = 1 + _strength;
-        int hit = Rng::roleDice(Dice::d20);
+        int hit = Rng::roleDice(Dice::d20) + _proficiencyBonus;
 
         if (_mainWeapon) {
             dmg = _mainWeapon->use(this);
@@ -47,7 +47,7 @@ void Actor::attack(Actor *target) {
 
         if (_offHandWeapon) {
             dmg = _offHandWeapon->use(this);
-            hit = Rng::roleDice(Dice::d20);
+            hit = Rng::roleDice(Dice::d20) + _proficiencyBonus;
 
             if (_offHandWeapon->getWeaponType() == WeaponType::FINESSE && _dexterity > _strength) {
                 hit += _dexterity;

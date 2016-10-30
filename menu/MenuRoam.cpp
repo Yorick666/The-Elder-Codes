@@ -27,6 +27,10 @@ void MenuRoam::loadOptions() {
     _options.push_back("inventory");
     _options.push_back("stats");
     _options.push_back("map");
+
+    if (_game->isDebug()) {
+        _options.push_back("save");
+    }
 }
 
 void MenuRoam::getViewScreen() {
@@ -93,28 +97,51 @@ void MenuRoam::getViewScreen() {
             DM::say("\tA caved-in corridor to the west.");
         }
     }
-    if (currentRoom->getRoomType() != RoomType::NORMAL) {
-        //TODO BOSS BATTLE
-        if (false) {
+    if (currentRoom->getRoomType() == RoomType::EXIT) {
+        if (!_game->getCurrentRoom()->hasLivingMonsters()) {
+            DM::say("\t A Locked Golden Gate.");
+        } else {
+            DM::say("\t An unlocked Golden Gate. Could this be the end?");
+        }
+    }
+    if (currentRoom->getRoomType() == RoomType::DOWN) {
+        if (!_game->getCurrentRoom()->hasLivingMonsters()) {
             DM::say("\t An open hatch to the next floor <d/down> below.");
         } else {
             DM::say("\t A locked hatch on the floor.");
         }
     }
+    if (currentRoom->getRoomType() == RoomType::UP) {
+        if (!_game->getCurrentRoom()->hasLivingMonsters()) {
+            DM::say("\t An open hatch back to the previous floor <u/up>stairs.");
+        } else {
+            DM::say("\t A locked hatch on the ceiling.");
+        }
+    }
 
     if (currentRoom->hasMonsters()) {
         DM::say("\nYou see the following monsters:");
-        const vector<Monster *> *monsters = currentRoom->getMonsters();
+        const vector<Monster> *monsters = currentRoom->getMonsters();
         for (int i = 0; i < monsters->size(); ++i) {
-            DM::say("\t<" + to_string(i + 1) + ">: " + monsters->at(i)->getName() + " [" +
-                    to_string(monsters->at(i)->getCurrentHp()) + "/" +
-                    to_string(monsters->at(i)->getMaxHp()) + "]");
+            DM::say("\t<" + to_string(i + 1) + ">: " + monsters->at(i).getName() + " [" +
+                    to_string(monsters->at(i).getCurrentHp()) + "/" +
+                    to_string(monsters->at(i).getMaxHp()) + "]");
         }
     }
 }
 
 void MenuRoam::handleInput(std::string input) {
-    if (regex_match(input, regex("n|north"))) {
+    if (regex_match(input, regex("u|up"))) {
+        _game->readyRoom(Direction::UP);
+        _game->getPlayer()->travel(Direction::UP);
+    } else if (regex_match(input, regex("d|down"))) {
+        if (_game->getCurrentRoom()->getRoomType() == RoomType::EXIT && !_game->getCurrentRoom()->hasLivingMonsters()) {
+            _game->changeState(GameState::VICTORY);
+        } else {
+            _game->readyRoom(Direction::DOWN);
+            _game->getPlayer()->travel(Direction::DOWN);
+        }
+    } else if (regex_match(input, regex("n|north"))) {
         _game->readyRoom(Direction::NORTH);
         _game->getPlayer()->travel(Direction::NORTH);
     } else if (regex_match(input, regex("e|east"))) {
@@ -165,6 +192,16 @@ void MenuRoam::handleInput(std::string input) {
         } else {
             DM::say("Why try to rest here? Being brave is almost the same as being stupid.");
         }
+    } else if (regex_match(input, regex("search"))) {
+        if (!_game->getCurrentRoom()->hasLivingMonsters()) {
+            _game->checkDeadMonsters();
+        } else {
+            DM::say("Do you really want to loot so bad?");
+        }
+    } else if (regex_match(input, regex("stats"))) {
+        DM::say("TODO"); //TODO
+    } else if (_game->isDebug() && regex_match(input, regex("save"))) {
+        _game->savePlayer();
     } else {
         DM::say("Come again for big fudge?");
     }

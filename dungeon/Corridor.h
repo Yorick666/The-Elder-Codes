@@ -14,7 +14,7 @@ class Corridor {
     bool collapsed;
 
 public:
-    Corridor(Room *first, Room *second);
+    Corridor(Room *first, Room *second, bool extraFlooral = false);
 
     void collapse() { collapsed = true; }
 

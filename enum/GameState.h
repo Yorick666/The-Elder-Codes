@@ -10,7 +10,8 @@ enum class GameState {
     STARTING,
     ROAMING,
     FIGHTING,
-    INVENTORY
+    INVENTORY,
+    VICTORY
 };
 
 #endif //THE_ELDER_CODES_GAMESTATE_H

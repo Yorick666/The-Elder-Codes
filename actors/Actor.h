@@ -46,6 +46,8 @@ public:
 
     int getProficiencyBonus() const { return _proficiencyBonus; }
 
+    int getNaturalArmor() const { return _naturalArmor; }
+
     Weapon *getMainWeapon() const { return _mainWeapon; }
 
     Weapon *getOffHandWeapon() const { return _offHandWeapon; }

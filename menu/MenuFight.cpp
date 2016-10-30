@@ -20,11 +20,11 @@ void MenuFight::getViewScreen() {
     Room *currentRoom = _game->getCurrentRoom();
     if (currentRoom->hasMonsters()) {
         DM::say("\nYou see the following monsters:");
-        const vector<Monster *> *monsters = currentRoom->getMonsters();
+        const vector<Monster> *monsters = currentRoom->getMonsters();
         for (int i = 0; i < monsters->size(); ++i) {
-            DM::say("\t<" + to_string(i + 1) + ">: " + monsters->at(i)->getName() + " [" +
-                    to_string(monsters->at(i)->getCurrentHp()) + "/" +
-                    to_string(monsters->at(i)->getMaxHp()) + "]");
+            DM::say("\t<" + to_string(i + 1) + ">: " + monsters->at(i).getName() + " [" +
+                    to_string(monsters->at(i).getCurrentHp()) + "/" +
+                    to_string(monsters->at(i).getMaxHp()) + "]");
         }
     }
     DM::say("\nEnter the id of a monster to attack it or enter <back> to heal/run away.");
@@ -33,10 +33,11 @@ void MenuFight::getViewScreen() {
 void MenuFight::handleInput(std::string input) {
     if (regex_match(input, regex("^\\d+$"))) {
         int x = stoi(input);
-        vector<Monster *> *monsters = _game->getCurrentRoom()->getMonsters();
+        vector<Monster> *monsters = _game->getCurrentRoom()->getMonsters();
         int t = monsters->size();
         if (x <= monsters->size()) {
-            _game->getPlayer()->attack(monsters->at(x - 1));
+            Monster *temp = &monsters->at(x - 1);
+            _game->getPlayer()->attack(temp);
             if (!_game->getCurrentRoom()->hasLivingMonsters()) {
                 DM::say("\n\nYou killed every monster in the room. Are you proud of yourself?");
                 _game->changeState(GameState::ROAMING);

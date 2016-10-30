@@ -9,14 +9,18 @@ using namespace std;
 
 Player::Player(Room *currentRoom, string name, int hp, int strength, int dexterity, int constitution,
                int proficiencyBonus,
-               int currentSecurityLevel) : Actor(name,
-                                                 hp,
-                                                 strength,
-                                                 dexterity,
-                                                 constitution,
-                                                 proficiencyBonus) {
+               int currentSecurityLevel, int level) : Actor(name,
+                                                            hp,
+                                                            strength,
+                                                            dexterity,
+                                                            constitution,
+                                                            proficiencyBonus) {
     _securityLevel = currentSecurityLevel;
     _currentRoom = currentRoom;
+    if (level < 1) {
+        level = 1;
+    }
+    _level = level;
     currentRoom->visit();
 }
 
@@ -34,7 +38,7 @@ void Player::travel(Direction direction) {
                     _currentRoom->visit();
                 }
             } else {
-                DM::say("The corridor to the other room is caved in, so you can't travel in that direction.");
+                DM::say("The entrance to the other room is caved in, so you can't travel in that direction.");
             }
         } else {
             DM::say("You can't travel in this direction.");
@@ -42,10 +46,6 @@ void Player::travel(Direction direction) {
 
 
     }
-}
-
-void Player::rest() {
-    //TODO
 }
 
 void Player::generateStartingGear(std::vector<Item *> *possibleGear) {
@@ -178,4 +178,18 @@ void Player::equip(Item *item) {
         }
     }
 
+}
+
+void Player::gainExperience(int exp) {
+    _experience += exp;
+}
+
+void Player::checkForLevelUp() {
+    int neededExp = 3 ^_level * 100;
+    if (_experience >= neededExp) {
+        _experience - neededExp;
+        _level++;
+        _maxHp += Rng::roleDice(10) + _constitution;
+        _hp = _maxHp;
+    }
 }

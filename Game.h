@@ -14,6 +14,7 @@ class Menu;
 
 class Game {
     std::vector<Item *> _items;
+    std::map<Monster *, std::vector<Weapon *>> _monsters;
     std::string _input;
     GameState _state;
     Menu *_menu;
@@ -47,13 +48,21 @@ public:
 
     Floor *getCurrentFloor() { return _dungeon->getCurrentFloor(); };
 
-    void generateMonsters(Room * room);
+    void generateMonsters(Room *room);
 
     void flee();
 
     void monsterCombat();
 
     void readyRoom(Direction direction);
+
+    void checkDeadMonsters();
+
+    std::vector<Item *> generateLoot(int monsterExp);
+
+    void loadPlayer();
+
+    void savePlayer();
 };
 
 

@@ -1,4 +1,4 @@
-Torch 1 illumination 1 0 0
+Torch 100 illumination 1 0 0
 Potion_of_Healing 25 healing 2 2 4
 Potion_of_Greater 60 healing 4 4 4
 Potion_of_Superior 150 healing 8 8 4
