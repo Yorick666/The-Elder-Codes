@@ -23,7 +23,7 @@ void MenuFight::getViewScreen() {
         DM::say("\nYou see the following monsters:");
         const vector<Monster> *monsters = currentRoom->getMonsters();
         for (int i = 0; i < monsters->size(); ++i) {
-            DM::say("\t<" + to_string(i + 1) + ">: " + monsters->at(i).getName() + " [" +
+            DM::say("\t[" + to_string(i + 1) + "]: " + monsters->at(i).getName() + " [" +
                     to_string(monsters->at(i).getCurrentHp()) + "/" +
                     to_string(monsters->at(i).getMaxHp()) + "]");
         }

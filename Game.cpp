@@ -299,7 +299,7 @@ void Game::resetPlayer() {
 }
 
 void Game::showHelpScreen() {
-    DM::say("Remember:\n\t- Enter <exit> at anytime to exit the game.\n\t- <Theses> tell you what you can do.\n\t- Feel free to ask for <help> at any time.");
+    DM::say("Remember:\n\t- Enter <exit> at anytime to exit the game.\n\t- <t/this> tells you that you can enter 'this' or 't' in the console (without the '').\n\t- <this> [id] means you can enter 'this 1' in the console (if there is something with 1 as id).\n\t- Feel free to ask for <help> at any time.");
 }
 
 void Game::generateStartingGear() {

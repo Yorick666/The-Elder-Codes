@@ -24,7 +24,7 @@ void MenuPickup::getViewScreen() {
         switch (item->first->getItemType()) {
             case ItemType::ARMOR: {
                 Armor *armor = (Armor *) item->first;
-                DM::say("\t<" + to_string(i) + ">: " + item->first->getName() + " - " + to_string(armor->getBaseAC()) +
+                DM::say("\t[" + to_string(i) + "]: " + item->first->getName() + " - " + to_string(armor->getBaseAC()) +
                         " AC (" + to_string(item->second) + "x)");
                 break;
             }
@@ -50,7 +50,7 @@ void MenuPickup::getViewScreen() {
                         break;
                 }
 
-                DM::say("\t<" + to_string(i) + ">: " + item->first->getName() + " - " + type + " - " +
+                DM::say("\t[" + to_string(i) + "]: " + item->first->getName() + " - " + type + " - " +
                         to_string(weapon->getDiceAmount()) +
                         "d" + to_string(weapon->getDiceSize()) + " dmg (" + to_string(item->second) + "x)");
                 break;
@@ -89,11 +89,11 @@ void MenuPickup::getViewScreen() {
                 }
 
                 if (consumable->getDiceAmount() == 0) {
-                    DM::say("\t<" + to_string(i) + ">: " + consumable->getName() + " - " + type + " - " +
+                    DM::say("\t[" + to_string(i) + "]: " + consumable->getName() + " - " + type + " - " +
                             to_string(consumable->getBaseValue()) + " " + effect + " (" +
                             to_string(item->second) + "x)");
                 } else {
-                    DM::say("\t<" + to_string(i) + ">: " + consumable->getName() + " - " + type + " - " +
+                    DM::say("\t[" + to_string(i) + "]: " + consumable->getName() + " - " + type + " - " +
                             to_string(consumable->getDiceAmount()) + "d" + to_string(consumable->getDiceSize()) +
                             "+" +
                             to_string(consumable->getBaseValue()) + " " + effect + " (" +

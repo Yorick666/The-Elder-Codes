@@ -1,7 +1,12 @@
-Kobolt 25 5 -2 2 -1 2 10 Dagger finesse 1 4
+Kobold 25 5 -2 2 -1 2 10 Dagger finesse 1 4
 Mastiff 25 5 1 2 1 2 10 Bite simple 1 6
-Giant_Crab 25 7 -2 2 0 2 10 Bite finesse 1 4
-Giant_Rat 50 13 1 2 0 2 13 Claw simple 1 6
+Giant_Rat 25 7 -2 2 0 2 10 Bite finesse 1 4
+Cultist 25 9 0 1 0 2 11 Scimitar finesse 1 6
+Flying_Snake 25 5 -3 4 0 2 10 Bite finesse 2 4
+Blood_Hawk 25 7 -2 2 0 2 10 Beak finesse 1 4
+Mule 25 11 2 0 1 2 10 Hooves simple 1 4
+Giant_Frog 50 18 1 1 0 2 10 Bite simple 1 6
+Giant_Crab 50 13 1 2 0 2 13 Claw simple 1 6
 Guard 50 11 1 1 1 2 15 Spear simple 1 8
 Flying_Sword 50 17 1 2 0 2 15 Longsword simple 1 8
 Cockatrice 100 27 -2 1 1 2 10 Bite finesse 1 6

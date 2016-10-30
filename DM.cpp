@@ -241,7 +241,7 @@ void DM::describeRoom(Room *room) {
             description += "You see a seemingly normal room. Don't worry, everyone gets it wrong sometimes.\n";
             break;
         case RoomSize::LARGE:
-            description += "Describing this room as large woult be an understatement... It's HUGE.\n";
+            description += "Describing this room as large would be an understatement... It's HUGE.\n";
             break;
         case RoomSize::CAVERN:
             description += "You may have left the dungeon, because this room looks more like a cavern.\n";

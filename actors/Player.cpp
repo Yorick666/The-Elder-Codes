@@ -101,7 +101,7 @@ void Player::equip(const Item *item) {
                             _offHandWeapon = weapon;
                             DM::say(_name + " equiped a(n) " + item->getName() + " on his off hand.");
                         } else {
-                            DM::say("Do you want to equip this weapon on your <main> or your <off> hand?", true);
+                            DM::say("Do you want to equip this weapon on your <m/main> or your <o/off> hand?", true);
                             string input = DM::askInput();
                             if (input == "main" || input == "m") {
                                 if (_mainWeapon) {
@@ -143,6 +143,12 @@ void Player::equip(const Item *item) {
                             addItemToInventory(_mainWeapon);
                         }
                         _mainWeapon = weapon;
+
+                        if (_offHandWeapon) {
+                            addItemToInventory(_offHandWeapon);
+                            _offHandWeapon = nullptr;
+                        }
+
                         DM::say(_name + " equiped a(n) " + item->getName() + " with both hands.");
                         break;
                     case WeaponType::SHIELD:
@@ -172,21 +178,52 @@ void Player::checkForLevelUp() {
     if (_experience >= neededExp) {
         _experience -= neededExp;
         _level++;
-        DM::say("Level " + to_string(_level) + " reached!");
+        DM::say("Level " + to_string(_level) + " reached!\n");
+        DM::say("<s/strength>: Adds damage and chance to hit to weapons.", true);
+        DM::say("<d/dexterity>: Adds damage/hit chance to finesse weapons and increases AC with the right armor.",
+                true);
+        DM::say("<c/constitution>: Adds 1 guaranteed hp per level (starting with this one).", true);
+        while (true) {
+            DM::say("What stat do you want to increase?", true);
+            string input = DM::askInput();
+            if (input == "s" || input == "strength") {
+                _strength++;
+            } else if (input == "d" || input == "dexterity") {
+                _dexterity++;
+            } else if (input == "c" || input == "constitution") {
+                _constitution++;
+            } else {
+                continue;
+            }
+            break;
+        }
         _maxHp += Rng::roleDice(10) + _constitution;
         _hp = _maxHp;
-        if (_level % 2 == 0) {
-            _strength++;
-        } else {
-            _dexterity++;
-        }
-
-        if (_level % 3 == 0) {
-            _constitution++;
-        }
 
         if (_level % 4 == 0) {
             _proficiencyBonus++;
         }
+    }
+}
+
+void Player::unequip(Item *item) {
+    if (item) {
+        if (item == _mainWeapon) {
+            DM::say(_name + " unequips " + item->getName());
+            addItemToInventory(_mainWeapon);
+            _mainWeapon = nullptr;
+        } else if (item == _offHandWeapon) {
+            DM::say(_name + " unequips " + item->getName());
+            addItemToInventory(_offHandWeapon);
+            _offHandWeapon = nullptr;
+        } else if (item == _armor) {
+            DM::say(_name + " unequips " + item->getName());
+            addItemToInventory(_armor);
+            _armor = nullptr;
+        } else {
+            DM::say("Yes.... take off what you don't even have equiped.");
+        }
+    } else {
+        DM::say("You don't even have anything equiped....");
     }
 }

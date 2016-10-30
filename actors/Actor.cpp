@@ -39,7 +39,7 @@ void Actor::attack(Actor *target) {
                 hit += _strength;
             }
         } else {
-            DM::say(_name + " attacks with his/her/its bare fists/claws/hoofs!!!!");
+            DM::say(_name + " attacks with his/her/its bare fists/claws/hoofs!!!! (whatever you lot have)");
             hit += _strength;
         }
 

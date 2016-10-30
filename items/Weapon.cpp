@@ -17,7 +17,7 @@ Weapon::Weapon(std::string name, int rarity, WeaponType type, int diceAmount, in
 }
 
 int Weapon::use(Actor *actor) const {
-    DM::say(actor->getName() + " attacks with " + _name + "!");
+    DM::say(actor->getName() + " attacks with a(n) " + _name + "!");
 
     int baseDmg = Rng::roleDice(_diceSize, _diceAmount);
 

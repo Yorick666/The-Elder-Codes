@@ -18,6 +18,7 @@ MenuInventory::MenuInventory(Game *game) : Menu(game) {
 
 void MenuInventory::loadOptions() {
     _options.push_back("<e/equip> [id]");
+    _options.push_back("<unequip> [main/off/armor]");
     _options.push_back("<u/use> [id]");
     _options.push_back("<d/drop> [id]");
     _options.push_back("<b/back>");
@@ -102,9 +103,9 @@ void MenuInventory::getViewScreen() {
                 break;
         }
 
-        DM::say("\tArmor:\t" + armor->getName() + " ( AC: " + to_string(armor->getBaseAC()) + extra + ")");
+        DM::say("\t<Armor>: " + armor->getName() + " ( AC: " + to_string(armor->getBaseAC()) + extra + ")");
     } else {
-        DM::say("\tArmor:\tNone");
+        DM::say("\t<Armor>: None");
     }
 
     DM::say("\nInventory:");
@@ -124,7 +125,7 @@ void MenuInventory::getViewScreen() {
                     case ArmorType::HEAVY:
                         break;
                 }
-                DM::say("\t<" + to_string(i) + ">: " + item->first->getName() + " - AC: " +
+                DM::say("\t[" + to_string(i) + "]: " + item->first->getName() + " - AC: " +
                         to_string(armor->getBaseAC()) +
                         extra + "(" + to_string(item->second) + "x)");
                 break;
@@ -151,7 +152,7 @@ void MenuInventory::getViewScreen() {
                         break;
                 }
 
-                DM::say("\t<" + to_string(i) + ">: " + item->first->getName() + " - " + type + " - " +
+                DM::say("\t[" + to_string(i) + "]: " + item->first->getName() + " - " + type + " - " +
                         to_string(weapon->getDiceAmount()) +
                         "d" + to_string(weapon->getDiceSize()) + " dmg (" + to_string(item->second) + "x)");
                 break;
@@ -190,11 +191,11 @@ void MenuInventory::getViewScreen() {
                 }
 
                 if (consumable->getDiceAmount() == 0) {
-                    DM::say("\t<" + to_string(i) + ">: " + consumable->getName() + " - " + type + " - " +
+                    DM::say("\t[" + to_string(i) + "]: " + consumable->getName() + " - " + type + " - " +
                             to_string(consumable->getBaseValue()) + " " + effect + " (" +
                             to_string(item->second) + "x)");
                 } else {
-                    DM::say("\t<" + to_string(i) + ">: " + consumable->getName() + " - " + type + " - " +
+                    DM::say("\t[" + to_string(i) + "]: " + consumable->getName() + " - " + type + " - " +
                             to_string(consumable->getDiceAmount()) + "d" + to_string(consumable->getDiceSize()) +
                             "+" +
                             to_string(consumable->getBaseValue()) + " " + effect + " (" +
@@ -214,12 +215,28 @@ void MenuInventory::handleInput(std::string input) {
     if (regex_match(input, regex("b|back"))) {
         _game->changeState(GameState::ROAMING);
     } else if (regex_match(input, regex("(e|equip)"))) {
+        DM::say("Equip what?");
         _state = InventoryState::EQUIP;
     } else if (regex_match(input, regex("(d|drop)"))) {
+        DM::say("Drop what?");
         _state = InventoryState::DROP;
     } else if (regex_match(input, regex("(u|use)"))) {
+        DM::say("Use what?");
         _state = InventoryState::USE;
-    } else if (_state != InventoryState::STANDBY && regex_match(input, regex("^\\d+$"))) {
+    } else if (regex_match(input, regex("(unequip)"))) {
+        DM::say("Unequip what?");
+        _state = InventoryState::UNEQUIP;
+    } else if (_state == InventoryState::UNEQUIP && regex_match(input, regex("^\\w+$"))) {
+        if (regex_match(input, regex("(m|main|Main)"))) {
+            _game->getPlayer()->unequip(_game->getPlayer()->getMainWeapon());
+        } else if (regex_match(input, regex("(o|off|Off)"))) {
+            _game->getPlayer()->unequip(_game->getPlayer()->getOffHandWeapon());
+        } else if (regex_match(input, regex("(a|armor|Armor)"))) {
+            _game->getPlayer()->unequip(_game->getPlayer()->getArmor());
+        }
+        _state = InventoryState::STANDBY;
+    } else if (_state != InventoryState::STANDBY && _state != InventoryState::UNEQUIP &&
+               regex_match(input, regex("^\\d+$"))) {
         int x = stoi(input);
         int i = 1;
         for (map<Item *, int>::iterator item = _inventory->begin(); item != _inventory->end(); item++) {
@@ -300,5 +317,5 @@ void MenuInventory::handleInput(std::string input) {
 }
 
 void MenuInventory::prepareForInput() {
-    cout << ">";
+    cout << "[Life:" << _game->getPlayer()->getCurrentHp() << "/" << _game->getPlayer()->getMaxHp() << "]>";
 }

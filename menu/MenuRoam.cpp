@@ -133,7 +133,7 @@ void MenuRoam::getViewScreen() {
         DM::say("\nYou see the following monsters:");
         const vector<Monster> *monsters = currentRoom->getMonsters();
         for (int i = 0; i < monsters->size(); ++i) {
-            DM::say("\t<" + to_string(i + 1) + ">: " + monsters->at(i).getName() + " [" +
+            DM::say("\t[" + to_string(i + 1) + "]: " + monsters->at(i).getName() + " [" +
                     to_string(monsters->at(i).getCurrentHp()) + "/" +
                     to_string(monsters->at(i).getMaxHp()) + "]");
         }
@@ -158,7 +158,7 @@ void MenuRoam::getViewScreen() {
                         case ArmorType::HEAVY:
                             break;
                     }
-                    DM::say("\t<" + to_string(i) + ">: " + item->first->getName() + " - AC: " +
+                    DM::say("\t[" + to_string(i) + "]: " + item->first->getName() + " - AC: " +
                             to_string(armor->getBaseAC()) +
                             extra + "(" + to_string(item->second) + "x)");
                     break;
@@ -185,7 +185,7 @@ void MenuRoam::getViewScreen() {
                             break;
                     }
 
-                    DM::say("\t<" + to_string(i) + ">: " + item->first->getName() + " - " + type + " - " +
+                    DM::say("\t[" + to_string(i) + "]: " + item->first->getName() + " - " + type + " - " +
                             to_string(weapon->getDiceAmount()) +
                             "d" + to_string(weapon->getDiceSize()) + " dmg (" + to_string(item->second) + "x)");
                     break;
@@ -224,11 +224,11 @@ void MenuRoam::getViewScreen() {
                     }
 
                     if (consumable->getDiceAmount() == 0) {
-                        DM::say("\t<" + to_string(i) + ">: " + consumable->getName() + " - " + type + " - " +
+                        DM::say("\t[" + to_string(i) + "]: " + consumable->getName() + " - " + type + " - " +
                                 to_string(consumable->getBaseValue()) + " " + effect + " (" +
                                 to_string(item->second) + "x)");
                     } else {
-                        DM::say("\t<" + to_string(i) + ">: " + consumable->getName() + " - " + type + " - " +
+                        DM::say("\t[" + to_string(i) + "]: " + consumable->getName() + " - " + type + " - " +
                                 to_string(consumable->getDiceAmount()) + "d" + to_string(consumable->getDiceSize()) +
                                 "+" +
                                 to_string(consumable->getBaseValue()) + " " + effect + " (" +
@@ -347,7 +347,7 @@ void MenuRoam::handleInput(std::string input) {
             AC += player->getArmor()->getBaseAC();
             AC += player->getArmor()->getMaxDex(player->getDexterity());
         } else {
-            AC += player->getNaturalArmor();
+            AC += player->getNaturalArmor() + player->getDexterity();
         }
         if (player->getOffHandWeapon() && player->getOffHandWeapon()->getWeaponType() == WeaponType::SHIELD) {
             AC += 2;

@@ -18,7 +18,7 @@ class Player : public Actor {
 
 public:
     Player(Room *currentRoom, std::string name, int hp = 10, int strength = 1, int dexterity = 1, int constitution = 1,
-           int proficiencyBonus = 2, int level = 1, int experience = 0);
+           int proficiencyBonus = 2, int level = 1, int experience = 30000);
 
     Player(Room *currentRoom, Player *loadedPlayer);
 
@@ -41,6 +41,8 @@ public:
     void checkForLevelUp();
 
     int getExperience() const { return _experience; }
+
+    void unequip(Item *item);
 };
 
 
