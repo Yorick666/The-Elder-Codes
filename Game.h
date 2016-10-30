@@ -68,6 +68,8 @@ public:
     void resetPlayer();
 
     void showHelpScreen();
+
+    void generateStartingGear();
 };
 
 

@@ -100,7 +100,7 @@ void Game::startNewGame(string playerName, bool debug, int size, int roomsPerFlo
         delete _player;
         _player = temp;
     }
-    _player->generateStartingGear(&_items);
+    generateStartingGear();
 
     DM::say("Welcome " + _player->getName() +
             ", you're about to embark on a journey to defeat the master of this dungeon: The Dungeon Master. (Me!)\n");
@@ -113,7 +113,8 @@ void Game::generateMonsters(Room *room) {
         room->clearRoom();
     }
 
-    int playerLevel = _player->getLevel();
+    int level = _dungeon->getCurrentLevel() + 1;
+//    int level = _player->getLevel();
     int difficulty = Rng::roleDice(50);
 
     if (difficulty >= 45) {
@@ -133,14 +134,14 @@ void Game::generateMonsters(Room *room) {
 
     int baseExpMultiplier = 25;
 
-    int expBudget = difficulty * playerLevel * baseExpMultiplier;
+    int expBudget = difficulty * level * baseExpMultiplier;
 
     vector<int> maxSizeMonsterOnLevel = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
     vector<int> expToSize = {25, 50, 100, 200, 450, 700};
     vector<Monster *> monstersForRoom;
 
     int currentExp = 0;
-    int currentSearchLevel = playerLevel;
+    int currentSearchLevel = level;
 
     vector<Monster *> monsterList;
 
@@ -299,4 +300,42 @@ void Game::resetPlayer() {
 
 void Game::showHelpScreen() {
     DM::say("Remember:\n\t- Enter <exit> at anytime to exit the game.\n\t- <These> tell you what you can do.\n\t- Feel free to ask for <help> at any time.");
+}
+
+void Game::generateStartingGear() {
+    vector<Weapon *> weaponPicker;
+    vector<Armor *> armorPicker;
+    for (int i = 0; i <= _items.size(); ++i) {
+        if (i < _items.size()) {
+            Item *item = _items.at(i);
+            if (item) {
+                if (item->getItemType() == ItemType::WEAPON) {
+                    if (item->getRarity() <= 10) {
+                        weaponPicker.push_back((Weapon *) item);
+                    }
+                } else if (item->getItemType() == ItemType::ARMOR) {
+                    if (item->getRarity() <= 10) {
+                        armorPicker.push_back((Armor *) item);
+                    }
+                } else if (item->getItemType() == ItemType::CONSUMABLE) {
+                    if (item->getRarity() <= 10) {
+                        _player->addItemToInventory(item);
+                        _player->addItemToInventory(item);
+                    }
+                }
+            }
+        } else {
+            if (!_player->getMainWeapon()) {
+                _player->equip(weaponPicker[Rng::getRandomIntBetween(0, weaponPicker.size() - 1)]);
+            }
+            if (!_player->getArmor()) {
+                _player->equip(armorPicker[Rng::getRandomIntBetween(0, armorPicker.size() - 1)]);
+            }
+
+            //TODO test
+            _player->addItemToInventory(weaponPicker[Rng::getRandomIntBetween(0, weaponPicker.size() - 1)]);
+            _player->addItemToInventory(weaponPicker[Rng::getRandomIntBetween(0, weaponPicker.size() - 1)]);
+            _player->addItemToInventory(armorPicker[Rng::getRandomIntBetween(0, armorPicker.size() - 1)]);
+        }
+    }
 }

@@ -5,21 +5,17 @@
 #ifndef THE_ELDER_CODES_MONSTER_H
 #define THE_ELDER_CODES_MONSTER_H
 
-
 #include "Actor.h"
 
 class Monster : public Actor {
 
 protected:
     int _experienceOnKill;
-
-    Weapon * main;
-    Weapon * off;
 public:
     Monster(std::string name, int experienceOnKill, int hp, int strength, int dexterity, int constitution,
                 int proficiencyBonus, int naturalArmor = 10);
 
-    ~Monster();
+    ~Monster() {};
 
     void addMainAttack(Weapon * weapon);
 
@@ -27,6 +23,5 @@ public:
 
     int getExperienceOnKill() const {return _experienceOnKill;}
 };
-
 
 #endif //THE_ELDER_CODES_MONSTER_H

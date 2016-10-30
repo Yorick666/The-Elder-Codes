@@ -15,18 +15,20 @@ class Dungeon {
 
     std::vector<Corridor *> _stairs;
 
-    int currentLevel;
+    int _currentLevel;
 
 public:
     Dungeon(bool debug, int size, int roomsPerFloor, int roomsPerLock);
 
     ~Dungeon();
 
-    Room *getStartingRoom() { return _floors[currentLevel]->getStartingRoom(); };
+    Room *getStartingRoom() const { return _floors[_currentLevel]->getStartingRoom(); };
 
-    Room *getExitRoom() { return _floors[currentLevel]->getExitRoom(); };
+    Room *getExitRoom() const { return _floors[_currentLevel]->getExitRoom(); };
 
-    Floor *getCurrentFloor() { return _floors[currentLevel]; };
+    Floor *getCurrentFloor() const { return _floors[_currentLevel]; };
+
+    int getCurrentLevel() const { return _currentLevel; }
 
     Room *descend();
 

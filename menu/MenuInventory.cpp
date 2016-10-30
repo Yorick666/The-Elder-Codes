@@ -102,9 +102,9 @@ void MenuInventory::getViewScreen() {
                 break;
         }
 
-        DM::say("Armor:\t" + armor->getName() + " ( AC: " + to_string(armor->getBaseAC()) + extra + ")");
+        DM::say("\tArmor:\t" + armor->getName() + " ( AC: " + to_string(armor->getBaseAC()) + extra + ")");
     } else {
-        DM::say("Armor:\tNone");
+        DM::say("\tArmor:\tNone");
     }
 
     DM::say("\nInventory:");

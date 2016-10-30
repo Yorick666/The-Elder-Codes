@@ -61,8 +61,8 @@ void MenuStart::handleInput(std::string input) {
 }
 
 void MenuStart::loadOptions() {
-    _options.push_back("<s/standard>");
-    _options.push_back("<c/custom>");
+    _options.push_back("<s/standard> dungeon");
+    _options.push_back("<c/custom> dungeon");
     if (_game->getPlayer()) {
         _options.push_back("<new> character");
     } else {

@@ -17,12 +17,3 @@ void Monster::addMainAttack(Weapon * weapon) {
 void Monster::addSecondAttack(Weapon * weapon) {
     _offHandWeapon = weapon;
 }
-
-Monster::~Monster() {
-//    if (_mainWeapon){
-//        delete _mainWeapon;
-//    }
-//    if (_offHandWeapon){
-//        delete _offHandWeapon;
-//    }
-}

@@ -62,42 +62,6 @@ bool Player::travel(Direction direction) {
     return false;
 }
 
-void Player::generateStartingGear(std::vector<Item *> *possibleGear) {
-    vector<Weapon *> weaponPicker;
-    vector<Armor *> armorPicker;
-    for (int i = 0; i <= possibleGear->size(); ++i) {
-        if (i < possibleGear->size()) {
-            Item *item = possibleGear->at(i);
-            if (item) {
-                if (!_mainWeapon && item->getItemType() == ItemType::WEAPON) {
-                    if (item->getRarity() <= 10) {
-                        weaponPicker.push_back((Weapon *) item);
-                    }
-                } else if (!_armor && item->getItemType() == ItemType::ARMOR) {
-                    if (item->getRarity() <= 10) {
-                        armorPicker.push_back((Armor *) item);
-                    }
-                } else if (item->getItemType() == ItemType::CONSUMABLE) {
-                    if (item->getRarity() <= 10) {
-                        addItemToInventory(item);
-                        addItemToInventory(item);
-                    }
-                }
-            }
-        } else {
-            if (!_mainWeapon) {
-                _mainWeapon = weaponPicker[Rng::getRandomIntBetween(0, weaponPicker.size() - 1)];
-                addItemToInventory(weaponPicker[Rng::getRandomIntBetween(0, weaponPicker.size() - 1)]);
-                addItemToInventory(weaponPicker[Rng::getRandomIntBetween(0, weaponPicker.size() - 1)]);
-            }
-            if (!_armor) {
-                _armor = armorPicker[Rng::getRandomIntBetween(0, armorPicker.size() - 1)];
-                addItemToInventory(armorPicker[Rng::getRandomIntBetween(0, armorPicker.size() - 1)]);
-            }
-        }
-    }
-}
-
 void Player::flee() {
     while (true) {
         Direction dir = Rng::getRandomDirection();

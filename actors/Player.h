@@ -22,13 +22,13 @@ public:
 
     Player(Room *currentRoom, Player *loadedPlayer);
 
+    ~Player() { }
+
     bool travel(Direction direction);
 
     Room *getCurrentRoom() const { return _currentRoom; };
 
     int getSecurityLevel() const { return _securityLevel; };
-
-    void generateStartingGear(std::vector<Item *> *possibleGear);
 
     void flee();
 

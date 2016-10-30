@@ -12,7 +12,7 @@ using namespace std;
 Dungeon::Dungeon(bool debug, int amountFloors, int roomsPerFloor, int roomsPerLock) {
     _floors = vector<Floor *>();
 
-    currentLevel = 0;
+    _currentLevel = 0;
 
     for (int i = 0; i < amountFloors; ++i) {
         DM::say("Generating Floor - " + to_string(i + 1) + "/" + to_string(amountFloors), true);
@@ -36,17 +36,17 @@ Dungeon::Dungeon(bool debug, int amountFloors, int roomsPerFloor, int roomsPerLo
 }
 
 Room *Dungeon::descend() {
-    if (_floors.size() == currentLevel) {
+    if (_floors.size() == _currentLevel) {
         return nullptr;
     } else {
-        currentLevel++;
+        _currentLevel++;
         return getStartingRoom();
     }
 }
 
 Room *Dungeon::ascend() {
-    if (currentLevel > 0) {
-        currentLevel--;
+    if (_currentLevel > 0) {
+        _currentLevel--;
         return getExitRoom();
     } else {
         return nullptr;

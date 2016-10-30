@@ -32,7 +32,9 @@ public:
     Actor(std::string, int hp, int strength, int dexterity, int constitution, int proficiencyBonus,
           int naturalArmor = 10);
 
-    const std::string &getName() const { return _name; }
+    ~Actor() { }
+
+    const std::string getName() const { return _name; }
 
     int getCurrentHp() const { return _hp; }
 
