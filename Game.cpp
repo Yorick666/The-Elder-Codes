@@ -15,6 +15,11 @@ using namespace std;
 Game::Game() {
     _items = Loader::loadItems();
     _monsters = Loader::loadMonsters();
+
+    if (_items.size() == 0 || _monsters.size() == 0) {
+        throw 1;
+    }
+
     _menu = nullptr;
     _dungeon = nullptr;
     _player = nullptr;
@@ -106,13 +111,11 @@ void Game::startNewGame(string playerName, bool debug, int size, int roomsPerFlo
 void Game::generateMonsters(Room *room) {
     if (room->getMonsters()->size() > 0) {
         room->clearRoom();
-//        DM::say("New monsters enter the room....\n");
-    } else {
-//        DM::say("You're about to make some new friends.");
     }
 
     int playerLevel = _player->getLevel();
     int difficulty = Rng::roleDice(50);
+
     if (difficulty >= 45) {
         difficulty = 3;
     } else if (difficulty >= 30) {
@@ -120,17 +123,19 @@ void Game::generateMonsters(Room *room) {
     } else {
         difficulty = 1;
     }
+
     if (room->getRoomType() == RoomType::EXIT) {
         difficulty = 4;
     }
     if (room->getRoomType() == RoomType::DOWN) {
         difficulty = 3;
     }
+
     int baseExpMultiplier = 25;
 
     int expBudget = difficulty * playerLevel * baseExpMultiplier;
 
-    vector<int> maxSizeMonsterOnLevel = {0, 0, 1, 1, 2, 2, 3, 3, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
+    vector<int> maxSizeMonsterOnLevel = {0, 0, 0, 1, 1, 1, 2, 2, 2, 3, 3, 3, 4, 4, 4, 4, 5, 5, 5, 5, 5, 5, 5, 5, 5, 5};
     vector<int> expToSize = {25, 50, 100, 200, 450, 700};
     vector<Monster *> monstersForRoom;
 
@@ -149,7 +154,7 @@ void Game::generateMonsters(Room *room) {
             Monster *tempMonster = monsterList.at(Rng::roleDice(monsterList.size()) - 1);
             if (expBudget - currentExp >= tempMonster->getExperienceOnKill() &&
                 tempMonster->getExperienceOnKill() <= expToSize[maxSizeMonsterOnLevel[currentSearchLevel]]) {
-                currentExp += tempMonster->getExperienceOnKill();
+                currentExp += tempMonster->getExperienceOnKill() * pow(1.5, monstersForRoom.size());
                 monstersForRoom.push_back(tempMonster);
                 foundOne = true;
                 break;
@@ -245,6 +250,10 @@ void Game::checkDeadMonsters() {
             monsters->erase(monsters->begin() + m);
         }
     }
+
+    if (_player->getExperience() >= pow(3, _player->getLevel()) * 100) {
+        DM::say("\nYou should get some <rest> so you can level up.\n");
+    }
 }
 
 std::vector<Item *> Game::generateLoot(int monsterExp) {
@@ -276,7 +285,7 @@ std::vector<Item *> Game::generateLoot(int monsterExp) {
 }
 
 void Game::loadPlayer() {
-    _player = Loader::loadPlayer();
+    _player = Loader::loadPlayer(_items);
 }
 
 void Game::savePlayer() {

@@ -246,7 +246,7 @@ void MenuRoam::handleInput(std::string input) {
     Room *currentRoom = _game->getCurrentRoom();
     Player *player = _game->getPlayer();
 
-    if (regex_match(input, regex("f|finish"))) {
+    if (regex_match(input, regex("finish"))) {
         if (currentRoom->getRoomType() == RoomType::EXIT) {
             if (!currentRoom->hasLivingMonsters()) {
                 _game->savePlayer();
@@ -258,7 +258,7 @@ void MenuRoam::handleInput(std::string input) {
                 DM::say("Nice try, but first you have to get past my ultimate creation!!!!");
             }
         } else {
-            DM::say("Wouldn't we all like that...");
+            DM::say("Wouldn't we all like to finish this game early?");
         }
     } else if (regex_match(input, regex("u|up"))) {
         if (player->travel(Direction::UP)) {
@@ -287,7 +287,7 @@ void MenuRoam::handleInput(std::string input) {
     } else if (regex_match(input, regex("m|map"))) {
         DM::showMap(_game->getCurrentFloor(), currentRoom, _game->isDebug(),
                     player->getSecurityLevel());
-    } else if (regex_match(input, regex("a|attack|f|fight|kill"))) {
+    } else if (regex_match(input, regex("a|attack|fight|kill"))) {
         if (currentRoom->hasLivingMonsters()) {
             _game->changeState(GameState::FIGHTING);
         } else {
@@ -361,22 +361,22 @@ void MenuRoam::handleInput(std::string input) {
             string type = "";
             switch (main->getWeaponType()) {
                 case WeaponType::SIMPLE:
-                    type = "Simple Weapon";
+                    type = "Simple Weapon (Str)";
                     break;
                 case WeaponType::FINESSE:
                     if (player->getDexterity() > player->getStrength()) {
                         base = player->getDexterity();
                     }
-                    type = "Finesse Weapon";
+                    type = "Finesse Weapon (Str or Dex)";
                     break;
                 case WeaponType::MARTIAL:
-                    type = "Martial Weapon";
+                    type = "Martial Weapon (Str)";
                     break;
                 case WeaponType::HEAVY:
-                    type = "heavy Weapon";
+                    type = "heavy Weapon (Str)";
                     break;
                 case WeaponType::SHIELD:
-                    type = "Shield";
+                    type = "Shield (Str)";
                     break;
             }
 

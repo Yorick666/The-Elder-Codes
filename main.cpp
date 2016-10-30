@@ -1,5 +1,6 @@
 #include <iostream>
 #include <random>
+#include <conio.h>
 #include "enum/GameState.h"
 #include "Game.h"
 #include "DM.h"
@@ -21,6 +22,11 @@ int main() {
         delete game;
     } catch (exception &e) {
         cout << "Exception encountered: " << e.what() << endl;
+        getch();
+    }
+    catch (int e) {
+        cout << "Something went wrong while loading in your files.";
+        getch;
     }
 
     return 0;

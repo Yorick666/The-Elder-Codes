@@ -26,7 +26,9 @@ int Weapon::use(Actor *actor) const {
         return 0;
     }
 
-    if (_type == WeaponType::FINESSE || _subType == WeaponType::FINESSE) {
+    if (actor->getOffHandWeapon() == this) {
+        return baseDmg;
+    } else if (_type == WeaponType::FINESSE || _subType == WeaponType::FINESSE) {
         return actor->getDexterity() > actor->getStrength() ? baseDmg + actor->getDexterity() : baseDmg +
                                                                                                 actor->getStrength();
     } else {

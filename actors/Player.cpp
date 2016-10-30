@@ -5,20 +5,22 @@
 using namespace std;
 
 Player::Player(Room *currentRoom, string name, int hp, int strength, int dexterity, int constitution,
-               int proficiencyBonus, int level) : Actor(name,
-                                                        hp,
-                                                        strength,
-                                                        dexterity,
-                                                        constitution,
-                                                        proficiencyBonus) {
+               int proficiencyBonus, int level, int experience) : Actor(name,
+                                                                        hp,
+                                                                        strength,
+                                                                        dexterity,
+                                                                        constitution,
+                                                                        proficiencyBonus) {
     _securityLevel = 0;
     _currentRoom = currentRoom;
     if (level < 1) {
         level = 1;
     }
     _level = level;
-    _experience = 0;
-    currentRoom->visit();
+    _experience = experience;
+    if (currentRoom) {
+        currentRoom->visit();
+    }
 }
 
 Player::Player(Room *currentRoom, Player *loadedPlayer) : Actor(loadedPlayer->getName(),
@@ -56,8 +58,8 @@ bool Player::travel(Direction direction) {
         } else {
             DM::say("You can't travel in this direction.");
         }
-        return false;
     }
+    return false;
 }
 
 void Player::generateStartingGear(std::vector<Item *> *possibleGear) {
@@ -112,85 +114,86 @@ void Player::flee() {
     }
 }
 
-void Player::equip(Item *item) {
-    switch (item->getItemType()) {
-        case ItemType::ARMOR: {
-            Armor *armor = (Armor *) item;
-            addItemToInventory(_armor);
-            _armor = armor;
-            DM::say(_name + " equiped a(n) " + item->getName());
-            break;
-        }
-        case ItemType::WEAPON: {
-            Weapon *weapon = (Weapon *) item;
-            switch (weapon->getWeaponType()) {
-                case WeaponType::SIMPLE:
-                    if (!_mainWeapon) {
-                        _mainWeapon = weapon;
-                        DM::say(_name + " equiped a(n) " + item->getName() + " on his main hand.");
-                    } else if (!_offHandWeapon) {
-                        _offHandWeapon = weapon;
-                        DM::say(_name + " equiped a(n) " + item->getName() + " on his off hand.");
-                    } else {
-                        DM::say("Do you want to equip this weapon on your <main> or your <off> hand?", true);
-                        string input = DM::askInput();
-                        if (input == "main" || input == "m") {
-                            addItemToInventory(_mainWeapon);
+void Player::equip(const Item *item) {
+    if (item) {
+        switch (item->getItemType()) {
+            case ItemType::ARMOR: {
+                Armor *armor = (Armor *) item;
+                addItemToInventory(_armor);
+                _armor = armor;
+                DM::say(_name + " equiped a(n) " + item->getName());
+                break;
+            }
+            case ItemType::WEAPON: {
+                Weapon *weapon = (Weapon *) item;
+                switch (weapon->getWeaponType()) {
+                    case WeaponType::SIMPLE:
+                        if (!_mainWeapon) {
                             _mainWeapon = weapon;
                             DM::say(_name + " equiped a(n) " + item->getName() + " on his main hand.");
-                        } else if (input == "off" || input == "o") {
-                            if (_mainWeapon->getWeaponType() == WeaponType::HEAVY) {
-                                DM::say("You can't wield anything in your off hand when using a heavy weapon.");
-                            } else {
-                                addItemToInventory(_offHandWeapon);
-                                _offHandWeapon = weapon;
-                                DM::say(_name + " equiped a(n) " + item->getName() + " on his off hand.");
-                            }
+                        } else if (!_offHandWeapon) {
+                            _offHandWeapon = weapon;
+                            DM::say(_name + " equiped a(n) " + item->getName() + " on his off hand.");
                         } else {
-                            DM::say("Thank you for using 'You're not taking me serieus' airlines, please never come again!");
+                            DM::say("Do you want to equip this weapon on your <main> or your <off> hand?", true);
+                            string input = DM::askInput();
+                            if (input == "main" || input == "m") {
+                                addItemToInventory(_mainWeapon);
+                                _mainWeapon = weapon;
+                                DM::say(_name + " equiped a(n) " + item->getName() + " on his main hand.");
+                            } else if (input == "off" || input == "o") {
+                                if (_mainWeapon->getWeaponType() == WeaponType::HEAVY) {
+                                    DM::say("You can't wield anything in your off hand when using a heavy weapon.");
+                                } else {
+                                    addItemToInventory(_offHandWeapon);
+                                    _offHandWeapon = weapon;
+                                    DM::say(_name + " equiped a(n) " + item->getName() + " on his off hand.");
+                                }
+                            } else {
+                                DM::say("Thank you for using 'You're not taking me serieus' airlines, please never come again!");
+                            }
                         }
-                    }
-                    break;
-                case WeaponType::FINESSE:
-                    if (_mainWeapon) {
-                        addItemToInventory(_mainWeapon);
-                    }
-                    _mainWeapon = weapon;
-                    DM::say(_name + " equiped a(n) " + item->getName() + " on his main hand.");
-                    break;
-                case WeaponType::MARTIAL:
-                    if (_mainWeapon) {
-                        addItemToInventory(_mainWeapon);
-                    }
-                    _mainWeapon = weapon;
-                    DM::say(_name + " equiped a(n) " + item->getName() + " on his main hand.");
-                    break;
-                case WeaponType::HEAVY:
-                    if (_mainWeapon) {
-                        addItemToInventory(_mainWeapon);
-                    }
-                    _mainWeapon = weapon;
-                    DM::say(_name + " equiped a(n) " + item->getName() + " with both hands.");
-                    break;
-                case WeaponType::SHIELD:
-                    if (_offHandWeapon) {
-                        addItemToInventory(_offHandWeapon);
-                    }
-                    _offHandWeapon = weapon;
-                    DM::say(_name + " equiped a(n) " + item->getName() + " on his off hand.");
-                    break;
+                        break;
+                    case WeaponType::FINESSE:
+                        if (_mainWeapon) {
+                            addItemToInventory(_mainWeapon);
+                        }
+                        _mainWeapon = weapon;
+                        DM::say(_name + " equiped a(n) " + item->getName() + " on his main hand.");
+                        break;
+                    case WeaponType::MARTIAL:
+                        if (_mainWeapon) {
+                            addItemToInventory(_mainWeapon);
+                        }
+                        _mainWeapon = weapon;
+                        DM::say(_name + " equiped a(n) " + item->getName() + " on his main hand.");
+                        break;
+                    case WeaponType::HEAVY:
+                        if (_mainWeapon) {
+                            addItemToInventory(_mainWeapon);
+                        }
+                        _mainWeapon = weapon;
+                        DM::say(_name + " equiped a(n) " + item->getName() + " with both hands.");
+                        break;
+                    case WeaponType::SHIELD:
+                        if (_offHandWeapon) {
+                            addItemToInventory(_offHandWeapon);
+                        }
+                        _offHandWeapon = weapon;
+                        DM::say(_name + " equiped a(n) " + item->getName() + " on his off hand.");
+                        break;
+                }
+                break;
             }
-            break;
-        }
-        case ItemType::CONSUMABLE: {
-            DM::say("Are you sure that you can equip a(n) " + item->getName() + "?");
-            break;
+            case ItemType::CONSUMABLE: {
+                DM::say("Are you sure that you can equip a(n) " + item->getName() + "?");
+                break;
+            }
         }
     }
-
 }
 
-void Player::gainExperience(int exp) {
+void Player::gainExperience(const int exp) {
     _experience += exp;
 }
 

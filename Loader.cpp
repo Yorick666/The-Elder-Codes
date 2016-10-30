@@ -124,6 +124,7 @@ std::vector<Item *> Loader::loadItems() {
                 throw 1;
             }
             items.push_back(new Armor(name, rarity, armorType, baseAC, stealth));
+            i++;
         }
         armorFile.close();
     } catch (int e) {
@@ -175,6 +176,7 @@ std::vector<Item *> Loader::loadItems() {
                 throw 1;
             }
             items.push_back(new Consumable(name, rarity, consumableType, base, amountDice, sizeDice));
+            i++;
         }
         consumableFile.close();
     } catch (int e) {
@@ -272,6 +274,7 @@ std::map<Monster *, std::vector<Weapon *>> Loader::loadMonsters() {
                     throw 1;
                 }
                 monsters[monster].push_back(new Weapon(weaponName, 0, weaponType, amount, size, weaponType));
+                i++;
             }
         }
         monsterFile.close();
@@ -282,14 +285,313 @@ std::map<Monster *, std::vector<Weapon *>> Loader::loadMonsters() {
     return monsters;
 }
 
-Player *Loader::loadPlayer() {
-    int i = 1;
+Player *Loader::loadPlayer(vector<Item *> items) {
+    Player *player = nullptr;
     try {
-        //TODO
+        ifstream playerFile("player.txt");
+        if (!playerFile.is_open()) {
+            playerFile.open("D:\\GitHub\\The Elder Codes\\files\\player.txt");
+        }
+
+        if (!playerFile.is_open()) {
+            throw -1;
+        }
+
+        string line;
+
+        string stat;
+        stringstream playerStream;
+
+
+        string name;
+        getline(playerFile, line);
+        playerStream.str(line);
+        playerStream >> stat;
+        if (stat == "Name") {
+            playerStream >> name;
+        } else {
+            throw 1;
+        }
+
+        int level;
+        getline(playerFile, line);
+        playerStream.clear();
+        playerStream.str(line);
+        playerStream >> stat;
+        if (stat == "Level") {
+            playerStream >> level;
+        } else {
+            throw 2;
+        }
+
+
+        int exp;
+        getline(playerFile, line);
+        playerStream.clear();
+        playerStream.str(line);
+        playerStream >> stat;
+        if (stat == "Experience") {
+            playerStream >> exp;
+        } else {
+            throw 3;
+        }
+
+
+        int hp;
+        getline(playerFile, line);
+        playerStream.clear();
+        playerStream.str(line);
+        playerStream >> stat;
+        if (stat == "Hp") {
+            playerStream >> hp;
+        } else {
+            throw 4;
+        }
+
+
+        int str;
+        getline(playerFile, line);
+        playerStream.clear();
+        playerStream.str(line);
+        playerStream >> stat;
+        if (stat == "Strength") {
+            playerStream >> str;
+        } else {
+            throw 5;
+        }
+
+
+        int dex;
+        getline(playerFile, line);
+        playerStream.clear();
+        playerStream.str(line);
+        playerStream >> stat;
+        if (stat == "Dexterity") {
+            playerStream >> dex;
+        } else {
+            throw 6;
+        }
+
+
+        int con;
+        getline(playerFile, line);
+        playerStream.clear();
+        playerStream.str(line);
+        playerStream >> stat;
+        if (stat == "Constitution") {
+            playerStream >> con;
+        } else {
+            throw 7;
+        }
+
+
+        int prof;
+        getline(playerFile, line);
+        playerStream.clear();
+        playerStream.str(line);
+        playerStream >> stat;
+        if (stat == "Proficiency") {
+            playerStream >> prof;
+        } else {
+            throw 8;
+        }
+
+        getline(playerFile, line);
+        playerStream.clear();
+        playerStream.str(line);
+        playerStream >> stat;
+        Weapon *main;
+        if (stat == "Main_Weapon") {
+            string name;
+            playerStream >> name;
+
+            replace(name.begin(), name.end(), '_', ' ');
+
+            bool existing = false;
+            for (Item *item: items) {
+                if (item->getName() == name && item->getItemType() == ItemType::WEAPON) {
+                    existing = true;
+                    main = (Weapon *) item;
+                }
+            }
+            if (!existing) {
+                int rarity;
+                string type;
+                int amountDice;
+                int sizeDice;
+                string subType;
+
+                playerStream >> rarity;
+                playerStream >> type;
+                playerStream >> amountDice;
+                playerStream >> sizeDice;
+
+                WeaponType weaponType;
+                if (type == "shield") {
+                    weaponType = WeaponType::SHIELD;
+                } else if (type == "finesse") {
+                    weaponType = WeaponType::FINESSE;
+                } else if (type == "heavy") {
+                    weaponType = WeaponType::HEAVY;
+                } else if (type == "martial") {
+                    weaponType = WeaponType::MARTIAL;
+                } else if (type == "simple") {
+                    weaponType = WeaponType::SIMPLE;
+                } else {
+                    throw 9;
+                }
+
+                WeaponType subWeaponType = weaponType;
+                if (playerStream >> subType) {
+                    if (type == "shield") {
+                        subWeaponType = WeaponType::SHIELD;
+                    } else if (type == "finesse") {
+                        subWeaponType = WeaponType::FINESSE;
+                    } else if (type == "heavy") {
+                        subWeaponType = WeaponType::HEAVY;
+                    } else if (type == "martial") {
+                        subWeaponType = WeaponType::MARTIAL;
+                    } else if (type == "simple") {
+                        subWeaponType = WeaponType::SIMPLE;
+                    } else {
+                        throw 9;
+                    }
+                }
+
+                main = new Weapon(name, rarity, weaponType, amountDice, sizeDice, subWeaponType);
+                items.push_back(main);
+            }
+        } else {
+            throw 9;
+        }
+
+        getline(playerFile, line);
+        playerStream.clear();
+        playerStream.str(line);
+        playerStream >> stat;
+        Weapon *off = nullptr;
+        if (stat == "Off_Weapon") {
+            string name;
+            playerStream >> name;
+
+            replace(name.begin(), name.end(), '_', ' ');
+
+            bool existing = false;
+            for (Item *item: items) {
+                if (item->getName() == name && item->getItemType() == ItemType::WEAPON) {
+                    existing = true;
+                    off = (Weapon *) item;
+                }
+            }
+            if (!existing) {
+                int rarity;
+                string type;
+                int amountDice;
+                int sizeDice;
+                string subType;
+
+                playerStream >> rarity;
+                playerStream >> type;
+                playerStream >> amountDice;
+                playerStream >> sizeDice;
+
+                WeaponType weaponType;
+                if (type == "shield") {
+                    weaponType = WeaponType::SHIELD;
+                } else if (type == "finesse") {
+                    weaponType = WeaponType::FINESSE;
+                } else if (type == "heavy") {
+                    weaponType = WeaponType::HEAVY;
+                } else if (type == "martial") {
+                    weaponType = WeaponType::MARTIAL;
+                } else if (type == "simple") {
+                    weaponType = WeaponType::SIMPLE;
+                } else {
+                    throw 10;
+                }
+
+                WeaponType subWeaponType = weaponType;
+                if (playerStream >> subType) {
+                    if (type == "shield") {
+                        subWeaponType = WeaponType::SHIELD;
+                    } else if (type == "finesse") {
+                        subWeaponType = WeaponType::FINESSE;
+                    } else if (type == "heavy") {
+                        subWeaponType = WeaponType::HEAVY;
+                    } else if (type == "martial") {
+                        subWeaponType = WeaponType::MARTIAL;
+                    } else if (type == "simple") {
+                        subWeaponType = WeaponType::SIMPLE;
+                    } else {
+                        throw 10;
+                    }
+                }
+
+                off = new Weapon(name, rarity, weaponType, amountDice, sizeDice, subWeaponType);
+                items.push_back(off);
+            }
+            getline(playerFile, line);
+            playerStream.clear();
+            playerStream.str(line);
+            playerStream >> stat;
+        }
+
+
+        Armor *armor = nullptr;
+        if (stat == "Armor") {
+            string name;
+            playerStream >> name;
+
+            replace(name.begin(), name.end(), '_', ' ');
+
+            bool existing = false;
+            for (Item *item: items) {
+                if (item->getName() == name && item->getItemType() == ItemType::ARMOR) {
+                    existing = true;
+                    armor = (Armor *) item;
+                }
+            }
+            if (!existing) {
+
+                int rarity;
+                string type;
+                int baseAC;
+
+                playerStream >> rarity;
+                playerStream >> type;
+                playerStream >> baseAC;
+
+                ArmorType armorType;
+                if (type == "heavy") {
+                    armorType = ArmorType::HEAVY;
+                } else if (type == "medium") {
+                    armorType = ArmorType::MEDIUM;
+                } else if (type == "light") {
+                    armorType = ArmorType::LIGHT;
+                } else {
+                    throw 11;
+                }
+                armor = new Armor(name, rarity, armorType, baseAC, false); //TODO IN FUTURE STEALTH
+                items.push_back(armor);
+            }
+        } else {
+            throw 11;
+        }
+
+        player = new Player(nullptr, name, hp, str, dex, con, prof, level, exp);
+        player->equip(main);
+        player->equip(off);
+        player->equip(armor);
+
     } catch (int e) {
-        DM::say("Something went wrong in line " + to_string(i) + " of your player file.", true);
+        delete player;
+        if (e < 0) {
+            DM::say("Ok, where did you put that poor file?\n");
+        } else {
+            DM::say("Something went wrong while loading line " + to_string(e) + " in your player file.");
+        }
     }
-    return nullptr;
+    return player;
 }
 
 void Loader::savePlayer(Player *player) {
@@ -306,13 +608,15 @@ void Loader::savePlayer(Player *player) {
 
         playerFile << "Experience " << player->getExperience() << endl;
 
+        playerFile << "Hp " << player->getMaxHp() << endl;
+
         playerFile << "Strength " << player->getStrength() << endl;
 
         playerFile << "Dexterity " << player->getDexterity() << endl;
 
         playerFile << "Constitution " << player->getConstitution() << endl;
 
-        playerFile << "proficiency " << player->getProficiencyBonus() << endl;
+        playerFile << "Proficiency " << player->getProficiencyBonus() << endl;
 
         Weapon *weapon = player->getMainWeapon();
         name = weapon->getName();
@@ -415,6 +719,7 @@ void Loader::savePlayer(Player *player) {
         playerFile << "Armor " << name << " " << armor->getRarity() << " " << type << " " << armor->getBaseAC() << endl;
 
         playerFile.close();
+        DM::say("Save succesful!");
     } catch (int e) {
         DM::say("Something went wrong while saving your player data.", true);
     }

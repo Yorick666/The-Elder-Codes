@@ -77,7 +77,7 @@ void MenuStart::getViewScreen() {
     _game->showHelpScreen();
 
     if (_game->getPlayer()) {
-        DM::say("\nPlayer save file loaded!\n");
+        DM::say("\nPlayer save file loaded!");
     }
 }
 

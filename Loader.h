@@ -16,7 +16,7 @@ public:
 
     static std::map<Monster *, std::vector<Weapon *>> loadMonsters();
 
-    static Player *loadPlayer();
+    static Player *loadPlayer(std::vector<Item *> items);
 
     static void savePlayer(Player *player);
 };
