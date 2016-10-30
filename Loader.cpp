@@ -172,7 +172,7 @@ std::vector<Item *> Loader::loadItems() {
             } else if (type == "food") {
                 consumableType = ConsumableType::FOOD;
             } else {
-                throw 1; //TODO
+                throw 1;
             }
             items.push_back(new Consumable(name, rarity, consumableType, base, amountDice, sizeDice));
         }
@@ -283,9 +283,139 @@ std::map<Monster *, std::vector<Weapon *>> Loader::loadMonsters() {
 }
 
 Player *Loader::loadPlayer() {
+    int i = 1;
+    try {
+        //TODO
+    } catch (int e) {
+        DM::say("Something went wrong in line " + to_string(i) + " of your player file.", true);
+    }
     return nullptr;
 }
 
 void Loader::savePlayer(Player *player) {
+    try {
+        if (!player) {
+            throw 1;
+        }
+        ofstream playerFile("player.txt");
+        string name = player->getName();
+        replace(name.begin(), name.end(), ' ', '_');
+        playerFile << "Name " << name << endl;
 
+        playerFile << "Level " << player->getLevel() << endl;
+
+        playerFile << "Experience " << player->getExperience() << endl;
+
+        playerFile << "Strength " << player->getStrength() << endl;
+
+        playerFile << "Dexterity " << player->getDexterity() << endl;
+
+        playerFile << "Constitution " << player->getConstitution() << endl;
+
+        playerFile << "proficiency " << player->getProficiencyBonus() << endl;
+
+        Weapon *weapon = player->getMainWeapon();
+        name = weapon->getName();
+        replace(name.begin(), name.end(), ' ', '_');
+        string type = "";
+        string subtype = "";
+        switch (weapon->getWeaponType()) {
+            case WeaponType::SIMPLE:
+                type = "simple";
+                break;
+            case WeaponType::FINESSE:
+                type = "finesse";
+                break;
+            case WeaponType::MARTIAL:
+                type = "martial";
+                break;
+            case WeaponType::HEAVY:
+                type = "heavy";
+                break;
+            case WeaponType::SHIELD:
+                type = "shield";
+                break;
+        }
+        switch (weapon->getWeaponSubType()) {
+            case WeaponType::SIMPLE:
+                subtype = "simple";
+                break;
+            case WeaponType::FINESSE:
+                subtype = "finesse";
+                break;
+            case WeaponType::MARTIAL:
+                subtype = "martial";
+                break;
+            case WeaponType::HEAVY:
+                subtype = "heavy";
+                break;
+            case WeaponType::SHIELD:
+                subtype = "shield";
+                break;
+        }
+        playerFile << "Main_Weapon " << name << " " << weapon->getRarity() << " " << type << " " <<
+        weapon->getDiceAmount() << " " << weapon->getDiceSize() << " " << subtype << endl;
+
+        weapon = player->getOffHandWeapon();
+        if (weapon) {
+            name = weapon->getName();
+            switch (weapon->getWeaponType()) {
+                case WeaponType::SIMPLE:
+                    type = "simple";
+                    break;
+                case WeaponType::FINESSE:
+                    type = "finesse";
+                    break;
+                case WeaponType::MARTIAL:
+                    type = "martial";
+                    break;
+                case WeaponType::HEAVY:
+                    type = "heavy";
+                    break;
+                case WeaponType::SHIELD:
+                    type = "shield";
+                    break;
+            }
+            switch (weapon->getWeaponSubType()) {
+                case WeaponType::SIMPLE:
+                    subtype = "simple";
+                    break;
+                case WeaponType::FINESSE:
+                    subtype = "finesse";
+                    break;
+                case WeaponType::MARTIAL:
+                    subtype = "martial";
+                    break;
+                case WeaponType::HEAVY:
+                    subtype = "heavy";
+                    break;
+                case WeaponType::SHIELD:
+                    subtype = "shield";
+                    break;
+            }
+            replace(name.begin(), name.end(), ' ', '_');
+            playerFile << "Off_Weapon " << name << " " << weapon->getRarity() << " " << type << " " <<
+            weapon->getDiceAmount() << " " << weapon->getDiceSize() << " " << subtype << endl;
+        }
+
+        Armor *armor = player->getArmor();
+        name = armor->getName();
+        replace(name.begin(), name.end(), ' ', '_');
+        switch (armor->getArmorType()) {
+            case ArmorType::LIGHT:
+                type = "light";
+                break;
+            case ArmorType::MEDIUM:
+                type = "medium";
+                break;
+            case ArmorType::HEAVY:
+                type = "heavy";
+                break;
+        }
+        playerFile << "Armor " << name << " " << armor->getRarity() << " " << type << " " << armor->getBaseAC() << endl;
+
+        playerFile.close();
+    } catch (int e) {
+        DM::say("Something went wrong while saving your player data.", true);
+    }
 }

@@ -20,7 +20,11 @@ public:
 
     int getBaseAC() const { return _baseAC; }
 
+    const ArmorType &getArmorType() const { return _type; }
+
     bool isStealth() const { return _stealth; }
+
+    int getMaxDex(const int dex) const;
 };
 
 

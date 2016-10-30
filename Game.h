@@ -38,7 +38,8 @@ public:
 
     void changeState(GameState newState);
 
-    void startNewGame(bool debug = false, int size = 1, int roomsPerFloor = 100, int roomsPerLock = 0);
+    void startNewGame(std::string playerName, bool debug = false, int size = 2, int roomsPerFloor = 10,
+                      int roomsPerLock = 0);
 
     Player *getPlayer() { return _player; };
 
@@ -54,7 +55,7 @@ public:
 
     void monsterCombat();
 
-    void readyRoom(Direction direction);
+    void readyRoom(Direction direction = Direction::NORTH);
 
     void checkDeadMonsters();
 
@@ -63,6 +64,10 @@ public:
     void loadPlayer();
 
     void savePlayer();
+
+    void resetPlayer();
+
+    void showHelpScreen();
 };
 
 

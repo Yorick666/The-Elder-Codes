@@ -12,6 +12,7 @@ Floor::Floor(bool debug, Room *previous, int amountRooms, int roomsPerLock, bool
     vector<Coordinate *> roomCoordinates;
     map<int, vector<Coordinate *>> levels;
     bool validFloor = false;
+    _exitRoom = nullptr;
 
     while (!validFloor) {
 
@@ -40,7 +41,10 @@ Floor::Floor(bool debug, Room *previous, int amountRooms, int roomsPerLock, bool
 
             int currentSecurityLevel = 0;
 
+            int safeguard = 0;
+
             while (roomCount() < amountRooms) {
+                safeguard++;
 
                 bool doLock = false;
                 bool validRoom = true;
@@ -92,6 +96,7 @@ Floor::Floor(bool debug, Room *previous, int amountRooms, int roomsPerLock, bool
                         } else {
                             newRoom = new Room(newRoomCoordinate, RoomType::DOWN, currentSecurityLevel);
                         }
+                        _exitRoom = newRoom;
                     } else {
                         newRoom = new Room(newRoomCoordinate, RoomType::NORMAL, currentSecurityLevel);
                     }
@@ -107,17 +112,17 @@ Floor::Floor(bool debug, Room *previous, int amountRooms, int roomsPerLock, bool
                         _corridors.push_back(new Corridor(parent, newRoom));
                     }
 
-                    if (roomCount() == amountRooms - 1) {
-                        _exitRoom = newRoom;
-                    }
+                    if (safeguard > amountRooms * 10) { throw 666; }
                 }
             }
 
-            int extraLinks = (int) (amountRooms * 0.15) + 1;
+            int extraLinks = (int) (amountRooms * 0.15);
 
             for (int l = 0; l < extraLinks; ++l) {
+                safeguard = 0;
                 bool linked = false;
                 while (!linked) {
+                    safeguard++;
                     int randomX = Rng::getRandomIntBetween(0, _rooms.size() - 1);
                     int randomY = Rng::getRandomIntBetween(0, _rooms[randomX].size() - 1);
 
@@ -167,13 +172,14 @@ Floor::Floor(bool debug, Room *previous, int amountRooms, int roomsPerLock, bool
                             linked = true;
                         }
                     }
+                    if (safeguard > amountRooms * 10) { break; }
                 }
             }
 
             validFloor = true;
         } catch (int e) {
-            DM::say("Error: " + to_string(e) + " !!!");
-            DM::say("Restarting Generator...");
+            DM::say("Error: " + to_string(e) + " !!!", true);
+            DM::say("Restarting Generator...", true);
             for (int x = 0; x < _rooms.size(); ++x) {
                 for (int y = 0; y < _rooms[x].size(); ++y) {
                     delete _rooms[x][y];

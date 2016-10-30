@@ -23,12 +23,12 @@ Dungeon::Dungeon(bool debug, int amountFloors, int roomsPerFloor, int roomsPerLo
         else if (i == amountFloors - 1) {
             Room *previous = _floors[i - 1]->getExitRoom();
             newFloor = new Floor(debug, previous, roomsPerFloor, roomsPerLock, true);
-            _stairs.push_back(new Corridor(previous, newFloor->getStartingRoom()));
+            _stairs.push_back(new Corridor(previous, newFloor->getStartingRoom(),true));
         }
         else {
             Room *previous = _floors[i - 1]->getExitRoom();
             newFloor = new Floor(debug, previous, roomsPerFloor, roomsPerLock);
-            _stairs.push_back(new Corridor(previous, newFloor->getStartingRoom()));
+            _stairs.push_back(new Corridor(previous, newFloor->getStartingRoom(),true));
         }
         _floors.push_back(newFloor);
     }
@@ -37,7 +37,7 @@ Dungeon::Dungeon(bool debug, int amountFloors, int roomsPerFloor, int roomsPerLo
 
 Room *Dungeon::descend() {
     if (_floors.size() == currentLevel) {
-        return nullptr; //TODO ending a game
+        return nullptr;
     } else {
         currentLevel++;
         return getStartingRoom();

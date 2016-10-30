@@ -151,7 +151,6 @@ bool Consumable::explode(Floor *currentFloor, Room *startingRoom) {
     }
 
     int passagesToCollapse = _base;
-    int remaining = edges.size() - mst.size(); //TODO
     int collapsedPassages = 0;
 
     if (edges.size() - mst.size() >= passagesToCollapse) {

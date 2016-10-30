@@ -62,7 +62,7 @@ void Actor::attack(Actor *target) {
     }
 }
 
-void Actor::defend(int hit, int attack) { //TODO defense and stuff
+void Actor::defend(int hit, int attack) {
     if (_hp > 0) {
         int AC = 0;
 
@@ -72,13 +72,24 @@ void Actor::defend(int hit, int attack) { //TODO defense and stuff
             AC += _naturalArmor + _dexterity;
         }
 
+        if (_offHandWeapon && _offHandWeapon->getWeaponType() == WeaponType::SHIELD) {
+            AC += 2;
+        }
+
         if (hit >= AC) {
             DM::say(_name + " is hit! (" + to_string(hit) + " hit roll against " + to_string(AC) +
                     " AC)");
             takeDamage(attack);
         } else {
-            DM::say(_name + " evades/blocks/dodges! (" + to_string(hit) + " hit roll against " + to_string(AC) +
-                    " AC)"); //TODO random?
+            int rand = Rng::roleDice(3);
+            string miss = "evades";
+            if (rand == 1) {
+                miss = "blocks";
+            } else if (rand == 2) {
+                miss = "dodges";
+            }
+            DM::say(_name + " " + miss + "! (" + to_string(hit) + " hit roll against " + to_string(AC) +
+                    " AC)");
         }
     } else {
         DM::say(_name + " is already dead...");
@@ -98,7 +109,7 @@ void Actor::takeDamage(int damage) {
     DM::say(_name + " takes " + std::to_string(damage) + " damage!");
     int remainingHp = _hp - damage;
     if (remainingHp < 0) {
-        _hp = 0; //TODO dieien
+        _hp = 0;
         DM::say(_name + " dies!");
     } else {
         _hp = remainingHp;

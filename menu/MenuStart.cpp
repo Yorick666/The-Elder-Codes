@@ -10,13 +10,18 @@
 using namespace std;
 
 void MenuStart::handleInput(std::string input) {
-    if (regex_match(input, regex("debug"))) {
+    if (regex_match(input, regex("d|debug"))) {
         DM::say("Starting new game with debug mode on.", true);
-        _game->startNewGame(true);
-    } else if (regex_match(input, regex("standard"))) {
+        _game->startNewGame("Tester", true);
+    } else if (regex_match(input, regex("s|standard"))) {
+        string name;
+        if (!_game->getPlayer()) {
+            cout << "At least let me know the name of my next victim: ";
+            cin >> name;
+        }
         DM::say("Starting standard game.", true);
-        _game->startNewGame();
-    } else if (regex_match(input, regex("custom"))) {
+        _game->startNewGame(name);
+    } else if (regex_match(input, regex("c|custom"))) {
         int size, roomsPerFloor, roomsPerLock;
         cout << "How many floors?";
         cin >> size;
@@ -32,7 +37,7 @@ void MenuStart::handleInput(std::string input) {
 
         cout << "How many locks per floor? (0-9)";
         cin >> roomsPerLock;
-        if (roomsPerLock < 0) {
+        if (roomsPerLock <= 0) {
             roomsPerLock = 0;
         } else if (roomsPerLock > 9) {
             roomsPerLock = roomsPerFloor / 9;
@@ -40,25 +45,39 @@ void MenuStart::handleInput(std::string input) {
             roomsPerLock = roomsPerFloor / roomsPerLock;
         }
 
+        string name;
+        if (!_game->getPlayer()) {
+            cout << "At least let me know the name of my next victim: ";
+            cin >> name;
+        }
+
         DM::say("Starting custom game.", true);
-        _game->startNewGame(true, size, roomsPerFloor, roomsPerLock);
+        _game->startNewGame(name, true, size, roomsPerFloor, roomsPerLock);
     } else if (regex_match(input, regex("load"))) {
         _game->loadPlayer();
+    } else if (regex_match(input, regex("new"))) {
+        _game->resetPlayer();
     }
 }
 
 void MenuStart::loadOptions() {
-    _options.push_back("standard");
-    _options.push_back("custom");
-    _options.push_back("load");
-    _options.push_back("exit");
+    _options.push_back("<s/standard>");
+    _options.push_back("<c/custom>");
+    if (_game->getPlayer()) {
+        _options.push_back("<new> character");
+    } else {
+        _options.push_back("<load> character");
+    }
+    _options.push_back("<exit>");
 }
 
 void MenuStart::getViewScreen() {
-    DM::say("The Elder Codes - Algorithm of Time\nRemember: Enter <exit> at anytime to exit the game.");
+    DM::say("The Elder Codes - Algorithm of Time\n");
+
+    _game->showHelpScreen();
 
     if (_game->getPlayer()) {
-        DM::say("\n\nPlayer save file loaded!\n");
+        DM::say("\nPlayer save file loaded!\n");
     }
 }
 

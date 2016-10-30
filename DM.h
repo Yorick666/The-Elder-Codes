@@ -28,6 +28,8 @@ public:
     void addLineToQueue(std::string line);
 
     static std::string askInput();
+
+    static void describeRoom(Room * room);
 };
 
 

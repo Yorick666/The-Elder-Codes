@@ -21,9 +21,8 @@ int Weapon::use(Actor *actor) const {
 
     int baseDmg = Rng::roleDice(_diceSize, _diceAmount);
 
-    if (actor->getOffHandWeapon() == this && (actor->getMainWeapon()->getWeaponType() == WeaponType::HEAVY ||
-                                              actor->getMainWeapon()->getWeaponType() == WeaponType::MARTIAL)) {
-        //TODO message?
+    if (actor->getOffHandWeapon() == this && (actor->getMainWeapon()->getWeaponType() == WeaponType::HEAVY)) {
+        DM::say("This should never happen, but if it does: Don't try to cheat!!!");
         return 0;
     }
 

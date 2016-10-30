@@ -17,10 +17,10 @@ MenuInventory::MenuInventory(Game *game) : Menu(game) {
 
 
 void MenuInventory::loadOptions() {
-    _options.push_back("equip [id]");
-    _options.push_back("use [id]");
-    _options.push_back("drop [id]");
-    _options.push_back("back");
+    _options.push_back("<e/equip> [id]");
+    _options.push_back("<u/use> [id]");
+    _options.push_back("<d/drop> [id]");
+    _options.push_back("<b/back>");
 }
 
 void MenuInventory::getViewScreen() {
@@ -78,7 +78,7 @@ void MenuInventory::getViewScreen() {
                 type = "heavy Weapon";
                 break;
             case WeaponType::SHIELD:
-                type = "Shield";
+                type = "Shield (+2AC)";
                 break;
         }
 
@@ -90,13 +90,22 @@ void MenuInventory::getViewScreen() {
 
     Armor *armor = player->getArmor();
     if (armor) {
-        DM::say("\t<Armor>: " + armor->getName() + " (" + to_string(armor->getBaseAC()) + " AC)");
-    } else {
-        DM::say("\t<Armor>: None");
-    }
+        string extra = "";
+        switch (armor->getArmorType()) {
+            case ArmorType::LIGHT:
+                extra = " + Dex ";
+                break;
+            case ArmorType::MEDIUM:
+                extra = " + max 2 Dex ";
+                break;
+            case ArmorType::HEAVY:
+                break;
+        }
 
-//    map<Item *, int> *inventory = player->getInventory();
-//    for (auto const &item : inventory) { }
+        DM::say("Armor:\t" + armor->getName() + " ( AC: " + to_string(armor->getBaseAC()) + extra + ")");
+    } else {
+        DM::say("Armor:\tNone");
+    }
 
     DM::say("\nInventory:");
     int i = 1;
@@ -104,8 +113,20 @@ void MenuInventory::getViewScreen() {
         switch (item->first->getItemType()) {
             case ItemType::ARMOR: {
                 Armor *armor = (Armor *) item->first;
-                DM::say("\t<" + to_string(i) + ">: " + item->first->getName() + " - " + to_string(armor->getBaseAC()) +
-                        " AC (" + to_string(item->second) + "x)");
+                string extra = "";
+                switch (armor->getArmorType()) {
+                    case ArmorType::LIGHT:
+                        extra = " + Dex ";
+                        break;
+                    case ArmorType::MEDIUM:
+                        extra = " + max 2 Dex ";
+                        break;
+                    case ArmorType::HEAVY:
+                        break;
+                }
+                DM::say("\t<" + to_string(i) + ">: " + item->first->getName() + " - AC: " +
+                        to_string(armor->getBaseAC()) +
+                        extra + "(" + to_string(item->second) + "x)");
                 break;
             }
             case ItemType::WEAPON: {
@@ -126,7 +147,7 @@ void MenuInventory::getViewScreen() {
                         type = "heavy Weapon";
                         break;
                     case WeaponType::SHIELD:
-                        type = "Shield";
+                        type = "Shield (+2AC)";
                         break;
                 }
 
@@ -144,11 +165,11 @@ void MenuInventory::getViewScreen() {
                 switch (consumable->getConsumableType()) {
                     case ConsumableType::FOOD:
                         type = "Food";
-                        effect = "hp";
+                        effect = "hp max per rest";
                         break;
                     case ConsumableType::HEALING:
                         type = "Healing item";
-                        effect = "hp";
+                        effect = "hp max on use";
                         break;
                     case ConsumableType::ILLUMINATION:
                         type = "Illumination";
@@ -256,6 +277,7 @@ void MenuInventory::handleInput(std::string input) {
                             break;
                         case InventoryState::DROP:
                             DM::say("Dropped a(n) " + item->first->getName());
+                            _game->getCurrentRoom()->addItemToLootList(item->first);
                             item->second -= 1;
                             if (item->second == 0) {
                                 _inventory->erase(item->first);
@@ -263,7 +285,7 @@ void MenuInventory::handleInput(std::string input) {
                             break;
                     }
                 } else {
-                    DM::say("You seem to have nothing left of this."); //TODO zou eigenlijk nooit moeten gebeuren
+                    DM::say("You seem to have nothing left of this.");
                 }
             }
             if (done) {
@@ -279,17 +301,4 @@ void MenuInventory::handleInput(std::string input) {
 
 void MenuInventory::prepareForInput() {
     cout << ">";
-//    switch (_state) {
-//        case InventoryState::STANDBY:
-//            break;
-//        case InventoryState::EQUIP:
-//            cout << "equip ";
-//            break;
-//        case InventoryState::USE:
-//            cout << "use ";
-//            break;
-//        case InventoryState::DROP:
-//            cout << "drop ";
-//            break;
-//    }
 }

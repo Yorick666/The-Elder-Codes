@@ -12,6 +12,8 @@
 #include "../enum/Direction.h"
 #include "../actors/Monster.h"
 #include "Corridor.h"
+#include "../enum/RoomCuriosity.h"
+#include "../enum/RoomSize.h"
 
 class Link;
 
@@ -26,6 +28,11 @@ class Room {
     bool _visited;
 
     std::vector<Monster> _monsters;
+
+    RoomCuriosity _curiosity;
+    RoomSize _size;
+
+    std::map<Item *, int> _lootList;
 
 public:
     Room(Coordinate coordinate, RoomType roomType, int securityLevel = 0);
@@ -52,11 +59,21 @@ public:
 
     void clearRoom();
 
-    std::vector<Monster> *getMonsters() { return &_monsters; } //TODO BAD!!!!?
+    std::vector<Monster> *getMonsters() { return &_monsters; };
 
     bool hasMonsters();
 
     bool hasLivingMonsters();
+
+    const RoomCuriosity &getRoomCuriosity() const { return _curiosity; }
+
+    const RoomSize &getRoomSize() const { return _size; }
+
+    void addItemToLootList(Item *item);
+
+    void removeItemFromLootList(Item *item);
+
+    std::map<Item *, int> *getLootList() { return &_lootList; }
 };
 
 

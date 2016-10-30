@@ -3,6 +3,7 @@
 //
 
 #include "Room.h"
+#include "../Rng.h"
 
 using namespace std;
 
@@ -16,16 +17,11 @@ Room::Room(Coordinate coordinate, RoomType roomType, int securityLevel) {
         throw 8;
     }
 
-
+    _size = (RoomSize) Rng::getRandomIntBetween(0, 3);
+    _curiosity = (RoomCuriosity) Rng::getRandomIntBetween(0, 10);
 }
 
 Room::~Room() {
-    //TODO
-//    for (int i = 0; i < _monsters.size(); ++i) {
-//        if (_monsters[i]) {
-//            delete _monsters[i];
-//        }
-//    }
 }
 
 void Room::addDoor(Corridor *newCorridor, Direction direction) {
@@ -50,7 +46,7 @@ void Room::addDoor(Corridor *newCorridor, Direction direction) {
 
     if (_doors[direction]) {
         delete _doors[direction];
-//        throw -1212;
+        throw -1212;
     }
 
     _doors[direction] = newCorridor;
@@ -100,4 +96,22 @@ Corridor *Room::getCorridorBehindDoor(Direction direction, int securityLevel) {
     }
 
     return nullptr;
+}
+
+void Room::addItemToLootList(Item *item) {
+    if (_lootList.find(item) == _lootList.end()) {
+        _lootList[item] = 1;
+    } else {
+        _lootList[item] += 1;
+    }
+}
+
+void Room::removeItemFromLootList(Item *item) {
+    if (_lootList.find(item) != _lootList.end()) {
+        if (_lootList[item] == 1) {
+            _lootList.erase(item);
+        } else if (_lootList[item] > 1) {
+            _lootList[item] -= 1;
+        }
+    }
 }

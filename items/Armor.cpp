@@ -15,18 +15,27 @@ Armor::Armor(string name, int rarity, ArmorType type, int baseAC, bool stealth) 
 }
 
 int Armor::use(Actor *actor) const {
-    int shield = 0;
-
-    if (actor->getOffHandWeapon() && actor->getOffHandWeapon()->getWeaponType() == WeaponType::SHIELD) {
-        shield = 2;
-    }
 
     switch (_type) {
         case ArmorType::LIGHT:
-            return _baseAC + actor->getDexterity() + shield;
+            return _baseAC + actor->getDexterity();
         case ArmorType::MEDIUM:
-            return actor->getDexterity() > 2 ? _baseAC + 2 + shield : _baseAC + actor->getDexterity() + shield;
+            return actor->getDexterity() > 2 ? _baseAC + 2 : _baseAC + actor->getDexterity();
         case ArmorType::HEAVY:
-            return _baseAC + shield;
+            return _baseAC;
+    }
+}
+
+int Armor::getMaxDex(const int dex) const {
+    switch (_type) {
+        case ArmorType::LIGHT:
+            return dex;
+        case ArmorType::MEDIUM:
+            if (dex < 2) {
+                return dex;
+            }
+            return 2;
+        case ArmorType::HEAVY:
+            return 0;
     }
 }

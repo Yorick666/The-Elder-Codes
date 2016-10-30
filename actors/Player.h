@@ -17,11 +17,12 @@ class Player : public Actor {
     Room *_currentRoom;
 
 public:
-    Player(Room *currentRoom, std::string name, int hp = 10, int strength = 2, int dexterity = 2, int constitution = 2,
-           int proficiencyBonus = 2,
-           int currentSecurityLevel = 0, int level = 1);
+    Player(Room *currentRoom, std::string name, int hp = 10, int strength = 1, int dexterity = 1, int constitution = 1,
+           int proficiencyBonus = 2, int level = 1);
 
-    void travel(Direction direction);
+    Player(Room *currentRoom, Player *loadedPlayer);
+
+    bool travel(Direction direction);
 
     Room *getCurrentRoom() const { return _currentRoom; };
 
@@ -38,6 +39,8 @@ public:
     void gainExperience(int exp);
 
     void checkForLevelUp();
+
+    int getExperience() const { return _experience; }
 };
 
 

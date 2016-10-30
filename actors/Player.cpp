@@ -1,6 +1,3 @@
-//
-// Created by Yorick on 18/10/2016.
-//
 #include "Player.h"
 #include "../DM.h"
 #include "../Rng.h"
@@ -8,23 +5,39 @@
 using namespace std;
 
 Player::Player(Room *currentRoom, string name, int hp, int strength, int dexterity, int constitution,
-               int proficiencyBonus,
-               int currentSecurityLevel, int level) : Actor(name,
-                                                            hp,
-                                                            strength,
-                                                            dexterity,
-                                                            constitution,
-                                                            proficiencyBonus) {
-    _securityLevel = currentSecurityLevel;
+               int proficiencyBonus, int level) : Actor(name,
+                                                        hp,
+                                                        strength,
+                                                        dexterity,
+                                                        constitution,
+                                                        proficiencyBonus) {
+    _securityLevel = 0;
     _currentRoom = currentRoom;
     if (level < 1) {
         level = 1;
     }
     _level = level;
+    _experience = 0;
     currentRoom->visit();
 }
 
-void Player::travel(Direction direction) {
+Player::Player(Room *currentRoom, Player *loadedPlayer) : Actor(loadedPlayer->getName(),
+                                                                loadedPlayer->getMaxHp(),
+                                                                loadedPlayer->getStrength(),
+                                                                loadedPlayer->getDexterity(),
+                                                                loadedPlayer->getConstitution(),
+                                                                loadedPlayer->getProficiencyBonus()) {
+    _level = loadedPlayer->getLevel();
+    _experience = loadedPlayer->getExperience();
+    _mainWeapon = loadedPlayer->getMainWeapon();
+    _offHandWeapon = loadedPlayer->getOffHandWeapon();
+    _armor = loadedPlayer->getArmor();
+    _securityLevel = 0;
+    _currentRoom = currentRoom;
+    _currentRoom->visit();
+}
+
+bool Player::travel(Direction direction) {
     if (_currentRoom->hasLivingMonsters()) {
         DM::say("You can't exit the room without <kill>ing all the monsters or you have to try your luck <run>ning away.");
     } else {
@@ -35,7 +48,7 @@ void Player::travel(Direction direction) {
                 if (r != nullptr) {
                     _currentRoom->clearRoom();
                     _currentRoom = r;
-                    _currentRoom->visit();
+                    return true;
                 }
             } else {
                 DM::say("The entrance to the other room is caved in, so you can't travel in that direction.");
@@ -43,8 +56,7 @@ void Player::travel(Direction direction) {
         } else {
             DM::say("You can't travel in this direction.");
         }
-
-
+        return false;
     }
 }
 
@@ -71,34 +83,32 @@ void Player::generateStartingGear(std::vector<Item *> *possibleGear) {
                 }
             }
         } else {
-            _mainWeapon = weaponPicker[Rng::getRandomIntBetween(0, weaponPicker.size() - 1)];
-            _armor = armorPicker[Rng::getRandomIntBetween(0, armorPicker.size() - 1)];
-            addItemToInventory(armorPicker[Rng::getRandomIntBetween(0, armorPicker.size() - 1)]);
-            addItemToInventory(weaponPicker[Rng::getRandomIntBetween(0, weaponPicker.size() - 1)]);
-            addItemToInventory(weaponPicker[Rng::getRandomIntBetween(0, weaponPicker.size() - 1)]);
+            if (!_mainWeapon) {
+                _mainWeapon = weaponPicker[Rng::getRandomIntBetween(0, weaponPicker.size() - 1)];
+                addItemToInventory(weaponPicker[Rng::getRandomIntBetween(0, weaponPicker.size() - 1)]);
+                addItemToInventory(weaponPicker[Rng::getRandomIntBetween(0, weaponPicker.size() - 1)]);
+            }
+            if (!_armor) {
+                _armor = armorPicker[Rng::getRandomIntBetween(0, armorPicker.size() - 1)];
+                addItemToInventory(armorPicker[Rng::getRandomIntBetween(0, armorPicker.size() - 1)]);
+            }
         }
     }
 }
 
 void Player::flee() {
-    if (_currentRoom->hasLivingMonsters()) {
-        bool found = false;
-        while (!found) {
-            Direction dir = Rng::getRandomDirection();
-            Corridor *c = _currentRoom->getCorridorBehindDoor(dir, _securityLevel);
-            if (c && !c->isCollapsed()) {
-                Room *r = _currentRoom->getRoomBehindDoor(dir, _securityLevel);
-                if (r != nullptr) {
-                    _currentRoom->clearRoom();
-                    _currentRoom = r;
-                    _currentRoom->visit();
-                    found = true;
-                    DM::say("You succeeded in running away.");
-                }
+    while (true) {
+        Direction dir = Rng::getRandomDirection();
+        Corridor *c = _currentRoom->getCorridorBehindDoor(dir, _securityLevel);
+        if (c && !c->isCollapsed()) {
+            Room *r = _currentRoom->getRoomBehindDoor(dir, _securityLevel);
+            if (r != nullptr) {
+                _currentRoom->clearRoom();
+                _currentRoom = r;
+                DM::say("You succeeded in running away.");
+                break;
             }
         }
-    } else {
-        DM::say("Why would you want to flee? There's no danger.");
     }
 }
 
@@ -185,11 +195,25 @@ void Player::gainExperience(int exp) {
 }
 
 void Player::checkForLevelUp() {
-    int neededExp = 3 ^_level * 100;
+    int neededExp = pow(3, _level) * 100;
     if (_experience >= neededExp) {
-        _experience - neededExp;
+        _experience -= neededExp;
         _level++;
+        DM::say("Level " + to_string(_level) + " reached!");
         _maxHp += Rng::roleDice(10) + _constitution;
         _hp = _maxHp;
+        if (_level % 2 == 0) {
+            _strength++;
+        } else {
+            _dexterity++;
+        }
+
+        if (_level % 3 == 0) {
+            _constitution++;
+        }
+
+        if (_level % 4 == 0) {
+            _proficiencyBonus++;
+        }
     }
 }

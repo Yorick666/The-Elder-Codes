@@ -11,6 +11,7 @@ enum class GameState {
     ROAMING,
     FIGHTING,
     INVENTORY,
+    PICKUP,
     VICTORY
 };
 

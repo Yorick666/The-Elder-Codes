@@ -25,6 +25,8 @@ public:
     int getDiceAmount() const { return _diceAmount; };
 
     int getDiceSize() const { return _diceSize; };
+
+    const WeaponType &getWeaponSubType() const { return _subType; }
 };
 
 

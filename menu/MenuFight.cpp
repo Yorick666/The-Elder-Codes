@@ -13,7 +13,8 @@ MenuFight::MenuFight(Game *game) : Menu(game) {
 }
 
 void MenuFight::loadOptions() {
-    _options.push_back("back");
+    _options.push_back("[id]");
+    _options.push_back("<b/back>");
 }
 
 void MenuFight::getViewScreen() {
@@ -34,7 +35,6 @@ void MenuFight::handleInput(std::string input) {
     if (regex_match(input, regex("^\\d+$"))) {
         int x = stoi(input);
         vector<Monster> *monsters = _game->getCurrentRoom()->getMonsters();
-        int t = monsters->size();
         if (x <= monsters->size()) {
             Monster *temp = &monsters->at(x - 1);
             _game->getPlayer()->attack(temp);
