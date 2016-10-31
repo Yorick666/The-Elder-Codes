@@ -41,9 +41,9 @@ public:
 
     Coordinate *getCoordinate() { return &_coordinate; }
 
-    RoomType getRoomType() { return _type; }
+    RoomType getRoomType() const { return _type; }
 
-    int getSecurityLevel() { return _securityLevel; }
+    int getSecurityLevel() const { return _securityLevel; }
 
     Room *getRoomBehindDoor(Direction direction, int securityLevel = -1);
 
@@ -53,7 +53,7 @@ public:
 
     void visit() { _visited = true; }
 
-    bool visited() { return _visited; }
+    bool visited() const { return _visited; }
 
     void addMonster(Monster monster);
 

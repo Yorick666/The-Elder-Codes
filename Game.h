@@ -38,12 +38,12 @@ public:
 
     void changeState(GameState newState);
 
-    void startNewGame(std::string playerName, bool debug = false, int size = 2, int roomsPerFloor = 50,
-                      int roomsPerLock = 10);
+    void startNewGame(std::string playerName, bool debug = false, int size = 3, int roomsPerFloor = 100,
+                      int roomsPerLock = 0);
 
     Player *getPlayer() { return _player; };
 
-    bool isDebug() { return debugMode; };
+    bool isDebug() const { return debugMode; };
 
     Room *getCurrentRoom() { return _player->getCurrentRoom(); };
 
@@ -67,7 +67,7 @@ public:
 
     void resetPlayer();
 
-    void showHelpScreen();
+    void showHelpScreen() const;
 
     void generateStartingGear();
 };

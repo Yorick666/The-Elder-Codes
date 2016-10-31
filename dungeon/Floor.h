@@ -31,21 +31,21 @@ class Floor {
     Coordinate *chooseFreeEdge(Coordinate *coordinate);
 
 public:
-    Floor(bool debug,Room * previous, int amountRooms, int roomsPerLock, bool last = false);
+    Floor(bool debug, Room *previous, int amountRooms, int roomsPerLock, bool last = false);
 
     ~Floor();
 
-    Room *getStartingRoom() { return _startingRoom; };
+    Room *getStartingRoom() const { return _startingRoom; };
 
     Room *getExitRoom() const { return _exitRoom; }
 
-    int getMinX() { return minX; };
+    int getMinX() const { return minX; };
 
-    int getMaxX() { return maxX; };
+    int getMaxX() const { return maxX; };
 
-    int getMinY() { return minY; };
+    int getMinY() const { return minY; };
 
-    int getMaxY() { return maxY; };
+    int getMaxY() const { return maxY; };
 
     Room *getRoom(int x, int y);
 

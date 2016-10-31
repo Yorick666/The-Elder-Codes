@@ -115,7 +115,7 @@ Floor::Floor(bool debug, Room *previous, int amountRooms, int roomsPerLock, bool
                 }
             }
 
-            int extraLinks = (int) (amountRooms * 0.15);
+            int extraLinks = (int) (amountRooms * 0.15) + 1;
 
             for (int l = 0; l < extraLinks; ++l) {
                 safeguard = 0;
