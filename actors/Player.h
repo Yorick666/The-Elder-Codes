@@ -43,6 +43,8 @@ public:
     int getExperience() const { return _experience; }
 
     void unequip(Item *item);
+
+    void upgradeSecurityLevel();
 };
 
 

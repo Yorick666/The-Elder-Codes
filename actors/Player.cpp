@@ -43,17 +43,22 @@ bool Player::travel(Direction direction) {
     if (_currentRoom->hasLivingMonsters()) {
         DM::say("You can't exit the room without <kill>ing all the monsters or you have to try your luck <run>ning away.");
     } else {
-        Corridor *c = _currentRoom->getCorridorBehindDoor(direction, _securityLevel);
+        Corridor *c = _currentRoom->getCorridorBehindDoor(direction);
         if (c) {
-            if (!c->isCollapsed()) {
-                Room *r = _currentRoom->getRoomBehindDoor(direction, _securityLevel);
-                if (r != nullptr) {
-                    _currentRoom->clearRoom();
-                    _currentRoom = r;
-                    return true;
+            c = _currentRoom->getCorridorBehindDoor(direction, _securityLevel);
+            if (c){
+                if (!c->isCollapsed()) {
+                    Room *r = _currentRoom->getRoomBehindDoor(direction, _securityLevel);
+                    if (r != nullptr) {
+                        _currentRoom->clearRoom();
+                        _currentRoom = r;
+                        return true;
+                    }
+                } else {
+                    DM::say("The entrance to the other room is caved in, so you can't travel in that direction.");
                 }
             } else {
-                DM::say("The entrance to the other room is caved in, so you can't travel in that direction.");
+                DM::say("Your security level is not high enough. Try to find the plot device hidden somewhere in the dungeon.");
             }
         } else {
             DM::say("You can't travel in this direction.");
@@ -226,4 +231,9 @@ void Player::unequip(Item *item) {
     } else {
         DM::say("You don't even have anything equiped....");
     }
+}
+
+void Player::upgradeSecurityLevel() {
+    _securityLevel++;
+    DM::say("For some reason you feel your security level increasing. Prais Deus ex machina!!!");
 }

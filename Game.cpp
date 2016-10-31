@@ -205,7 +205,12 @@ void Game::monsterCombat() {
 
 void Game::readyRoom(Direction direction) {
     Room *r = _player->getCurrentRoom();
-    if (r != nullptr) {
+    if (r) {
+        if (r->getRoomType() == RoomType::UPGRADE &&
+            r->getSecurityLevel() == _player->getSecurityLevel()) {
+            _player->upgradeSecurityLevel();
+        }
+
         if (Rng::roleDice(10) > 6 || r->getRoomType() == RoomType::DOWN || r->getRoomType() == RoomType::EXIT) {
             generateMonsters(r);
         }

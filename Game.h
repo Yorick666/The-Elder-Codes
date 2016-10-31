@@ -38,8 +38,8 @@ public:
 
     void changeState(GameState newState);
 
-    void startNewGame(std::string playerName, bool debug = false, int size = 2, int roomsPerFloor = 10,
-                      int roomsPerLock = 0);
+    void startNewGame(std::string playerName, bool debug = false, int size = 2, int roomsPerFloor = 50,
+                      int roomsPerLock = 10);
 
     Player *getPlayer() { return _player; };
 

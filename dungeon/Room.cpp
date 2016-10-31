@@ -115,3 +115,9 @@ void Room::removeItemFromLootList(Item *item) {
         }
     }
 }
+
+void Room::setAsSecurityLevelUpgrade() {
+    if (_type == RoomType::NORMAL) {
+        _type = RoomType::UPGRADE;
+    }
+}

@@ -168,6 +168,12 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, int securit
                     } else if (currentDrawingRoom->getRoomType() == RoomType::NORMAL) {
                         mid += " " + to_string(currentDrawingRoom->getSecurityLevel()) + " ";
 //                        mid += to_string(x) + to_string(currentDrawingRoom->getSecurityLevel()) + to_string(y);
+                    } else if (currentDrawingRoom->getRoomType() == RoomType::UPGRADE) {
+                        if (currentDrawingRoom->getSecurityLevel() < securityLevel) {
+                            mid += " " + to_string(currentDrawingRoom->getSecurityLevel()) + " ";
+                        } else {
+                            mid += "^" + to_string(currentDrawingRoom->getSecurityLevel()) + "^";
+                        }
                     } else if (currentDrawingRoom->getRoomType() == RoomType::DOWN) {
                         mid += "\\-/";
                     } else if (currentDrawingRoom->getRoomType() == RoomType::UP) {
@@ -281,6 +287,10 @@ void DM::describeRoom(Room *room) {
         case RoomCuriosity::MOSS:
             description += "A dim bluish light suffuses this chamber, its source obvious at a glance.\nBlue-glowing lichen and violet-glowing moss cling to the ceiling and spread across the floor.\nIt even creeps down and up each wall, as if the colonies on the floor and ceiling are growing to meet each other.\nTheir source seems to be a glowing, narrow crack in the ceiling, the extent of which you cannot gauge from your position.\nThe air in the room smells fresh and damp.";
             break;
+    }
+
+    if (room->getRoomType() == RoomType::UPGRADE) {
+        description += "\nA statue of the god from the machine is standing in the corner and you can't help admiring this plot device";
     }
 
     DM::say(description);

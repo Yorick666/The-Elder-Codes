@@ -74,6 +74,8 @@ public:
     void removeItemFromLootList(Item *item);
 
     std::map<Item *, int> *getLootList() { return &_lootList; }
+
+    void setAsSecurityLevelUpgrade();
 };
 
 

@@ -334,6 +334,8 @@ void MenuRoam::handleInput(std::string input) {
         }
     } else if (regex_match(input, regex("stats"))) {
         DM::say("--------STATS--------");
+        DM::say("Name:\t\t" + player->getName());
+        DM::say("Security Level:\t" + to_string(player->getSecurityLevel()));
         DM::say("HP:\t\t" + to_string(player->getCurrentHp()) + "/" + to_string(player->getMaxHp()));
         DM::say("Exp:\t\t" + to_string(player->getExperience()) + "/" +
                 to_string((int) pow(3, player->getLevel()) * 100));

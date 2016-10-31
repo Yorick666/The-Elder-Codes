@@ -9,7 +9,8 @@ enum class RoomType {
     NORMAL,
     EXIT,
     DOWN,
-    UP
+    UP,
+    UPGRADE
 };
 
 #endif //THE_ELDER_CODES_ROOMTYPE_H

@@ -68,8 +68,7 @@ Floor::Floor(bool debug, Room *previous, int amountRooms, int roomsPerLock, bool
                     if (parent != nullptr) {
                         Coordinate *tempCoordinate = chooseFreeEdge(parent->getCoordinate());
                         if (tempCoordinate) {
-                            newRoomCoordinate.x = tempCoordinate->x;
-                            newRoomCoordinate.y = tempCoordinate->y;
+                            newRoomCoordinate = Coordinate(tempCoordinate->x, tempCoordinate->y);
                         } else {
                             parent = nullptr;
                         }
@@ -174,6 +173,22 @@ Floor::Floor(bool debug, Room *previous, int amountRooms, int roomsPerLock, bool
                     }
                     if (safeguard > amountRooms * 10) { break; }
                 }
+            }
+
+            int securityLevel = 0;
+
+            for (auto security : levels) {
+                if (securityLevel + 1 < levels.size()) {
+                    while (true) {
+                        Coordinate *temp = security.second[Rng::roleDice(security.second.size()) - 1];
+                        Room *tempRoom = _rooms[temp->x][temp->y];
+                        if (tempRoom->getRoomType() == RoomType::NORMAL) {
+                            tempRoom->setAsSecurityLevelUpgrade();
+                            break;
+                        }
+                    }
+                }
+                securityLevel++;
             }
 
             validFloor = true;
@@ -285,7 +300,4 @@ Floor::~Floor() {
             delete corridor;
         }
     }
-//    if (_startingRoom) {
-//        delete _startingRoom;
-//    }
 }
