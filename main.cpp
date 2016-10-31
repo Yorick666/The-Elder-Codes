@@ -10,16 +10,15 @@ using namespace std;
 int main() {
 
     try {
-        Game *game = new Game();
+        Game game;
 
-        game->changeState(GameState::STARTING);
+        game.changeState(GameState::STARTING);
 
         do {
-            game->showScreen();
-            game->getInput();
+            game.showScreen();
+            game.getInput();
 
-        } while (game->getGameState() != GameState::EXITING);
-        delete game;
+        } while (game.getGameState() != GameState::EXITING);
     } catch (exception &e) {
         cout << "Exception encountered: " << e.what() << endl;
         getch();
