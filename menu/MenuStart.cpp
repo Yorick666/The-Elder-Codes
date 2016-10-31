@@ -16,39 +16,43 @@ void MenuStart::handleInput(std::string input) {
     } else if (regex_match(input, regex("s|standard"))) {
         string name;
         if (!_game->getPlayer()) {
-            cout << "At least let me know the name of my next victim: ";
-            cin >> name;
+            DM::say("At least let me know the name of my next victim.\n>", true, false);
+            name = DM::askInput();
         }
         DM::say("Starting standard game.", true);
         _game->startNewGame(name);
     } else if (regex_match(input, regex("c|custom"))) {
-        int size, roomsPerFloor, roomsPerLock;
-        cout << "How many floors?";
-        cin >> size;
+        int size, roomsPerFloor, locksPerFloor, roomsPerLock;
+        string input;
+        DM::say("How many floors?\n>", true, false);
+        input = DM::askInput();
+        size = stoi(input);
         if (size <= 0) {
             size = 1;
         }
 
-        cout << "How many rooms per floor? (min 10)";
-        cin >> roomsPerFloor;
+        DM::say("How many rooms per floor? (min 10)\n>", true, false);
+        input = DM::askInput();
+        roomsPerFloor = stoi(input);
         if (roomsPerFloor < 10) {
             roomsPerFloor = 10;
         }
 
-        cout << "How many locks per floor? (0-9)";
-        cin >> roomsPerLock;
-        if (roomsPerLock <= 0) {
+        DM::say("How many locks per floor? (0-9)\n>", true, false);
+        input = DM::askInput();
+        locksPerFloor = stoi(input);
+        if (locksPerFloor <= 0) {
             roomsPerLock = 0;
-        } else if (roomsPerLock > 9) {
+        } else if (locksPerFloor > 9) {
             roomsPerLock = roomsPerFloor / 9;
         } else {
-            roomsPerLock = roomsPerFloor / roomsPerLock;
+            roomsPerLock = roomsPerFloor / locksPerFloor;
         }
 
         string name;
         if (!_game->getPlayer()) {
-            cout << "At least let me know the name of my next victim: ";
-            cin >> name;
+            DM::say("At least let me know the name of my next victim.\n>", true, false);
+            name = DM::askInput();
         }
 
         DM::say("Starting custom game.", true);

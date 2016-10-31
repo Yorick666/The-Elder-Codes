@@ -205,9 +205,12 @@ void DM::showMap(Floor *currentFloor, Room *currentRoom, bool debug, int securit
     DM::say(botBorder, minimap);
 }
 
-void DM::say(std::string saying, bool direct) {
+void DM::say(std::string saying, bool direct, bool newLine) {
+    if (newLine) {
+        saying += "\n";
+    }
     if (direct) {
-        cout << saying << endl;
+        cout << saying;
     } else {
         DM::getInstance()->addLineToQueue(saying);
     }
@@ -228,7 +231,7 @@ DM *DM::getInstance() {
 
 void DM::showOutput() {
     while (_outputQueue.size() > 0) {
-        cout << _outputQueue.front() << endl;
+        cout << _outputQueue.front();
         _outputQueue.pop();
     }
 }

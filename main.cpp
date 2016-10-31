@@ -25,7 +25,7 @@ int main() {
     }
     catch (int e) {
         cout << "Something went wrong while loading in your files.";
-        getch;
+        getch();
     }
 
     return 0;

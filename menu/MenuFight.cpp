@@ -55,5 +55,8 @@ void MenuFight::handleInput(std::string input) {
 }
 
 void MenuFight::prepareForInput() {
-    cout << "[Life:" << _game->getPlayer()->getCurrentHp() << "/" << _game->getPlayer()->getMaxHp() << "]>";
+    DM::say("[Life:" +
+            to_string(_game->getPlayer()->getCurrentHp()) + "/" + to_string(_game->getPlayer()->getMaxHp()) + "]>",
+            true,
+            false);
 }

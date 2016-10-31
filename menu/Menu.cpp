@@ -48,7 +48,7 @@ void Menu::getMenuScreen() {
 }
 
 void Menu::prepareForInput() {
-    cout << ">";
+    DM::say(">", true, false);
 }
 
 Menu::Menu(Game *game) {

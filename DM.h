@@ -17,15 +17,15 @@ class DM {
     std::queue<std::string> _outputQueue;
 
 public:
+    void addLineToQueue(std::string line);
+
     static DM *getInstance();
 
     static void showMap(Floor *currentFloor, Room *currentRoom, bool debug, int securityLevel, bool minimap = false);
 
-    static void say(std::string saying, bool direct = false);
+    static void say(std::string saying, bool direct = false, bool newline = true);
 
     void showOutput();
-
-    void addLineToQueue(std::string line);
 
     static std::string askInput();
 
