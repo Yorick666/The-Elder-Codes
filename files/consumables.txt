@@ -1,0 +1,10 @@
+Torch 100 illumination 1 0 0
+Potion_of_Minor_Healing 10 healing 1 1 4
+Potion_of_Healing 25 healing 2 2 4
+Potion_of_Greater 60 healing 4 4 4
+Potion_of_Superior 150 healing 8 8 4
+Potion_of_Supreme 1000 healing 20 10 4
+Food 5 food 100 0 0
+Talisman 1 talisman 10 0 0
+Small_Talisman 1 talisman 3 0 0
+Grenade 1 bomb 1 0 0

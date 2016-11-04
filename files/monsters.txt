@@ -1,0 +1,26 @@
+Kobold 25 5 -2 2 -1 2 10 Dagger finesse 1 4
+Mastiff 25 5 1 2 1 2 10 Bite simple 1 6
+Giant_Rat 25 7 -2 2 0 2 10 Bite finesse 1 4
+Cultist 25 9 0 1 0 2 11 Scimitar finesse 1 6
+Flying_Snake 25 5 -3 4 0 2 10 Bite finesse 2 4
+Blood_Hawk 25 7 -2 2 0 2 10 Beak finesse 1 4
+Mule 25 11 2 0 1 2 10 Hooves simple 1 4
+Giant_Frog 50 18 1 1 0 2 10 Bite simple 1 6
+Giant_Crab 50 13 1 2 0 2 13 Claw simple 1 6
+Guard 50 11 1 1 1 2 15 Spear simple 1 8
+Flying_Sword 50 17 1 2 0 2 15 Longsword simple 1 8
+Cockatrice 100 27 -2 1 1 2 10 Bite finesse 1 6
+Hobgoblin 100 11 1 1 1 2 17 Longsword simple 1 10
+Orc 100 15 3 1 3 2 12 Greataxe simple 1 12
+Black_Bear 100 19 2 0 2 1 11 Bite simple 1 6 Claws simple 2 4
+Bugbear 200 27 2 2 1 2 14 Morningstar simple 3 8
+Brass_Dragon_Wyrmling 200 16 2 0 1 2 16 Bite simple 1 10 Claws simple 2 6
+Copper_Dragon_Wyrmling 200 22 2 1 1 2 14 Bite simple 1 10 Claws simple 2 6
+Giant_Spider 200 26 2 3 1 2 11 Bite finesse 2 10
+Ghoul 200 22 1 2 0 2 10 Claws finesse 3 6
+Centaur 450 45 4 2 2 2 10 Pike simple 1 10 Hooves simple 2 6
+Gargoyle 450 52 2 0 3 2 15 Bite simple 1 6 Claws simple 1 6
+Griffon 450 59 4 2 3 2 10 Beak simple 1 8 Claws simple 2 6
+Polar_Bear 450 42 5 0 3 2 12 Bite simple 1 8 Claws simple 2 6
+Minotaur 700 76 4 0 3 2 14 Greataxe simple 2 12
+Werewolf 700 58 2 1 2 2 10 Bite simple 1 8 Spear simple 2 8
